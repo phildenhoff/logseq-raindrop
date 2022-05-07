@@ -1,9 +1,11 @@
 <script lang="ts">
   import logo from './assets/svelte.png'
   import Counter from './lib/Counter.svelte'
+
+  const close = () => window?.logseq?.hideMainUI();
 </script>
 
-<main>
+<main on:click={close}>
   <img src={logo} alt="Svelte Logo" />
   <h1>Hello Typescript!</h1>
 
@@ -30,6 +32,7 @@
     text-align: center;
     padding: 1em;
     margin: 0 auto;
+    background-color: #fafafa;
   }
 
   img {

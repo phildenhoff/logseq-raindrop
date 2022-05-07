@@ -1035,6 +1035,7 @@ __metadata:
     tslib: ^2.3.1
     typescript: ^4.5.4
     vite: ^2.9.7
+    vite-plugin-logseq: ^1.1.2
   languageName: unknown
   linkType: soft
 
@@ -1913,6 +1914,15 @@ __metadata:
   dependencies:
     inherits: 2.0.3
   checksum: 913f9a90d05a60e91f91af01b8bd37e06bca4cc02d7b49e01089f9d5b78be2fffd61fb1a41b517de7238c5fc7337fa939c62d1fb4eb82e014894c7bee6637aaf
+  languageName: node
+  linkType: hard
+
+"vite-plugin-logseq@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "vite-plugin-logseq@npm:1.1.2"
+  dependencies:
+    magic-string: ^0.26.1
+  checksum: 779d21f9f72d3f30faff4e67ddccebb1160cfd008f985a2ae0dc0b63529688411d235afa65e82e76202f9d832b6310675d0e651718047c12e7e6fd0f7f1a1084
   languageName: node
   linkType: hard
 

@@ -21,7 +21,7 @@ const main = () => {
     },
   })
 
-  // logseq.App.showMsg('hello, pomodoro timer :)')
+  logseq.App.showMsg('hello, pomodoro timer :)')
 
 //   logseq.Editor.registerSlashCommand(
 //     '💥 Big Bang',

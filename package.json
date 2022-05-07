@@ -22,5 +22,8 @@
   "packageManager": "yarn@3.2.0",
   "dependencies": {
     "@logseq/libs": "^0.0.6"
+  },
+  "logseq": {
+    "id": "_p28rouybw"
   }
 }

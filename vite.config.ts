@@ -6,7 +6,7 @@ import logseqDevPlugin from "vite-plugin-logseq";
 export default defineConfig({
   plugins: [
     svelte(),
-    logseqDevPlugin()
+    logseqDevPlugin.default()
   ],
   build: {
     target: "esnext",

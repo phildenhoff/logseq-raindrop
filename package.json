@@ -2,6 +2,7 @@
   "name": "logseq-raindrop",
   "private": true,
   "version": "0.0.0",
+  "main": "dist/index.html",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -25,7 +26,8 @@
     "@logseq/libs": "^0.0.6"
   },
   "logseq": {
-    "id": "_phildenhoff/raindrop",
+    "id": "phildenhoff-raindrop",
+    "title": "Raindrop",
     "main": "dist/index.html"
   }
 }

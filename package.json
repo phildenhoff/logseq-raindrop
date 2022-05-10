@@ -1,7 +1,7 @@
 {
   "name": "logseq-raindrop",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "dist/index.html",
   "type": "module",
   "scripts": {
@@ -26,8 +26,9 @@
     "@logseq/libs": "^0.0.6"
   },
   "logseq": {
-    "id": "phildenhoff-raindrop",
+    "id": "logseq-raindrop",
     "title": "Raindrop",
-    "main": "dist/index.html"
+    "main": "dist/index.html",
+    "icon": "public/raindrop.png"
   }
 }

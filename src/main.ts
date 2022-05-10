@@ -1,11 +1,11 @@
 import "@logseq/libs";
-import 'svelte';
+import "svelte";
 import App from "./App.svelte";
-import {addUrlsToRaindrop} from "./commands/addToRaindrop";
+import { addUrlsToRaindrop } from "./commands/addToRaindrop";
 
 type Command = {
-  title: string,
-  task: () => Promise<void>,
+  title: string;
+  task: () => Promise<void>;
 };
 
 const commands: Command[] = [
@@ -22,14 +22,17 @@ const registerSlashCommands = () => {
 };
 
 const registerSettings = () => {
-  logseq.useSettingsSchema([{
-    default: "",
-    description: "Your API token is used to save links for you. You can make a test token at https://app.raindrop.io/settings/integrations.",
-    key: 'auth_token',
-    title: 'Raindrop API token',
-    type: 'string',
-  }]);
-}
+  logseq.useSettingsSchema([
+    {
+      default: "",
+      description:
+        "Your API access token is used to save links for you. You can make a test token at https://app.raindrop.io/settings/integrations.",
+      key: "access_token",
+      title: "Raindrop access token",
+      type: "string",
+    },
+  ]);
+};
 
 const main = () => {
   registerSlashCommands();
@@ -38,24 +41,8 @@ const main = () => {
   new App({
     target: document.getElementById("app"),
   });
-
-  logseq.provideModel({
-    async startPomoTimer(e: any) {
-      const { pomoId, slotId, blockUuid } = e.dataset;
-      const startTime = Date.now();
-
-      const block = await logseq.Editor.getBlock(blockUuid);
-      const flag = `{{renderer :pomodoro_${pomoId}`;
-      const newContent = block?.content?.replace(
-        `${flag}}}`,
-        `${flag},${startTime}}}`
-      );
-      if (!newContent) return;
-      await logseq.Editor.updateBlock(blockUuid, newContent);
-    },
-  });
-
-  let createModel = () => ({
+  logseq.provideModel({});
+  const createModel = () => ({
     show: () => {
       logseq.showMainUI();
     },
@@ -63,11 +50,10 @@ const main = () => {
 
   logseq.provideModel(createModel());
 
-  // TODO : Make a menu
   logseq.App.registerUIItem("toolbar", {
-    key: "a",
+    key: "logseq-raindrop",
     template: `
-      <div data-on-click="show">⚙️</div>
+      <a data-on-click="show" class="button ti ti-cloud" style="font-size: 24px; margin: 4px 6px;"></a>
     `,
   });
 };

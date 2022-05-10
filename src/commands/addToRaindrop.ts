@@ -28,14 +28,20 @@ const convertRaindropToMdLink = ({ link, raindropId }: Raindrop): string =>
   `[${link}](${`https://app.raindrop.io/my/-1/item/${raindropId}/preview`})`;
 
 export const addUrlsToRaindrop = async (): Promise<void> => {
-  const { content, uuid } = await logseq.Editor.getCurrentBlock();
-  const auth_token = await logseq.settings?.auth_token;
+  // We can't use `content` from `getCurrentBlock()` because it's not updated
+  // as the user types
+  const { uuid } = await logseq.Editor.getCurrentBlock();
+  const content = await logseq.Editor.getEditingBlockContent();
+
+  const access_token = await logseq.settings?.access_token;
   const urls = extractUrlFromText(content);
   if (!urls) {
     logseq.UI.showMsg(strings.error.no_urls, "warning", { timeout: 4000 });
   }
 
-  if (!auth_token) {
+
+
+  if (!access_token) {
     logseq.UI.showMsg(strings.error.no_access_token, "warning", {
       timeout: 4000,
     });
@@ -48,7 +54,7 @@ export const addUrlsToRaindrop = async (): Promise<void> => {
       fetch("https://api.raindrop.io/rest/v1/raindrop", {
         method: "POST",
         headers: new Headers({
-          Authorization: `Bearer ${auth_token}`,
+          Authorization: `Bearer ${access_token}`,
           "Content-Type": "application/json",
         }),
         body: JSON.stringify({
@@ -61,6 +67,6 @@ export const addUrlsToRaindrop = async (): Promise<void> => {
 
   const newRaindrops = await convertResponsesToRaindrops(responses);
   const linksText = newRaindrops.map(convertRaindropToMdLink);
-  const text = "Saved to Raindrop: \n" + linksText.join("\n");
-  await logseq.Editor.insertBlock(uuid, text, { sibling: false });
+  const savedLinksBlockText = "Saved to Raindrop: \n" + linksText.join("\n");
+  await logseq.Editor.insertBlock(uuid, savedLinksBlockText, { sibling: false });
 };

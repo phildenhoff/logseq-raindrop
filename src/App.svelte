@@ -1,68 +1,151 @@
 <script lang="ts">
-  import logo from './assets/svelte.png'
-  import Counter from './lib/Counter.svelte'
+  import logo from "./assets/raindrop.png";
+  const l = window?.logseq ?? {};
 
-  const close = () => window?.logseq?.hideMainUI();
+  const close = () => l?.hideMainUI();
+  const showSettings = () => {
+    l?.showSettingsUI();
+    close();
+  };
+  const setupComplete = () => {
+    return (
+      l.settings.access_token !== undefined && l.settings.access_token !== ""
+    );
+  };
+  const getTheme = async () => {
+    return (await l.App.getUserConfigs()).preferredThemeMode;
+  };
+
+  let promptUserToCompleteSetup = !setupComplete();
+  let themePromise = getTheme();
+
+  // We need to update state when these events occurr
+  l?.onSettingsChanged((a) => {
+    promptUserToCompleteSetup = !setupComplete();
+  });
+
+  l?.App.onThemeModeChanged(({ mode }) => {
+    themePromise = Promise.resolve(mode);
+  });
 </script>
 
-<main on:click={close}>
-  <img src={logo} alt="Svelte Logo" />
-  <h1>Hello Typescript!</h1>
-
-  <Counter />
-
-  <p>
-    Visit <a href="https://svelte.dev">svelte.dev</a> to learn how to build Svelte
-    apps.
-  </p>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme">SvelteKit</a> for
-    the officially supported framework, also powered by Vite!
-  </p>
-</main>
+<div class="clickOutCaptureContainer" on:click={close}>
+  {#await themePromise}
+    <p>Loading your theme...</p>
+  {:then theme}
+    <main
+      class={theme}
+      on:click|stopPropagation|preventDefault={() => undefined}
+    >
+      <header>
+        <img src={logo} alt="Raindrop logo" />
+        <h3>Logseq → Raindrop</h3>
+      </header>
+      {#if promptUserToCompleteSetup}
+        <p class="warning">
+          You'll have to set your access token in the plugin settings before you
+          get started.
+        </p>
+        <a on:click={showSettings} class="button">Open settings</a>
+      {:else}
+        <p>You're all set! Go ahead and use the slash commands.</p>
+      {/if}
+    </main>
+  {/await}
+</div>
 
 <style>
   :root {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    cursor: default;
+  }
+
+  .clickOutCaptureContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  main,
+  main.dark {
+    --rd-primary-text-color: white;
+    --rd-quarternary-background-color: #504f57;
+    --rd-secondary-background-color: #121212;
+    --rd-secondary-text-color: #a0a0a0;
+  }
+
+  main.light {
+    --rd-primary-text-color: #121212;
+    --rd-quarternary-background-color: #e8e8e8;
+    --rd-secondary-background-color: #f8f8f8;
+    --rd-secondary-text-color: #6f6f6f;
   }
 
   main {
-    text-align: center;
-    padding: 1em;
+    background-color: var(--rd-secondary-background-color);
+    border-radius: 0.375rem;
+    box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+      rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
+      rgba(0, 0, 0, 0.1) 0px 4px 6px -4px;
+    color: var(--rd-primary-text-color);
     margin: 0 auto;
-    background-color: #fafafa;
+    max-width: 400px;
+    padding: 1em;
+    position: absolute;
+    right: 3rem;
+    text-align: left;
+    top: 4rem;
   }
 
-  img {
-    height: 16rem;
-    width: 16rem;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    margin: 0;
   }
 
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4rem;
-    font-weight: 100;
-    line-height: 1.1;
-    margin: 2rem auto;
-    max-width: 14rem;
+  header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.25rem;
+  }
+
+  header img {
+    height: 1.5rem;
+    margin-right: 1rem;
+  }
+
+  button,
+  .button,
+  a {
+    user-select: none;
+    transition: none;
+  }
+
+  a.button {
+    color: var(--rd-secondary-text-color);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    align-items: center;
+    display: flex;
+  }
+
+  a.button:hover {
+    background-color: var(--rd-quarternary-background-color);
+    color: var(--rd-primary-text-color);
   }
 
   p {
-    max-width: 14rem;
     margin: 1rem auto;
     line-height: 1.35;
-  }
-
-  @media (min-width: 480px) {
-    h1 {
-      max-width: none;
-    }
-
-    p {
-      max-width: none;
-    }
   }
 </style>

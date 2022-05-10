@@ -1,80 +1,39 @@
 import "@logseq/libs";
+import 'svelte';
 import App from "./App.svelte";
+import {addUrlsToRaindrop} from "./commands/addToRaindrop";
 
-const extractUrlFromText = (text: string) => {
-  const regexp =
-    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?!&//=]*)/gi;
-
-  if (typeof text !== "string") {
-    throw new TypeError(
-      `The str argument should be a string, got ${typeof text}`
-    );
-  }
-
-  if (!text) {
-    return undefined;
-  }
-
-  let urls = text.match(regexp);
-  if (!urls) return undefined;
-
-  return urls;
+type Command = {
+  title: string,
+  task: () => Promise<void>,
 };
 
-const commands: any[] = [
+const commands: Command[] = [
   {
     title: "Add urls to Raindrop",
-    task: async () => {
-      const { content, uuid } = await logseq.Editor.getCurrentBlock();
-      const urls = extractUrlFromText(content);
-
-      const AUTH_TOKEN = "";
-
-      const responses = await Promise.all(
-        urls.map((url) =>
-          fetch("https://api.raindrop.io/rest/v1/raindrop", {
-            method: "POST",
-            headers: new Headers({
-              Authorization: `Bearer ${AUTH_TOKEN}`,
-              "Content-Type": "application/json",
-            }),
-            body: JSON.stringify({
-              link: url,
-              pleaseParse: {},
-            }),
-          })
-        )
-      );
-
-      const newRaindrops = (
-        await Promise.all(responses.map((res) => res.json()))
-      ).map((res) => ({
-        link: res.item.link,
-        raindropId: res.item._id,
-      }));
-
-      const linksText = newRaindrops.map(({ link, raindropId }) => ({
-        content: `[${link}](${`https://app.raindrop.io/my/-1/item/${raindropId}/preview`})`,
-      }));
-
-      const text =
-        "Saved to Raindrop: \n" +
-        linksText.map(({ content }) => content).join("\n");
-
-      await logseq.Editor.insertBlock(uuid, text, { sibling: false });
-    },
+    task: addUrlsToRaindrop,
   },
 ];
 
 const registerSlashCommands = () => {
-  console.log("main");
   commands.forEach(({ title, task }) => {
     logseq.Editor.registerSlashCommand(title, task);
   });
 };
 
+const registerSettings = () => {
+  logseq.useSettingsSchema([{
+    default: "",
+    description: "Your API token is used to save links for you. You can make a test token at https://app.raindrop.io/settings/integrations.",
+    key: 'auth_token',
+    title: 'Raindrop API token',
+    type: 'string',
+  }]);
+}
+
 const main = () => {
   registerSlashCommands();
+  registerSettings();
 
   new App({
     target: document.getElementById("app"),

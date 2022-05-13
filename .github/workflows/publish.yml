@@ -1,0 +1,40 @@
+name: Build prerelease
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - "v*" # Release for any tag that starts with "v"
+
+env:
+  PLUGIN_NAME: logseq-raindrop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16"
+      - name: Build
+        id: build
+        run: |
+          yarn && yarn install
+          yarn build
+          mkdir ${{ env.PLUGIN_NAME }}
+          cp LICENSE README.md package.json public/raindrop.png ${{ env.PLUGIN_NAME }}
+          mv dist ${{ env.PLUGIN_NAME }}
+          zip -r ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}
+          echo "::set-output name=tag_name::$(git tag --sort version:refname | tail -n 1)"
+      - name: Create GitHub pre-release
+        uses: softprops/action-gh-release@v0.1.14
+        with:
+          prerelease: true
+          files: |
+            package.json
+            ./${{ env.PLUGIN_NAME }}.zip

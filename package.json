@@ -27,6 +27,7 @@
   },
   "logseq": {
     "id": "logseq-raindrop",
+    "description": "Send URLs to Raindrop.",
     "title": "Raindrop",
     "icon": "./raindrop.png",
     "author": "Phil Denhoff",

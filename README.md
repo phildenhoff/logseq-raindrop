@@ -4,14 +4,22 @@ A simple plugin that allows you to save URLs to Raindrop.
 
 https://user-images.githubusercontent.com/17505728/168242341-3cad1a5f-bff9-4019-ac5f-b48a322c901a.mov
 
+
+
+## Setting up your plugin
+
 To get set up, generate a Raindrop API access token from the [Settings >
 Integrations](https://app.raindrop.io/settings/integrations) page. Use the Test
 Token as your API access token -- or walk through the entire OAuth flow, if
 that's your preference.
 
+https://user-images.githubusercontent.com/17505728/169188456-f346ed11-dbc3-45b2-8bac-336d7151a79a.mp4
+
+Don't try to use the tokens in the video. They've already been expired and the app deleted.
+
 ## Planned work
 
-- Import annotations from Raindrop
+- See the [open Issues](https://github.com/phildenhoff/logseq-raindrop/issues)
 
 ## Building your own Logseq plugin
 

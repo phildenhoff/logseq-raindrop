@@ -89,18 +89,10 @@
     overflow-y: auto;
   }
 
-  .loading,
   .loading__placeholder {
     width: 1.5rem;
     height: 1.5rem;
     margin: 0.5rem;
-  }
-
-  .loading {
-    border: 4px solid #f3f3f3; /* Light grey */
-    border-top: 4px solid #3498db; /* Blue */
-    border-radius: 50%;
-    animation: spin 2s linear infinite;
   }
 
   input:active,
@@ -120,9 +112,10 @@
   }
 
   .searchField {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: auto 1fr;
     border: 2px solid transparent;
+    background-color: #1e1e1e;
   }
 
   .searchField:focus-visible,

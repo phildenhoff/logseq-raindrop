@@ -9,14 +9,14 @@
   export let created;
   export let coverImage;
 
-  const formattedCreated =
+  $: formattedCreated = () =>
     !!created &&
     new Intl.DateTimeFormat("default", {
       month: "short",
       day: "numeric",
     }).format(new Date(created));
 
-  const formattedUrl = new URL(url).hostname;
+  $: formattedUrl = () => new URL(url).hostname;
 </script>
 
 <button class="raindrop" class:full>
@@ -48,15 +48,15 @@
       {/if}
       <div class="info">
         <span>{collectionName}</span>
-        <span>{formattedUrl}</span>
-        <span>{formattedCreated}</span>
+        <span>{formattedUrl()}</span>
+        <span>{formattedCreated()}</span>
       </div>
     </div>
   {:else}
     <div class="about">
       <span class="title">{title}</span>
       <div class="info">
-        <span>{formattedUrl}</span>
+        <span>{formattedUrl()}</span>
       </div>
     </div>
   {/if}

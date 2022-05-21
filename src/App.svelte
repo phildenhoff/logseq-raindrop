@@ -1,6 +1,7 @@
 <script lang="ts">
   import logo from "./assets/raindrop.png";
   import ImportRaindrops from "./organisms/ImportRaindrops.svelte";
+  import { settings } from "./util/settings";
 
   const l = window?.logseq ?? {};
 
@@ -11,7 +12,7 @@
   };
   const setupComplete = () => {
     return (
-      l.settings.access_token !== undefined && l.settings.access_token !== ""
+      settings.access_token !== undefined && settings.access_token !== ""
     );
   };
   const getTheme = async () => {

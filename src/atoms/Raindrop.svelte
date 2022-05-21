@@ -4,7 +4,7 @@
   export let description;
   export let annotations;
   export let tags;
-  export let collection;
+  export let collectionName;
   export let url;
   export let created;
   export let coverImage;
@@ -47,7 +47,7 @@
         </span>
       {/if}
       <div class="info">
-        <span>{collection}</span>
+        <span>{collectionName}</span>
         <span>{formattedUrl}</span>
         <span>{formattedCreated}</span>
       </div>
@@ -98,6 +98,14 @@
     margin-right: 0.25rem;
   }
 
+  .description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
   .tags {
     display: flex;
     flex-direction: row;
@@ -139,6 +147,7 @@
     width: 56px;
     aspect-ratio: auto 56 / 48;
     height: 48px;
+    object-fit: cover;
   }
 
   .info {

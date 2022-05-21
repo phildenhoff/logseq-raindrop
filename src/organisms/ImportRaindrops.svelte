@@ -1,55 +1,49 @@
 <script lang="ts">
   import Raindrop from "../atoms/Raindrop.svelte";
+  import LoadingSpinner from "../atoms/LoadingSpinner.svelte";
+  import { onMount } from "svelte";
+  import { writable, derived } from "svelte/store";
+  import { settings } from "../util/settings";
+  import { raindropTransformer } from "../util/raindropTransformer";
 
   const l = window?.logseq ?? {};
 
-  const onChange = () => undefined;
-  const loading = true;
-  const data = [
-    {
-      title: "Logseq plugin library",
-      description: "maybe notes field?",
-      annotations: [
-        {
-          note: "",
-          color: "yellow",
-          text: "🚀 Logseq SDK libraries.",
-          created: "2022-05-21T03:21:04.906Z",
-          lastUpdate: "2022-05-21T03:21:04.915Z",
-          creatorRef: 920589,
-          _id: "62885aa03423a74260d94d13",
-        },
-        {
-          note: "Good stuff here",
-          text: "yarn add @logseq/libs",
-          created: "2022-05-21T03:21:26.321Z",
-          lastUpdate: "2022-05-21T03:21:26.356Z",
-          creatorRef: 920589,
-          _id: "62885ab63423a7b8fdd94d15",
-        },
-      ],
-      tags: ["logseq", "plugins", "documentation"],
-      coverImage:
-        "https://rdl.ink/render/https%3A%2F%2Flogseq.github.io%2Fplugins%2F",
-      created: "2022-05-21T02:53:26.708Z",
-      url: "https://logseq.github.io/plugins/",
-      collection: "Unsorted",
-      id: "396671602",
-    },
-    {
-      url: "https://discuss.logseq.com/t/making-obsidian-play-nice-with-logseq/1185",
-      title:
-        "Making Obsidian play nice with Logseq - Look what I built - Logseq",
-      created: "2022-03-26T10:45:24.000Z",
-      collection: "Read Archive",
-      id: 391702267,
-    },
-  ];
+  const remoteData = writable([]);
+  const requestsInFlight = writable(0);
+  const mostRecentRequestTime = writable(new Date(0));
+  const loading = derived(
+    requestsInFlight,
+    ($requestsInFlight) => $requestsInFlight > 0
+  );
 
-  /* const [loading, data, performSearch] = useRemoteData<string>(); */
-  /* const onChange = (event: React.ChangeEvent<HTMLInputElement>) => { */
-  /*   performSearch(event.target.value); */
-  /* }; */
+  const performSearch = async (term: string): void => {
+    const requestTime = new Date();
+    requestsInFlight.update((n) => n + 1);
+    console.log(settings, settings.access_token());
+    const res = await fetch(
+      `https://api.raindrop.io/rest/v1/raindrops/0?search=${term}`,
+      {
+        method: "GET",
+        headers: new Headers({
+          Authorization: `Bearer ${settings.access_token()}`,
+          "Content-Type": "application/json",
+        }),
+      }
+    );
+    const { items } = await res.json();
+    // do some work
+    requestsInFlight.update((n) => n - 1);
+    mostRecentRequestTime.update((currentRequestTime) => {
+      if (requestTime < currentRequestTime) return currentRequestTime;
+      remoteData.update((_) => items.map(raindropTransformer));
+      return requestTime;
+    });
+  };
+  const onSearch = (event): void => performSearch(event.target.value);
+
+  onMount(() => {
+    performSearch("");
+  });
 </script>
 
 <div>
@@ -57,48 +51,89 @@
   <button>Import all annotations</button>
   <hr />
   <h3>Import specific page</h3>
-  <form>
-    <input placeholder="Search" {onChange} style={{ minWidth: "24ch" }} />
-    {#if loading}
-      <p>Searching</p>
+  <div class="searchField">
+    {#if $loading}
+      <LoadingSpinner size={24} duration={"2s"} color={"#1888df"} />
     {:else}
-      <p>Filtering. ⏎ to search</p>
+      <span class="loading__placeholder" />
     {/if}
-  </form>
+    <input placeholder="Search" on:input={onSearch} />
+  </div>
 
-  <ul class="results">
-    {#each data as result}
-      <li role="option">
-        <Raindrop
-          full={true}
-          title={result.title}
-          description={result?.description}
-          annotations={result?.annotations}
-          tags={result?.tags}
-          url={result?.url}
-          created={result?.created}
-          collection={result?.collection}
-          coverImage={result?.coverImage}
-        />
-      </li>
-    {/each}
-  </ul>
+  <div class="scrollable">
+    <ul class="results">
+      {#each $remoteData as result}
+        <li role="option">
+          <Raindrop
+            full={true}
+            title={result.title}
+            description={result?.description}
+            annotations={result?.annotations}
+            tags={result?.tags}
+            url={result?.url}
+            created={result?.created}
+            collectionName={result?.collectionName}
+            coverImage={result?.coverImage}
+          />
+        </li>
+      {/each}
+    </ul>
+  </div>
 </div>
 
 <style>
-  form {
-    display: flex;
-    flex-direction: row;
+  .scrollable {
+    max-height: calc(100vh - 450px);
+    margin-top: 0.5rem;
+    padding-right: 0.3rem;
+    overflow-y: auto;
+  }
+
+  .loading,
+  .loading__placeholder {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0.5rem;
+  }
+
+  .loading {
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid #3498db; /* Blue */
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+  }
+
+  input:active,
+  input:focus,
+  input:focus-within,
+  input:target,
+  input:focus-visible {
+    border: none;
+    outline: none;
   }
 
   input {
-    min-width: 24ch;
+    width: auto;
+    background: none;
+    color: white;
+    border: none;
+  }
+
+  .searchField {
+    display: flex;
+    flex-direction: row;
+    border: 2px solid transparent;
+  }
+
+  .searchField:focus-visible,
+  .searchField:focus-within {
+    border: 2px solid #1888df;
   }
 
   .results {
     display: flex;
     flex-direction: column;
-    margin-top: 0.5rem;
+    height: 100%;
   }
 
   ul {
@@ -108,5 +143,14 @@
 
   li {
     list-style: none;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>

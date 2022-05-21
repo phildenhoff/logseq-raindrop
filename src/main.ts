@@ -5,6 +5,8 @@ import { registerCommands } from "./commands";
 import { registerSettings } from "./util/settings";
 
 const main = () => {
+  const addColorStyle = import.meta.env.PROD ? '' : 'color: orange!important;';
+
   registerCommands();
   registerSettings();
 
@@ -23,7 +25,7 @@ const main = () => {
   logseq.App.registerUIItem("toolbar", {
     key: "logseq-raindrop",
     template: `
-      <a data-on-click="show" class="button ti ti-cloud" style="font-size: 24px; margin: 4px 6px;"></a>
+      <a data-on-click="show" class="button ti ti-cloud" style="font-size: 24px; margin: 4px 6px; ${addColorStyle}"></a>
     `,
   });
 };

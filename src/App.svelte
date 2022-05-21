@@ -1,5 +1,7 @@
 <script lang="ts">
   import logo from "./assets/raindrop.png";
+  import ImportRaindrops from "./organisms/ImportRaindrops.svelte";
+
   const l = window?.logseq ?? {};
 
   const close = () => l?.hideMainUI();
@@ -50,6 +52,7 @@
       {:else}
         <p>You're all set! Go ahead and use the slash commands.</p>
       {/if}
+      <ImportRaindrops />
     </main>
   {/await}
 </div>
@@ -147,5 +150,9 @@
   p {
     margin: 1rem auto;
     line-height: 1.35;
+  }
+
+  * {
+    box-sizing: border-box;
   }
 </style>

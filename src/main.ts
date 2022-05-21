@@ -1,35 +1,17 @@
 import "@logseq/libs";
 import "svelte";
 import App from "./App.svelte";
-import { addUrlsToRaindrop } from "./commands/addToRaindrop";
+import { registerCommands } from "./commands";
 import { registerSettings } from "./util/settings";
 
-type Command = {
-  title: string;
-  task: () => Promise<void>;
-};
-
-const commands: Command[] = [
-  {
-    title: "Add urls to Raindrop",
-    task: addUrlsToRaindrop,
-  },
-];
-
-const registerSlashCommands = () => {
-  commands.forEach(({ title, task }) => {
-    logseq.Editor.registerSlashCommand(title, task);
-  });
-};
-
 const main = () => {
-  registerSlashCommands();
+  registerCommands();
   registerSettings();
 
   new App({
     target: document.getElementById("app"),
   });
-  logseq.provideModel({});
+
   const createModel = () => ({
     show: () => {
       logseq.showMainUI();

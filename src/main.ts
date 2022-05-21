@@ -2,6 +2,7 @@ import "@logseq/libs";
 import "svelte";
 import App from "./App.svelte";
 import { addUrlsToRaindrop } from "./commands/addToRaindrop";
+import { registerSettings } from "./util/settings";
 
 type Command = {
   title: string;
@@ -19,19 +20,6 @@ const registerSlashCommands = () => {
   commands.forEach(({ title, task }) => {
     logseq.Editor.registerSlashCommand(title, task);
   });
-};
-
-const registerSettings = () => {
-  logseq.useSettingsSchema([
-    {
-      default: "",
-      description:
-        "Your API access token is used to save links for you. You can make a test token at https://app.raindrop.io/settings/integrations.",
-      key: "access_token",
-      title: "Raindrop access token",
-      type: "string",
-    },
-  ]);
 };
 
 const main = () => {

@@ -51,9 +51,8 @@
         </p>
         <a on:click={showSettings} class="button">Open settings</a>
       {:else}
-        <p>You're all set! Go ahead and use the slash commands.</p>
+        <ImportRaindrops />
       {/if}
-      <ImportRaindrops />
     </main>
   {/await}
 </div>

@@ -107,7 +107,7 @@
   input {
     width: auto;
     background: none;
-    color: white;
+    color: var(--rd-primary-text-color);
     border: none;
   }
 
@@ -115,12 +115,13 @@
     display: grid;
     grid-template-columns: auto 1fr;
     border: 2px solid transparent;
-    background-color: #1e1e1e;
+    border-radius: 4px;
+    background-color: var(--rd-primary-background-color);
   }
 
   .searchField:focus-visible,
   .searchField:focus-within {
-    border: 2px solid #1888df;
+    border: 2px solid var(--rd-blue-base-color);
   }
 
   .results {

@@ -75,16 +75,23 @@
 
   main,
   main.dark {
-    --rd-primary-text-color: white;
-    --rd-quarternary-background-color: #504f57;
-    --rd-secondary-background-color: #121212;
+    --rd-primary-text-color: #fff;
+    --rd-primary-background-color: #2a2a2a;
+    --rd-secondary-background-color: #090909;
+    --rd-quarternary-background-color: #504F57;
     --rd-secondary-text-color: #a0a0a0;
+    /* General colour palette */
+    --rd-blue-base-color: #1888df;
+    --rd-blue-light-color: #0db3e1;
+    --rd-yellow-base-color: #fe0;
+    --rd-yellow-dark-color: #dcc28f;
   }
 
   main.light {
     --rd-primary-text-color: #121212;
-    --rd-quarternary-background-color: #e8e8e8;
+    --rd-primary-background-color: #fff;
     --rd-secondary-background-color: #f8f8f8;
+    --rd-quarternary-background-color: #e8e8e8;
     --rd-secondary-text-color: #6f6f6f;
   }
 

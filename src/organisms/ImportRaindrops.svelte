@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import { writable, derived } from "svelte/store";
   import { settings } from "../util/settings";
+  import { upsertRaindropPage } from "../util/upsertRaindropPage";
   import { raindropTransformer } from "../util/raindropTransformer";
 
   const l = window?.logseq ?? {};
@@ -74,6 +75,7 @@
             created={result?.created}
             collectionName={result?.collectionName}
             coverImage={result?.coverImage}
+            onClick={() => upsertRaindropPage(result)}
           />
         </li>
       {/each}

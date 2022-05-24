@@ -8,6 +8,7 @@
   export let url;
   export let created;
   export let coverImage;
+  export let onClick;
 
   $: formattedCreated = () =>
     !!created &&
@@ -19,7 +20,7 @@
   $: formattedUrl = () => new URL(url).hostname;
 </script>
 
-<button class="raindrop" class:full>
+<button class="raindrop" class:full on:click={onClick}>
   {#if full}
     <img class="coverImage" src={coverImage} />
     <div class="about">

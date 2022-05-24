@@ -1,3 +1,5 @@
+import type { Annotation, Collection, Raindrop } from "./Raindrop";
+
 type HighlightsColor =
   | "blue"
   | "brown"
@@ -68,30 +70,6 @@ type RaindropResponse = {
 };
 
 // below are normalized values
-
-type ID = string;
-type Annotation = {
-  note: string;
-  color: HighlightsColor;
-  text: string;
-  created: Date;
-  id: ID;
-};
-type Tag = string;
-type Raindrop = {
-  title: string;
-  description: string;
-  annotations: Annotation[];
-  tags: Tag[];
-  coverImage: string | URL;
-  created: Date;
-  url: URL;
-  collectionName?: string;
-  id: ID;
-};
-
-type Collection = {};
-
 export const raindropTransformer = (
   r: RaindropResponse,
   collections: Collection[]

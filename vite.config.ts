@@ -9,5 +9,8 @@ export default defineConfig({
     target: "esnext",
     minify: "esbuild",
   },
-  base: "./"
+  resolve: {
+    alias: { src: "./src" },
+  },
+  base: "./",
 });

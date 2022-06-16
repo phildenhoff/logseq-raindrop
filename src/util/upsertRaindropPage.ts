@@ -2,10 +2,16 @@ import type { BlockEntity, PageEntity } from "@logseq/libs/dist/LSPlugin";
 import { findPagesByRaindropID } from "../../src/queries/getBlockBy";
 import Maybe, { nothing } from "true-myth/maybe";
 
-import type { Raindrop } from "./Raindrop";
+import type { Annotation, Raindrop } from "./Raindrop";
 import { alertDuplicatePageIdUsed } from "./notify";
 import { formatRaindropToProperties } from "./pageFormatter";
-import { filterBlocksWithProperty, someBlockHasProperty } from "./blocks";
+import {
+  filterBlocksWithProperty,
+  someBlockHasProperty,
+  upsertBlockProperties,
+} from "./blocks";
+import { settings } from "./settings";
+import { applyAsyncFunc } from "./async";
 
 const noAnnotationsProp = "noannotations";
 // TODO: Make this a preference
@@ -28,26 +34,6 @@ const ioMaybeGetPageForRaindrop = async (
 
   return Maybe.of(oldestPage);
 };
-
-/**
- * Async function to apply provided properties to a page.
- *
- * To get the Page's properties block, use getCurrentPageBlocksTree and take
- * the first item from the array.
- */
-const ioApplyPropertiesToPage = (
-  pagePropertiesBlock: BlockEntity,
-  properties: Record<string, string>
-): Promise<void[]> =>
-  Promise.all(
-    Object.entries(properties).map(([property, value]) =>
-      logseq.Editor.upsertBlockProperty(
-        pagePropertiesBlock.uuid,
-        property,
-        value
-      )
-    )
-  );
 
 /**
  * Adds a new block (once) to let the user know that there are no annotations
@@ -90,17 +76,15 @@ const ioCreateOrLoadPage = async (r: Raindrop) => {
 
   if (maybeExistingPage.isJust) {
     logseq.App.pushState("page", { name: maybeExistingPage.value.name });
-    const pagePropertiesBlock = (
-      await logseq.Editor.getCurrentPageBlocksTree()
-    ).at(0);
-    ioApplyPropertiesToPage(pagePropertiesBlock, formattedRaindropProperties);
   } else {
-    logseq.Editor.createPage(
+    await logseq.Editor.createPage(
       logseqRaindropPrefix + r.title,
-      formattedRaindropProperties,
-      { redirect: true }
+      {},
+      { createFirstBlock: false, redirect: true }
     );
   }
+  const propBlock = (await logseq.Editor.getCurrentPageBlocksTree()).at(0);
+  await upsertBlockProperties(propBlock, formattedRaindropProperties);
 };
 
 const ioAddOrRemoveEmptyState = async (
@@ -115,11 +99,41 @@ const ioAddOrRemoveEmptyState = async (
   }
 };
 
+const ioCreateAnnotationBlock = async (
+  annotation: Annotation,
+  currentPage: PageEntity
+): Promise<BlockEntity> => {
+  const highlightFormatted = settings.formatting_template
+    .highlight()
+    .replace("{text}", annotation.text);
+  const noteFormatted = settings.formatting_template
+    .annotation()
+    .replace("{text}", annotation.note);
+
+  return await logseq.Editor.appendBlockInPage(
+    currentPage.uuid,
+    `${highlightFormatted}\n\n${noteFormatted}`,
+    { properties: { "annotation-id": annotation.id } }
+  );
+};
+
 const upsertAnnotationBlocks = async (
   r: Raindrop,
   currentPage: PageEntity
 ): Promise<BlockEntity[]> => {
-  return [];
+  const currentPageBlocksTree = await logseq.Editor.getCurrentPageBlocksTree();
+  const knownRaindropAnnotationIds = new Set(
+    currentPageBlocksTree
+      .map((item) => item.properties.annotationId as string)
+      .filter((item) => item !== undefined)
+  );
+
+  const addedBlocks = await applyAsyncFunc(r.annotations, async (annotation) => {
+    if (knownRaindropAnnotationIds.has(annotation.id)) return Promise.resolve(nothing<BlockEntity>());
+    return Maybe.of(await ioCreateAnnotationBlock(annotation, currentPage));
+  });
+
+  return addedBlocks.filter(item => item.isJust).map(item => item.isJust && item.value);
 };
 
 export const upsertRaindropPage = async (r: Raindrop) => {

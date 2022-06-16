@@ -9,15 +9,15 @@ const settingsConfig: SettingSchemaDesc[] = [
     title: "Raindrop access token",
     type: "string",
   },
+  // {
+  //   default: true,
+  //   description:
+  //     "When you save URLs to Raindrop, add a new child block containing the URLs of the raindrops. Allows you to add tags, annotations, and set collections more easily.",
+  //   key: "pref_add_nested_raindrop_url",
+  //   title: "Nest Raindrop URL link inside block",
+  //   type: "boolean",
+  // },
   {
-    default: true,
-    description:
-      "When you save URLs to Raindrop, add a new child block containing the URLs of the raindrops. Allows you to add tags, annotations, and set collections more easily.",
-    key: "pref_add_nested_raindrop_url",
-    title: "Nest Raindrop URL link inside block",
-    type: "boolean",
-  },
-{
     default: "> {text}",
     description:
       "Markdown (or org mode) formatting to use for notes (highlights). Available variables: `{text}`, which is the contents of the highlight, and `{color}`, which is the color of the highlight.",
@@ -25,7 +25,7 @@ const settingsConfig: SettingSchemaDesc[] = [
     title: "Highlight template",
     type: "string",
   },
-{
+  {
     default: "{text}",
     description:
       "Markdown (or org mode) formatting to use for annotations (comments). Available variables: `{text}`, which is the contents of the highlight.",
@@ -33,7 +33,7 @@ const settingsConfig: SettingSchemaDesc[] = [
     title: "Annotation template",
     type: "string",
   },
-{
+  {
     default: "🗑 {content}",
     description:
       "Markdown (or org mode) formatting to use for deleted content. Available variables: `{content}`, which is the formatted contents of the deleted block.",
@@ -41,7 +41,6 @@ const settingsConfig: SettingSchemaDesc[] = [
     title: "Deleted content template",
     type: "string",
   },
-
 ];
 
 /**
@@ -49,17 +48,14 @@ const settingsConfig: SettingSchemaDesc[] = [
  */
 export const settings = {
   access_token: (): string => logseq.settings["access_token"],
-  preferences: {
-    add_nested_raindrop_url: (): boolean =>
-      logseq.settings["pref_add_nested_raindrop_url"],
-  },
+  // preferences: {
+  //   add_nested_raindrop_url: (): boolean =>
+  //     logseq.settings["pref_add_nested_raindrop_url"],
+  // },
   formatting_template: {
-    highlight: (): string =>
-      logseq.settings["template_highlight"],
-    annotation: (): string =>
-      logseq.settings["template_annotation"],
-    deleted: (): string =>
-      logseq.settings["template_deleted"],
+    highlight: (): string => logseq.settings["template_highlight"],
+    annotation: (): string => logseq.settings["template_annotation"],
+    deleted: (): string => logseq.settings["template_deleted"],
   },
 };
 

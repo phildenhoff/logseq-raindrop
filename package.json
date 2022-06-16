@@ -23,7 +23,8 @@
   },
   "packageManager": "yarn@3.2.0",
   "dependencies": {
-    "@logseq/libs": "^0.0.6"
+    "@logseq/libs": "^0.0.6",
+    "true-myth": "^5.3.1"
   },
   "logseq": {
     "id": "logseq-raindrop",

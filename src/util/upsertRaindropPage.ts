@@ -124,8 +124,8 @@ const upsertAnnotationBlocks = async (
   const currentPageBlocksTree = await logseq.Editor.getCurrentPageBlocksTree();
   const knownRaindropAnnotationIds = new Set(
     currentPageBlocksTree
-      .map((item) => item.properties.annotationId as string)
-      .filter((item) => item !== undefined)
+      .map((block) => block?.properties?.annotationId ?? undefined as string)
+      .filter((annotationId) => annotationId !== undefined)
   );
 
   const addedBlocks = await applyAsyncFunc(r.annotations, async (annotation) => {

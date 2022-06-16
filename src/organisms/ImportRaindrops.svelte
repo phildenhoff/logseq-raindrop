@@ -48,9 +48,6 @@
 </script>
 
 <div>
-  <h2>Annotations</h2>
-  <button>Import all annotations</button>
-  <hr />
   <h3>Import specific page</h3>
   <div class="searchField">
     {#if $loading}

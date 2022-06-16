@@ -1032,6 +1032,7 @@ __metadata:
     svelte: ^3.44.0
     svelte-check: ^2.2.7
     svelte-preprocess: ^4.9.8
+    true-myth: ^5.3.1
     tslib: ^2.3.1
     typescript: ^4.5.4
     vite: ^2.9.7
@@ -1853,6 +1854,13 @@ __metadata:
   dependencies:
     is-number: ^7.0.0
   checksum: f76fa01b3d5be85db6a2a143e24df9f60dd047d151062d0ba3df62953f2f697b16fe5dad9b0ac6191c7efc7b1d9dcaa4b768174b7b29da89d4428e64bc0a20ed
+  languageName: node
+  linkType: hard
+
+"true-myth@npm:^5.3.1":
+  version: 5.3.1
+  resolution: "true-myth@npm:5.3.1"
+  checksum: b127b92f8f8109586678df9346231d960ce9ec5978d082e2fd4cc1dc381322c049958ff4eeb8e64cbe3f05bda9b659b4efdf4716bfb024c4f2d0ef6372b584aa
   languageName: node
   linkType: hard
 

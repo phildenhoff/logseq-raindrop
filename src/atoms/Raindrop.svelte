@@ -8,6 +8,7 @@
   export let url;
   export let created;
   export let coverImage;
+  export let onClick;
 
   $: formattedCreated = () =>
     !!created &&
@@ -19,7 +20,7 @@
   $: formattedUrl = () => new URL(url).hostname;
 </script>
 
-<button class="raindrop" class:full>
+<button class="raindrop" class:full on:click={onClick}>
   {#if full}
     <img class="coverImage" src={coverImage} />
     <div class="about">
@@ -47,7 +48,9 @@
         </span>
       {/if}
       <div class="info">
-        <span>{collectionName}</span>
+        {#if !!collectionName}
+          <span>{collectionName}</span>
+        {/if}
         <span>{formattedUrl()}</span>
         <span>{formattedCreated()}</span>
       </div>
@@ -76,22 +79,11 @@
   }
 
   .annotation {
+    border-left: 2px solid var(--rd-yellow-base-color);
     display: flex;
     flex-direction: row;
     margin-bottom: 5px;
-  }
-
-  .annotation::before {
-    background-image: linear-gradient(
-      180deg,
-      hsla(0, 0%, 100%, 0.3) 0,
-      hsla(0, 0%, 100%, 0.3)
-    );
-    background: var(--highlight-color, #fe0);
-    border-radius: 3px;
-    content: "";
-    margin-right: 0.5rem;
-    width: 3px;
+    padding-left: 0.5rem;
   }
 
   .annotation__comment {
@@ -112,7 +104,7 @@
   }
 
   .tag {
-    color: #dcc28f;
+    color: var(--rd-yellow-dark-color);
     margin-right: 0.5rem;
   }
 
@@ -121,8 +113,8 @@
   }
 
   .raindrop {
-    background-color: #1e1e1e;
-    border: 1px solid #525252;
+    background-color: var(--rd-secondary-background-color);
+    border: 1px solid var(--rd-quarternary-background-color);
     display: grid;
     grid-gap: 1rem;
     grid-template-columns: auto 1fr;
@@ -131,11 +123,11 @@
   }
 
   .raindrop:hover {
-    border: 1px solid #1888df;
+    border: 1px solid var(--rd-blue-base-color);
   }
 
   .raindrop:active {
-    border: 1px solid #0db3e1;
+    border: 1px solid var(--rd-blue-light-color);
   }
 
   .raindrop.full {
@@ -153,9 +145,8 @@
   .info {
     display: flex;
     flex-direction: row;
-
     align-self: flex-end;
-    color: #999;
+    color: var(--rd-secondary-text-color);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;

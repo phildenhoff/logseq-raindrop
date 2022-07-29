@@ -1029,7 +1029,7 @@ __metadata:
     "@logseq/libs": ^0.0.6
     "@sveltejs/vite-plugin-svelte": ^1.0.0-next.30
     "@tsconfig/svelte": ^2.0.1
-    svelte: ^3.44.0
+    svelte: ^3.49.0
     svelte-check: ^2.2.7
     svelte-preprocess: ^4.9.8
     true-myth: ^5.3.1
@@ -1827,10 +1827,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte@npm:^3.44.0":
-  version: 3.48.0
-  resolution: "svelte@npm:3.48.0"
-  checksum: d72587582b6967bf083ff7dc254f8067c22b57d4678182b48ca51010e0f3a1d98a33a00365046aee0c70ed3ffc716b73141207ec5ac6c44f1f5e34c5477e61ea
+"svelte@npm:^3.49.0":
+  version: 3.49.0
+  resolution: "svelte@npm:3.49.0"
+  checksum: 5b7cb8dbf6b6581b50fab1de63cbcb81816081a1240b03e234b299268fff2f3237bf8f92b683a848f95453353b5694dfe26fa05a55da185a4bb0cd8b80d87dd4
   languageName: node
   linkType: hard
 

@@ -36,7 +36,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@logseq/libs", "npm:0.0.6"],\
             ["@sveltejs/vite-plugin-svelte", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:1.0.0-next.42"],\
             ["@tsconfig/svelte", "npm:2.0.1"],\
-            ["svelte", "npm:3.48.0"],\
+            ["svelte", "npm:3.49.0"],\
             ["svelte-check", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:2.7.0"],\
             ["svelte-preprocess", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:4.10.6"],\
             ["true-myth", "npm:5.3.1"],\
@@ -158,7 +158,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["diff-match-patch", null],\
             ["kleur", "npm:4.1.4"],\
             ["magic-string", "npm:0.26.1"],\
-            ["svelte", "npm:3.48.0"],\
+            ["svelte", "npm:3.49.0"],\
             ["svelte-hmr", "virtual:f4c13c0570bdcaa2050a276e94b3a949eac0a99daa4ff4a658c956a60f7757e8f37acfe97ce5b91b2fdd71f8d703014904834c1368a6e83747792b53efae5cdc#npm:0.14.11"],\
             ["vite", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:2.9.8"]\
           ],\
@@ -1219,7 +1219,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@logseq/libs", "npm:0.0.6"],\
             ["@sveltejs/vite-plugin-svelte", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:1.0.0-next.42"],\
             ["@tsconfig/svelte", "npm:2.0.1"],\
-            ["svelte", "npm:3.48.0"],\
+            ["svelte", "npm:3.49.0"],\
             ["svelte-check", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:2.7.0"],\
             ["svelte-preprocess", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:4.10.6"],\
             ["true-myth", "npm:5.3.1"],\
@@ -2006,10 +2006,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["svelte", [\
-        ["npm:3.48.0", {\
-          "packageLocation": "./.yarn/cache/svelte-npm-3.48.0-4bfc3244b5-d72587582b.zip/node_modules/svelte/",\
+        ["npm:3.49.0", {\
+          "packageLocation": "./.yarn/cache/svelte-npm-3.49.0-62858451cd-5b7cb8dbf6.zip/node_modules/svelte/",\
           "packageDependencies": [\
-            ["svelte", "npm:3.48.0"]\
+            ["svelte", "npm:3.49.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -2033,7 +2033,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["picocolors", "npm:1.0.0"],\
             ["sade", "npm:1.8.1"],\
             ["source-map", "npm:0.7.3"],\
-            ["svelte", "npm:3.48.0"],\
+            ["svelte", "npm:3.49.0"],\
             ["svelte-preprocess", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:4.10.6"],\
             ["typescript", "patch:typescript@npm%3A4.6.4#~builtin<compat/typescript>::version=4.6.4&hash=bda367"]\
           ],\
@@ -2057,7 +2057,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["svelte-hmr", "virtual:f4c13c0570bdcaa2050a276e94b3a949eac0a99daa4ff4a658c956a60f7757e8f37acfe97ce5b91b2fdd71f8d703014904834c1368a6e83747792b53efae5cdc#npm:0.14.11"],\
             ["@types/svelte", null],\
-            ["svelte", "npm:3.48.0"]\
+            ["svelte", "npm:3.49.0"]\
           ],\
           "packagePeers": [\
             "@types/svelte",\
@@ -2104,7 +2104,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["strip-indent", "npm:3.0.0"],\
             ["stylus", null],\
             ["sugarss", null],\
-            ["svelte", "npm:3.48.0"],\
+            ["svelte", "npm:3.49.0"],\
             ["typescript", "patch:typescript@npm%3A4.6.4#~builtin<compat/typescript>::version=4.6.4&hash=bda367"]\
           ],\
           "packagePeers": [\

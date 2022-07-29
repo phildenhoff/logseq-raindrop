@@ -102,7 +102,7 @@
       rgba(0, 0, 0, 0.1) 0px 4px 6px -4px;
     color: var(--rd-primary-text-color);
     margin: 0 auto;
-    max-width: 400px;
+    max-width: 480px;
     padding: 1em;
     position: absolute;
     right: 3rem;

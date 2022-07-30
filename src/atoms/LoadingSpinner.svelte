@@ -8,6 +8,14 @@
   let top: number = +size / 2 - moonSize / 2;
 </script>
 
+<div
+  class="wrapper"
+  style="--size: {size}{unit}; --color: {color}; --moonSize: {top}{unit}; --duration: {duration};"
+>
+  <div class="circle-one" />
+  <div class="circle-two" />
+</div>
+
 <style>
   .wrapper {
     height: var(--size);
@@ -43,10 +51,3 @@
     }
   }
 </style>
-
-<div
-  class="wrapper"
-  style="--size: {size}{unit}; --color: {color}; --moonSize: {top}{unit}; --duration: {duration};">
-  <div class="circle-one" />
-  <div class="circle-two" />
-</div>

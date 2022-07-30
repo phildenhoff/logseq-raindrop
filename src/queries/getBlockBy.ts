@@ -2,7 +2,6 @@ import type { BlockEntity, PageEntity } from "@logseq/libs/dist/LSPlugin";
 import type { ID } from "src/util/Raindrop";
 import { uniqueBy } from "src/util/unique";
 
-
 const findPagesByProperty =
   (propertyName: string): ((propertyValue: string) => Promise<PageEntity[]>) =>
   async (propertyValue) => {

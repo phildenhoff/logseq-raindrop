@@ -81,10 +81,15 @@ export const upsertBlockProperties = async (
   // We have to reset the content of the block to be the properties content
   // so that logseq actually indexes the block. Fun stuff!
   const currentContent = (await logseq.Editor.getBlock(block.uuid)).content;
-  const currentProps: Record<string, string> = (await logseq.Editor.getBlockProperties(block.uuid));
+  const currentProps: Record<string, string> =
+    await logseq.Editor.getBlockProperties(block.uuid);
 
-  await logseq.Editor.updateBlock(block.uuid, "Updating raindrop props...", {properties: currentProps});
-  await logseq.Editor.updateBlock(block.uuid, currentContent, {properties: currentProps});
+  await logseq.Editor.updateBlock(block.uuid, "Updating raindrop props...", {
+    properties: currentProps,
+  });
+  await logseq.Editor.updateBlock(block.uuid, currentContent, {
+    properties: currentProps,
+  });
 
   return;
 };

@@ -11,9 +11,7 @@
     close();
   };
   const setupComplete = () => {
-    return (
-      settings.access_token !== undefined && settings.access_token !== ""
-    );
+    return settings.access_token() !== undefined && settings.access_token() !== "";
   };
   const getTheme = async () => {
     return (await l.App.getUserConfigs()).preferredThemeMode;
@@ -77,7 +75,7 @@
     --rd-primary-text-color: #fff;
     --rd-primary-background-color: #2a2a2a;
     --rd-secondary-background-color: #090909;
-    --rd-quarternary-background-color: #504F57;
+    --rd-quarternary-background-color: #504f57;
     --rd-secondary-text-color: #a0a0a0;
     /* General colour palette */
     --rd-blue-base-color: #1888df;

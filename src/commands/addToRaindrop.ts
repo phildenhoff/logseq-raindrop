@@ -39,8 +39,6 @@ export const addUrlsToRaindrop = async (): Promise<void> => {
     logseq.UI.showMsg(strings.error.no_urls, "warning", { timeout: 4000 });
   }
 
-
-
   if (!access_token) {
     logseq.UI.showMsg(strings.error.no_access_token, "warning", {
       timeout: 4000,
@@ -68,5 +66,7 @@ export const addUrlsToRaindrop = async (): Promise<void> => {
   const newRaindrops = await convertResponsesToRaindrops(responses);
   const linksText = newRaindrops.map(convertRaindropToMdLink);
   const savedLinksBlockText = "Saved to Raindrop: \n" + linksText.join("\n");
-  await logseq.Editor.insertBlock(uuid, savedLinksBlockText, { sibling: false });
+  await logseq.Editor.insertBlock(uuid, savedLinksBlockText, {
+    sibling: false,
+  });
 };

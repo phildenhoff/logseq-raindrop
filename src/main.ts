@@ -5,7 +5,7 @@ import { registerCommands } from "./commands";
 import { registerSettings } from "./util/settings";
 
 const main = () => {
-  const addColorStyle = import.meta.env.PROD ? '' : 'color: orange!important;';
+  const addColorStyle = import.meta.env.PROD ? "" : "color: orange!important;";
 
   registerCommands();
   registerSettings();

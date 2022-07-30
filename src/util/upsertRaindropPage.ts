@@ -124,16 +124,22 @@ const upsertAnnotationBlocks = async (
   const currentPageBlocksTree = await logseq.Editor.getCurrentPageBlocksTree();
   const knownRaindropAnnotationIds = new Set(
     currentPageBlocksTree
-      .map((block) => block?.properties?.annotationId ?? undefined as string)
+      .map((block) => block?.properties?.annotationId ?? (undefined as string))
       .filter((annotationId) => annotationId !== undefined)
   );
 
-  const addedBlocks = await applyAsyncFunc(r.annotations, async (annotation) => {
-    if (knownRaindropAnnotationIds.has(annotation.id)) return Promise.resolve(nothing<BlockEntity>());
-    return Maybe.of(await ioCreateAnnotationBlock(annotation, currentPage));
-  });
+  const addedBlocks = await applyAsyncFunc(
+    r.annotations,
+    async (annotation) => {
+      if (knownRaindropAnnotationIds.has(annotation.id))
+        return Promise.resolve(nothing<BlockEntity>());
+      return Maybe.of(await ioCreateAnnotationBlock(annotation, currentPage));
+    }
+  );
 
-  return addedBlocks.filter(item => item.isJust).map(item => item.isJust && item.value);
+  return addedBlocks
+    .filter((item) => item.isJust)
+    .map((item) => item.isJust && item.value);
 };
 
 export const upsertRaindropPage = async (r: Raindrop) => {

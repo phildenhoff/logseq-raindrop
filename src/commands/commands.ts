@@ -13,4 +13,3 @@ export const registerCommands = () => {
     logseq.Editor.registerSlashCommand(title, task);
   });
 };
-

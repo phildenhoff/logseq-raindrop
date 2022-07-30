@@ -5,5 +5,3 @@ export const applyAsyncFunc = async <Item, AppliedItem>(
   const applied = items.map(f);
   return await Promise.all(applied);
 };
-
-

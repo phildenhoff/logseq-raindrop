@@ -126,6 +126,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^18.6.2":
+  version: 18.6.2
+  resolution: "@types/node@npm:18.6.2"
+  checksum: 644c460baedb1fbbd55369ab621167cb39ddaa727fd4fcf4bc7080183cf936d7ff8c2c886ba93ff42768d6f7a579a540e6d1e63d3adba4e5758fb13671ae68ce
+  languageName: node
+  linkType: hard
+
 "@types/pug@npm:^2.0.4":
   version: 2.0.6
   resolution: "@types/pug@npm:2.0.6"
@@ -1029,6 +1036,7 @@ __metadata:
     "@logseq/libs": ^0.0.6
     "@sveltejs/vite-plugin-svelte": ^1.0.0-next.30
     "@tsconfig/svelte": ^2.0.1
+    "@types/node": ^18.6.2
     svelte: ^3.49.0
     svelte-check: ^2.2.7
     svelte-preprocess: ^4.9.8

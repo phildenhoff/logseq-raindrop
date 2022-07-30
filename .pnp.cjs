@@ -36,6 +36,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@logseq/libs", "npm:0.0.6"],\
             ["@sveltejs/vite-plugin-svelte", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:1.0.0-next.42"],\
             ["@tsconfig/svelte", "npm:2.0.1"],\
+            ["@types/node", "npm:18.6.2"],\
             ["svelte", "npm:3.49.0"],\
             ["svelte-check", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:2.7.0"],\
             ["svelte-preprocess", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:4.10.6"],\
@@ -196,6 +197,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-node-npm-17.0.31-d8d26aa013-704618350f.zip/node_modules/@types/node/",\
           "packageDependencies": [\
             ["@types/node", "npm:17.0.31"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:18.6.2", {\
+          "packageLocation": "./.yarn/cache/@types-node-npm-18.6.2-cd106eb850-644c460bae.zip/node_modules/@types/node/",\
+          "packageDependencies": [\
+            ["@types/node", "npm:18.6.2"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -1219,6 +1227,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@logseq/libs", "npm:0.0.6"],\
             ["@sveltejs/vite-plugin-svelte", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:1.0.0-next.42"],\
             ["@tsconfig/svelte", "npm:2.0.1"],\
+            ["@types/node", "npm:18.6.2"],\
             ["svelte", "npm:3.49.0"],\
             ["svelte-check", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:2.7.0"],\
             ["svelte-preprocess", "virtual:1a6049fa6667ae7ba87d141c1858ab06dd13f3a7d750ac5489e1cc8557fdf59131805183890fab69cceab296c875a3e9efc220dcc3ba9f43c7dda430c1575a7e#npm:4.10.6"],\

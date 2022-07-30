@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import logseqDevPlugin from "vite-plugin-logseq";
+import { resolve } from "path";
+
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,7 +12,9 @@ export default defineConfig({
     minify: "esbuild",
   },
   resolve: {
-    alias: { src: "./src" },
+    alias: {
+      src: resolve("src/"),
+    },
   },
   base: "./",
 });

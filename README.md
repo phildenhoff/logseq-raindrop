@@ -1,10 +1,8 @@
 # Raindrop plugin for Logseq
 
-A simple plugin that allows you to save URLs to Raindrop.
+A plugin that allows you to import annotations & bookmarks from Raindrop, and save URLs back to Raindrop.
 
-https://user-images.githubusercontent.com/17505728/168242341-3cad1a5f-bff9-4019-ac5f-b48a322c901a.mov
-
-
+https://user-images.githubusercontent.com/17505728/181995626-3574af69-e43f-4a4e-b9f8-e5e29ce468ec.mp4
 
 ## Setting up your plugin
 
@@ -16,6 +14,12 @@ that's your preference.
 https://user-images.githubusercontent.com/17505728/169188456-f346ed11-dbc3-45b2-8bac-336d7151a79a.mp4
 
 Don't try to use the tokens in the video. They've already been expired and the app deleted.
+
+## Demos
+
+### Saving URLs to Raindrop
+
+https://user-images.githubusercontent.com/17505728/168242341-3cad1a5f-bff9-4019-ac5f-b48a322c901a.mov
 
 ## Planned work
 

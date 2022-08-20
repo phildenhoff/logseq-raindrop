@@ -105,7 +105,8 @@ const ioCreateAnnotationBlock = async (
 ): Promise<BlockEntity> => {
   const highlightFormatted = settings.formatting_template
     .highlight()
-    .replace("{text}", annotation.text);
+    .replace("{text}", annotation.text)
+    .replace("{color}", annotation.color);
   const noteFormatted = settings.formatting_template
     .annotation()
     .replace("{text}", annotation.note);

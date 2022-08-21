@@ -1,6 +1,6 @@
 import type { BlockEntity, PageEntity } from "@logseq/libs/dist/LSPlugin";
 import { findPagesByRaindropID } from "../../src/queries/getBlockBy";
-import Maybe, { nothing } from "true-myth/maybe";
+import Maybe, { nothing, just } from "true-myth/maybe";
 
 import type { Annotation, Raindrop } from "./Raindrop";
 import { alertDuplicatePageIdUsed } from "./notify";
@@ -12,6 +12,7 @@ import {
 } from "./blocks";
 import { settings } from "./settings";
 import { applyAsyncFunc } from "./async";
+import { raindropTransformer } from "./raindropTransformer";
 
 const noAnnotationsProp = "noannotations";
 // TODO: Make this a preference
@@ -142,10 +143,48 @@ const upsertAnnotationBlocks = async (
     .map((item) => item.isJust && item.value);
 };
 
+const getSingleRaindrop = async (id: Raindrop["id"]) => {
+  try {
+    return await fetch(`https://api.raindrop.io/rest/v1/raindrop/${id}`, {
+      method: "GET",
+      headers: new Headers({
+        Authorization: `Bearer ${settings.access_token()}`,
+        "Content-Type": "application/json",
+      }),
+    })
+      .then((res) => {
+        if (res.status !== 200) {
+          throw new Error("Request not successful");
+        }
+
+        return res;
+      })
+      .then((res) => res.json())
+      .then((parsed) => raindropTransformer(parsed["item"]))
+      .then((transformed) => just(transformed));
+  } catch {
+    return nothing();
+  }
+};
+
 export const upsertRaindropPage = async (r: Raindrop) => {
-  await ioCreateOrLoadPage(r);
-  const pageBlocks = await logseq.Editor.getCurrentPageBlocksTree();
-  const currentPage = await logseq.Editor.getCurrentPage();
-  await ioAddOrRemoveEmptyState(r, pageBlocks, currentPage as PageEntity);
-  await upsertAnnotationBlocks(r, currentPage as PageEntity);
+  const maybeRaindrop = await getSingleRaindrop(r.id);
+
+  if (maybeRaindrop.isJust) {
+    const fullRaindrop = maybeRaindrop.value;
+    await ioCreateOrLoadPage(fullRaindrop);
+    const pageBlocks = await logseq.Editor.getCurrentPageBlocksTree();
+    const currentPage = await logseq.Editor.getCurrentPage();
+    await ioAddOrRemoveEmptyState(
+      fullRaindrop,
+      pageBlocks,
+      currentPage as PageEntity
+    );
+    await upsertAnnotationBlocks(fullRaindrop, currentPage as PageEntity);
+  } else {
+    logseq.UI.showMsg(
+      "Error while trying to receive content from Raindrop API",
+      "error"
+    );
+  }
 };

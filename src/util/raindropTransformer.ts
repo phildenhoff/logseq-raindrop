@@ -70,10 +70,7 @@ type RaindropResponse = {
 };
 
 // below are normalized values
-export const raindropTransformer = (
-  r: RaindropResponse,
-  collections: Collection[]
-): Raindrop => {
+export const raindropTransformer = (r: RaindropResponse): Raindrop => {
   const annotations = r.highlights.map(
     (item): Annotation => ({
       note: item.note,

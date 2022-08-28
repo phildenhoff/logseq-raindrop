@@ -1,4 +1,4 @@
-import type { Annotation, Collection, Raindrop } from "./Raindrop";
+import type { Annotation, Collection, Raindrop } from "@types";
 
 type HighlightsColor =
   | "blue"

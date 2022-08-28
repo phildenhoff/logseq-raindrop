@@ -1,5 +1,5 @@
 import type { BlockEntity } from "@logseq/libs/dist/LSPlugin";
-import { applyAsyncFunc } from "./async";
+import { applyAsyncFunc } from "@util/async";
 
 const stringMatchesPropertyName = (text: string, propertyName: string) =>
   propertyName.toLowerCase() === text.toLowerCase();

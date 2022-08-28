@@ -1,4 +1,4 @@
-import type { Raindrop } from "./Raindrop";
+import type { Raindrop } from "@types";
 
 const notify = logseq.UI.showMsg;
 

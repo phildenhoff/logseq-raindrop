@@ -1,7 +1,7 @@
 <script lang="ts">
-  import logo from "./assets/raindrop.png";
-  import ImportRaindrops from "./organisms/ImportRaindrops.svelte";
-  import { settings } from "./util/settings";
+  import logo from "@assets/raindrop.png";
+  import ImportRaindrops from "@organisms/ImportRaindrops.svelte";
+  import { settings } from "@util/settings";
 
   const l = window?.logseq ?? {};
 

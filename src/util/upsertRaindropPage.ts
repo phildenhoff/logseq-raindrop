@@ -1,18 +1,18 @@
 import type { BlockEntity, PageEntity } from "@logseq/libs/dist/LSPlugin";
-import { findPagesByRaindropID } from "../../src/queries/getBlockBy";
 import Maybe, { nothing, just } from "true-myth/maybe";
 
-import type { Annotation, Raindrop } from "./Raindrop";
-import { alertDuplicatePageIdUsed } from "./notify";
-import { formatRaindropToProperties } from "./pageFormatter";
+import { findPagesByRaindropID } from "@queries/getBlockBy";
+import type { Annotation, Raindrop } from "@types";
+import { alertDuplicatePageIdUsed } from "@util/notify";
+import { formatRaindropToProperties } from "@util/pageFormatter";
 import {
   filterBlocksWithProperty,
   someBlockHasProperty,
   upsertBlockProperties,
-} from "./blocks";
-import { settings } from "./settings";
-import { applyAsyncFunc } from "./async";
-import { raindropTransformer } from "./raindropTransformer";
+} from "@util/blocks";
+import { settings } from "@util/settings";
+import { applyAsyncFunc } from "@util/async";
+import { raindropTransformer } from "@util/raindropTransformer";
 
 const noAnnotationsProp = "noannotations";
 // TODO: Make this a preference

@@ -1,11 +1,12 @@
 <script lang="ts">
-  import Raindrop from "../atoms/Raindrop.svelte";
-  import LoadingSpinner from "../atoms/LoadingSpinner.svelte";
   import { onMount } from "svelte";
   import { writable, derived } from "svelte/store";
-  import { settings } from "../util/settings";
-  import { upsertRaindropPage } from "../util/upsertRaindropPage";
-  import { raindropTransformer } from "../util/raindropTransformer";
+
+  import Raindrop from "@atoms/Raindrop.svelte";
+  import LoadingSpinner from "@atoms/LoadingSpinner.svelte";
+  import { settings } from "@util/settings";
+  import { upsertRaindropPage } from "@util/upsertRaindropPage";
+  import { raindropTransformer } from "@util/raindropTransformer";
 
   const l = window?.logseq ?? {};
 

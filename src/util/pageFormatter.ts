@@ -1,4 +1,4 @@
-import type { Raindrop } from "./Raindrop";
+import type { Raindrop } from "@types";
 
 export const formatRaindropToProperties = (
   r: Raindrop

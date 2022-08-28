@@ -1,14 +1,39 @@
 <script lang="ts">
-  export let full;
-  export let title;
-  export let description;
-  export let annotations;
-  export let tags;
-  export let collectionName;
-  export let url;
-  export let created;
-  export let coverImage;
-  export let onClick;
+import { Annotation, Tag } from "@types";
+
+
+  /**
+   * If true, shows a full-size Raindrop with all info
+  */
+  export let full: boolean;
+  /**
+   * The Raindrop title. Not necessarily the URL title — this is editable within
+   *  Raindrop.
+   */
+  export let title: string;
+  /**
+   * A description of the raindrop. Editable by the user within Raindrop.
+   */
+  export let description: string;
+  /**
+   * Highlights & notes the user has made within Raindrop.
+   */
+  export let annotations: Annotation[];
+  /**
+   * Tags the user has added.
+   */
+  export let tags: Tag[];
+  /**
+   * The name of the assigned Collection.
+   */
+  export let collectionName: string;
+  export let url: URL;
+  export let created: Date;
+  export let coverImage: string | URL;
+  /**
+   * Action to take when the Raindrop is clicked.
+   */
+  export let onClick: () => void;
 
   $: formattedCreated = () =>
     !!created &&

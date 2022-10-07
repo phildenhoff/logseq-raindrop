@@ -7,6 +7,6 @@ export const formatRaindropToProperties = (
     "raindrop-id": r.id,
     "raindrop-title": r.title,
     "raindrop-url": r.url.toString(),
-    "tags": r.tags.join(" "),
+    "tags": r.tags.map(tag => `[[${tag}]]`).join(" "),
   };
 };

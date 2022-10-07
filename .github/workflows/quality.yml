@@ -1,0 +1,26 @@
+name: Check quality
+
+permissions:
+  contents: write
+
+on:
+  pull_request:
+
+jobs:
+  svelte-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+      - name: Install Dependencies
+        id: dependencies
+        run: |
+          yarn && yarn install
+      - name: Svelte Check
+        id: svelte-check
+        run: |
+          yarn svelte-check

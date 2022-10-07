@@ -1,9 +1,8 @@
 <script lang="ts">
-  import type { SpinnerTypes } from "./types/spinner.type";
-  export let color: SpinnerTypes["color"] = "#FF3E00";
-  export let unit: SpinnerTypes["unit"] = "px";
-  export let duration: SpinnerTypes["duration"] = "0.6s";
-  export let size: SpinnerTypes["size"] = "60";
+  export let color = "#FF3E00";
+  export let unit = "px";
+  export let duration = "0.6s";
+  export let size = "60";
   let moonSize: number = +size / 7;
   let top: number = +size / 2 - moonSize / 2;
 </script>

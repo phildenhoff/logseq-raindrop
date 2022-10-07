@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Annotation, Tag } from "@types";
+  import type { Annotation, Tag, Raindrop } from "@types";
 
   /**
    * If true, shows a full-size Raindrop with all info
@@ -28,7 +28,7 @@
   export let collectionName: string;
   export let url: URL;
   export let created: Date;
-  export let coverImage: string | URL | undefined;
+  export let coverImage: Raindrop['coverImage'];
   /**
    * Action to take when the Raindrop is clicked.
    */
@@ -46,7 +46,7 @@
 
 <button class="raindrop" class:full on:click={onClick}>
   {#if full}
-    {#if coverImage}<img class="coverImage" src={coverImage} />
+    {#if coverImage}<img class="coverImage" src={coverImage} alt=""/>
       {:else}<div class="coverImage coverImage__default" />
     {/if}
     <div class="about">

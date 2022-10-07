@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type {ILSPluginUser} from "@logseq/libs/dist/LSPlugin";
+  import type { ILSPluginUser } from "@logseq/libs/dist/LSPlugin";
   import logo from "@assets/raindrop.png";
   import ImportRaindrops from "@organisms/ImportRaindrops.svelte";
   import { settings } from "@util/settings";
 
-  const l = window?.logseq ?? {} as ILSPluginUser;
+  const l = window?.logseq ?? ({} as ILSPluginUser);
 
   const close = () => l?.hideMainUI();
   const showSettings = () => {
@@ -12,7 +12,9 @@
     close();
   };
   const setupComplete = () => {
-    return settings.access_token() !== undefined && settings.access_token() !== "";
+    return (
+      settings.access_token() !== undefined && settings.access_token() !== ""
+    );
   };
   const getTheme = async () => {
     return (await l.App.getUserConfigs()).preferredThemeMode;
@@ -22,7 +24,7 @@
   let themePromise = getTheme();
 
   // We need to update state when these events occurr
-  l?.onSettingsChanged((a) => {
+  l?.onSettingsChanged(() => {
     promptUserToCompleteSetup = !setupComplete();
   });
 
@@ -109,12 +111,7 @@
     top: 4rem;
   }
 
-  h1,
-  h2,
   h3,
-  h4,
-  h5,
-  h6,
   p {
     margin: 0;
   }
@@ -131,14 +128,12 @@
     margin-right: 1rem;
   }
 
-  button,
-  .button,
-  a {
+  .button {
     user-select: none;
     transition: none;
   }
 
-  a.button {
+  .button {
     color: var(--rd-secondary-text-color);
     font-size: 0.875rem;
     line-height: 1.25rem;

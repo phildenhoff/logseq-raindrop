@@ -1,4 +1,4 @@
-import type { Raindrop } from "./Raindrop";
+import type { Raindrop } from "@types";
 
 export const formatRaindropToProperties = (
   r: Raindrop
@@ -7,5 +7,6 @@ export const formatRaindropToProperties = (
     "raindrop-id": r.id,
     "raindrop-title": r.title,
     "raindrop-url": r.url.toString(),
+    "tags": r.tags.map(tag => `[[${tag}]]`).join(" "),
   };
 };

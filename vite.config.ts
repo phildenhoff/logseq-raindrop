@@ -14,6 +14,12 @@ export default defineConfig({
   resolve: {
     alias: {
       src: resolve("src/"),
+      "@assets": resolve("src/assets"),
+      "@atoms": resolve("src/atoms"),
+      "@commands": resolve("src/commands"),
+      "@organisms": resolve("src/organisms"),
+      "@queries": resolve("src/queries"),
+      "@util": resolve("src/util"),
     },
   },
   base: "./",

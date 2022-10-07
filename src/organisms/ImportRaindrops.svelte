@@ -21,7 +21,7 @@
   const performSearch = async (term: string): void => {
     const requestTime = new Date();
     requestsInFlight.update((n) => n + 1);
-    
+
     const res = await fetch(
       `https://api.raindrop.io/rest/v1/raindrops/0?search=${term}`,
       {

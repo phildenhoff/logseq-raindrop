@@ -28,7 +28,7 @@
   export let collectionName: string;
   export let url: URL;
   export let created: Date;
-  export let coverImage: string | URL;
+  export let coverImage: string | URL | undefined;
   /**
    * Action to take when the Raindrop is clicked.
    */
@@ -46,7 +46,9 @@
 
 <button class="raindrop" class:full on:click={onClick}>
   {#if full}
-    <img class="coverImage" src={coverImage} />
+    {#if coverImage}<img class="coverImage" src={coverImage} />
+      {:else}<div class="coverImage coverImage__default" />
+    {/if}
     <div class="about">
       <span class="title">{title}</span>
       {#if !!description}
@@ -164,6 +166,11 @@
     aspect-ratio: auto 56 / 48;
     height: 48px;
     object-fit: cover;
+  }
+
+  .coverImage__default {
+    background: rgb(0,72,255);
+    background: linear-gradient(206deg, rgba(0,72,255,1) 0%, rgba(0,112,220,1) 30%, rgba(0,205,235,1) 100%);
   }
 
   .info {

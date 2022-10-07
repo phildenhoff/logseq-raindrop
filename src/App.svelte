@@ -20,6 +20,12 @@
     return (await l.App.getUserConfigs()).preferredThemeMode;
   };
 
+  const openAccessTokenHelp = () => {
+    window.open(
+      "https://github.com/phildenhoff/logseq-raindrop#setting-up-your-plugin"
+    );
+  };
+
   let promptUserToCompleteSetup = !setupComplete();
   let themePromise = getTheme();
 
@@ -47,10 +53,14 @@
       </header>
       {#if promptUserToCompleteSetup}
         <p class="warning">
-          You'll have to set your access token in the plugin settings before you
-          get started.
+          Set your access token in the plugin settings to get started.
         </p>
-        <a on:click={showSettings} class="button">Open settings</a>
+        <p>
+          <span class="externalLink" on:click={openAccessTokenHelp}>
+            How do I get an access token?
+          </span>
+        </p>
+        <span on:click={showSettings} class="button">Open settings</span>
       {:else}
         <ImportRaindrops />
       {/if}
@@ -143,9 +153,21 @@
     display: flex;
   }
 
-  a.button:hover {
+  .button:hover {
     background-color: var(--rd-quarternary-background-color);
     color: var(--rd-primary-text-color);
+  }
+
+  .externalLink {
+    color: var(--rd-blue-base-color);
+  }
+
+  .externalLink:hover {
+    color: var(--rd-blue-light-color);
+  }
+
+  .externalLink::after {
+    content: " ↗";
   }
 
   p {

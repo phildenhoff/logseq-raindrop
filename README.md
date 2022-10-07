@@ -4,6 +4,18 @@ A plugin that allows you to import annotations & bookmarks from Raindrop, and sa
 
 https://user-images.githubusercontent.com/17505728/181995626-3574af69-e43f-4a4e-b9f8-e5e29ce468ec.mp4
 
+## Features
+
+- Search for Raindrops
+- Import annotations
+- Import Highlights as quotes
+- Import Raindrop tags
+- Re-import a page at any time to update tags, annotations, or highlights
+
+You can rename any page and still refresh that page's imported content at any time.
+
+⚠️ Don't remove any `raindrop-id` or `annotation-id` properties: these fields are required for the plugin to work normally.
+
 ## Setting up your plugin
 
 To get set up, generate a Raindrop API access token from the [Settings >

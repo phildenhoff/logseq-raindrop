@@ -41,7 +41,7 @@
     >
       <header>
         <img src={logo} alt="Raindrop logo" />
-        <h3>Logseq → Raindrop</h3>
+        <h3>Raindrop</h3>
       </header>
       {#if promptUserToCompleteSetup}
         <p class="warning">

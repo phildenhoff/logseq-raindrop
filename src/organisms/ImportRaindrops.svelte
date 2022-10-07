@@ -8,8 +8,6 @@
   import { upsertRaindropPage } from "@util/upsertRaindropPage";
   import { raindropTransformer } from "@util/raindropTransformer";
 
-  const l = window?.logseq ?? {};
-
   const remoteData = writable([]);
   const requestsInFlight = writable(0);
   const mostRecentRequestTime = writable(new Date(0));
@@ -18,7 +16,7 @@
     ($requestsInFlight) => $requestsInFlight > 0
   );
 
-  const performSearch = async (term: string): void => {
+  const performSearch = async (term: string): Promise<void> => {
     const requestTime = new Date();
     requestsInFlight.update((n) => n + 1);
 
@@ -41,7 +39,9 @@
       return requestTime;
     });
   };
-  const onSearch = (event): void => performSearch(event.target.value);
+  const onSearch = (event: Event): void => {
+    performSearch((event.target as HTMLInputElement).value);
+  };
 
   onMount(() => {
     performSearch("");
@@ -52,7 +52,7 @@
   <h3>Import specific page</h3>
   <div class="searchField">
     {#if $loading}
-      <LoadingSpinner size={24} duration={"2s"} color={"#1888df"} />
+      <LoadingSpinner size={"24"} duration={"2s"} color={"#1888df"} />
     {:else}
       <span class="loading__placeholder" />
     {/if}
@@ -62,7 +62,7 @@
   <div class="scrollable">
     <ul class="results">
       {#each $remoteData as result}
-        <li role="option">
+        <li>
           <Raindrop
             full={true}
             title={result.title}

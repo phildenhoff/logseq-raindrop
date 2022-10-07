@@ -15,7 +15,7 @@ export type Raindrop = {
   description: string;
   annotations: Annotation[];
   tags: Tag[];
-  coverImage: string | URL;
+  coverImage: string;
   created: Date;
   url: URL;
   collectionName?: string;

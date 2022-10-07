@@ -1,6 +1,5 @@
 <script lang="ts">
-import { Annotation, Tag } from "@types";
-
+  import type { Annotation, Tag } from "@types";
 
   /**
    * If true, shows a full-size Raindrop with all info

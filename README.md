@@ -1,6 +1,6 @@
 # Raindrop plugin for Logseq
 
-A plugin that allows you to import annotations & bookmarks from Raindrop, and save URLs back to Raindrop.
+A plugin for [Logseq](https://github.com/logseq/logseq) that allows you to import annotations & bookmarks from [Raindrop](https://raindrop.io/), and save URLs back to Raindrop.
 
 https://user-images.githubusercontent.com/17505728/181995626-3574af69-e43f-4a4e-b9f8-e5e29ce468ec.mp4
 

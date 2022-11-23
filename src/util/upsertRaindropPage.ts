@@ -81,7 +81,7 @@ const ioCreateOrLoadPage = async (r: Raindrop) => {
     await logseq.Editor.createPage(
       logseqRaindropPrefix + r.title,
       {},
-      { createFirstBlock: false, redirect: true }
+      { createFirstBlock: true, redirect: true }
     );
   }
   const propBlock = (await logseq.Editor.getCurrentPageBlocksTree()).at(0);

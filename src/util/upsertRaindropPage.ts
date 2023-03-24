@@ -15,9 +15,21 @@ import { applyAsyncFunc } from "@util/async";
 import { raindropTransformer } from "@util/raindropTransformer";
 
 const noAnnotationsProp = "noannotations";
-// TODO: Make this a preference
-// TODO: Update page names from one prefix to the next? maybe?
-const logseqRaindropPrefix = "logseq-raindrop/";
+
+/**
+ * Create the name for a page using the Raindrop and any hierarchy.
+ *
+ * @param raindrop The Raindrop to create a name for
+ * @param namespace A namespace to create pages in. If this string is empty,
+ * no hierarchy is used.
+ */
+const generatePageName = (raindrop: Raindrop, namespace: string): string => {
+  if (namespace.length === 0) {
+    return raindrop.title;
+  } else {
+    return namespace + "/" + raindrop.title;
+  }
+};
 
 const ioMaybeGetPageForRaindrop = async (
   r: Raindrop
@@ -79,7 +91,7 @@ const ioCreateOrLoadPage = async (r: Raindrop) => {
     logseq.App.pushState("page", { name: maybeExistingPage.value.name });
   } else {
     await logseq.Editor.createPage(
-      logseqRaindropPrefix + r.title,
+      generatePageName(r, settings.namespace_label()),
       {},
       { createFirstBlock: true, redirect: true }
     );

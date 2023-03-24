@@ -41,6 +41,14 @@ const settingsConfig: SettingSchemaDesc[] = [
     key: "namespace_label",
     type: "string",
   },
+  {
+    default: "",
+    title: "Default page tags",
+    description:
+      "A list of #tags to include on every imported page. For example: '#[[Web page]] #raindrop [[imported]]'.",
+    key: "default_page_tags",
+    type: "string",
+  },
 ];
 
 /**
@@ -49,6 +57,7 @@ const settingsConfig: SettingSchemaDesc[] = [
 export const settings = {
   access_token: (): string => logseq.settings["access_token"],
   namespace_label: (): string => logseq.settings["namespace_label"],
+  default_page_tags: (): string => logseq.settings["default_page_tags"],
   formatting_template: {
     highlight: (): string => logseq.settings["template_highlight"],
     annotation: (): string => logseq.settings["template_annotation"],

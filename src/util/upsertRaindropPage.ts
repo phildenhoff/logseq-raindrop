@@ -85,7 +85,9 @@ const ioRemoveEmptyStateBlock = async (pageBlocks: BlockEntity[]) => {
 
 const ioCreateOrLoadPage = async (r: Raindrop) => {
   const maybeExistingPage = await ioMaybeGetPageForRaindrop(r);
-  const formattedRaindropProperties = formatRaindropToProperties(r);
+  const formattedRaindropProperties = formatRaindropToProperties(r, {
+    tags: settings.default_page_tags(),
+  });
 
   if (maybeExistingPage.isJust) {
     logseq.App.pushState("page", { name: maybeExistingPage.value.name });

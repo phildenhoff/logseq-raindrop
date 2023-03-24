@@ -9,14 +9,6 @@ const settingsConfig: SettingSchemaDesc[] = [
     title: "Raindrop access token",
     type: "string",
   },
-  // {
-  //   default: true,
-  //   description:
-  //     "When you save URLs to Raindrop, add a new child block containing the URLs of the raindrops. Allows you to add tags, annotations, and set collections more easily.",
-  //   key: "pref_add_nested_raindrop_url",
-  //   title: "Nest Raindrop URL link inside block",
-  //   type: "boolean",
-  // },
   {
     default: "> {text}",
     description:
@@ -41,6 +33,14 @@ const settingsConfig: SettingSchemaDesc[] = [
     title: "Deleted content template",
     type: "string",
   },
+  {
+    default: "logseq-raindrop",
+    title: "Hierarchy parent page name",
+    description:
+      "The page under which all imported pages are put. By default, pages are created with a title like 'logseq-raindrop/My Imported Page Name'. If you **do not** want namespaced pages, you can leave this empty.",
+    key: "namespace_label",
+    type: "string",
+  },
 ];
 
 /**
@@ -48,10 +48,7 @@ const settingsConfig: SettingSchemaDesc[] = [
  */
 export const settings = {
   access_token: (): string => logseq.settings["access_token"],
-  // preferences: {
-  //   add_nested_raindrop_url: (): boolean =>
-  //     logseq.settings["pref_add_nested_raindrop_url"],
-  // },
+  namespace_label: (): string => logseq.settings["namespace_label"],
   formatting_template: {
     highlight: (): string => logseq.settings["template_highlight"],
     annotation: (): string => logseq.settings["template_annotation"],

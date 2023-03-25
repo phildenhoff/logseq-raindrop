@@ -2,13 +2,14 @@
   import { onMount } from "svelte";
   import { writable, derived } from "svelte/store";
 
+  import type {Raindrop as TRaindrop} from "@types";
   import Raindrop from "@atoms/Raindrop.svelte";
   import LoadingSpinner from "@atoms/LoadingSpinner.svelte";
   import { settings } from "@util/settings.js";
   import { upsertRaindropPage } from "@util/upsertRaindropPage.js";
   import { raindropTransformer } from "@util/raindropTransformer.js";
 
-  const remoteData = writable([]);
+  const remoteData = writable<TRaindrop[]>([]);
   const requestsInFlight = writable(0);
   const mostRecentRequestTime = writable(new Date(0));
   const loading = derived(

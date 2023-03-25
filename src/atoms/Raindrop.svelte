@@ -25,7 +25,7 @@
   /**
    * The name of the assigned Collection.
    */
-  export let collectionName: string;
+  export let collectionName: string | undefined;
   export let url: URL;
   export let created: Date;
   export let coverImage: Raindrop["coverImage"];

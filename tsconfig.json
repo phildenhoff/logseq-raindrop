@@ -23,7 +23,10 @@
       "@organisms/*": ["src/organisms/*"],
       "@queries/*": ["src/queries/*"],
       "@util/*": ["src/util/*"]
-    }
+    },
+    // The Svelte config uses some deprecated features.
+    // Specifically, `importsNotUsedAsValues` and `preserveValueImports`.
+    "ignoreDeprecations": "5.0"
   },
   "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"],
   "references": [{ "path": "./tsconfig.node.json" }]

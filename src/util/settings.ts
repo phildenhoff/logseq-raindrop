@@ -1,4 +1,4 @@
-import type { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin";
+import type { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin.js";
 
 const settingsConfig: SettingSchemaDesc[] = [
   {

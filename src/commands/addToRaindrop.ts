@@ -1,4 +1,4 @@
-import { extractUrlFromText } from "@util/url";
+import { extractUrlFromText } from "@util/url.js";
 
 const strings = {
   error: {

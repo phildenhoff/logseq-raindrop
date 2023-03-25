@@ -1,6 +1,7 @@
-import type { BlockEntity, PageEntity } from "@logseq/libs/dist/LSPlugin";
+import type { BlockEntity, PageEntity } from "@logseq/libs/dist/LSPlugin.js";
 import type { ID } from "@types";
-import { uniqueBy } from "@util/unique";
+
+import { uniqueBy } from "@util/unique.js";
 
 const findPagesByProperty =
   (propertyName: string): ((propertyValue: string) => Promise<PageEntity[]>) =>

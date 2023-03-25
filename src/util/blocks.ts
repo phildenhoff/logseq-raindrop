@@ -81,7 +81,8 @@ export const upsertBlockProperties = async (
 
   // We have to reset the content of the block to be the properties content
   // so that logseq actually indexes the block. Fun stuff!
-  const currentContent = (await logseq.Editor.getBlock(block.uuid)).content;
+  // Note: we assert this block exists because we just upserted above.
+  const currentContent = (await logseq.Editor.getBlock(block.uuid))!.content;
   const currentProps: Record<string, string> =
     await logseq.Editor.getBlockProperties(block.uuid);
 

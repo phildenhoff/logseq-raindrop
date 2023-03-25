@@ -55,13 +55,13 @@ const settingsConfig: SettingSchemaDesc[] = [
  * Properties within the object return current setting values.
  */
 export const settings = {
-  access_token: (): string => logseq.settings["access_token"],
-  namespace_label: (): string => logseq.settings["namespace_label"],
-  default_page_tags: (): string => logseq.settings["default_page_tags"],
+  access_token: (): string => logseq.settings!["access_token"],
+  namespace_label: (): string => logseq.settings!["namespace_label"],
+  default_page_tags: (): string => logseq.settings!["default_page_tags"],
   formatting_template: {
-    highlight: (): string => logseq.settings["template_highlight"],
-    annotation: (): string => logseq.settings["template_annotation"],
-    deleted: (): string => logseq.settings["template_deleted"],
+    highlight: (): string => logseq.settings!["template_highlight"],
+    annotation: (): string => logseq.settings!["template_annotation"],
+    deleted: (): string => logseq.settings!["template_deleted"],
   },
 };
 

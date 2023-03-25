@@ -4,9 +4,9 @@
 
   import Raindrop from "@atoms/Raindrop.svelte";
   import LoadingSpinner from "@atoms/LoadingSpinner.svelte";
-  import { settings } from "@util/settings";
-  import { upsertRaindropPage } from "@util/upsertRaindropPage";
-  import { raindropTransformer } from "@util/raindropTransformer";
+  import { settings } from "@util/settings.js";
+  import { upsertRaindropPage } from "@util/upsertRaindropPage.js";
+  import { raindropTransformer } from "@util/raindropTransformer.js";
 
   const remoteData = writable([]);
   const requestsInFlight = writable(0);

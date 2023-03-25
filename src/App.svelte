@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { ILSPluginUser } from "@logseq/libs/dist/LSPlugin";
+  import type { ILSPluginUser } from "@logseq/libs/dist/LSPlugin.js";
   import logo from "@assets/raindrop.png";
   import ImportRaindrops from "@organisms/ImportRaindrops.svelte";
-  import { settings } from "@util/settings";
+  import { settings } from "@util/settings.js";
 
   const l = window?.logseq ?? ({} as ILSPluginUser);
 

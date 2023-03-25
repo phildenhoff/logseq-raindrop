@@ -12,7 +12,7 @@ const settingsConfig: SettingSchemaDesc[] = [
   {
     default: "> {text}",
     description:
-      "Markdown (or org mode) formatting to use for notes (highlights). Available variables: `{text}`, which is the contents of the highlight, and `{color}`, which is the color of the highlight.",
+      "Markdown (or org mode) formatting to use for notes (highlights). Available variables: `{text}`, which is the contents of the highlight.",
     key: "template_highlight",
     title: "Highlight template",
     type: "string",

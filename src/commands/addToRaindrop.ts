@@ -30,13 +30,17 @@ const convertRaindropToMdLink = ({ link, raindropId }: Raindrop): string =>
 export const addUrlsToRaindrop = async (): Promise<void> => {
   // We can't use `content` from `getCurrentBlock()` because it's not updated
   // as the user types
-  const { uuid } = await logseq.Editor.getCurrentBlock();
+  const current_block = await logseq.Editor.getCurrentBlock();
+  if (!current_block) return;
+
+  const { uuid } = current_block;
   const content = await logseq.Editor.getEditingBlockContent();
 
   const access_token = await logseq.settings?.access_token;
   const urls = extractUrlFromText(content);
   if (!urls) {
     logseq.UI.showMsg(strings.error.no_urls, "warning", { timeout: 4000 });
+    return;
   }
 
   if (!access_token) {

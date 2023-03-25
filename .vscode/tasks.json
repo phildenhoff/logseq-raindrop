@@ -9,6 +9,16 @@
       "group": "test",
       "problemMatcher": "$tsc-watch",
       "detail": "Runs `tsc`"
+    },
+    {
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["svelte-check", "--watch"],
+      "label": "svelte-check watch",
+      "isBackground": true,
+      "group": "test",
+      "problemMatcher": "$tsc-watch",
+      "detail": "Runs `svelte-check`"
     }
   ]
 }

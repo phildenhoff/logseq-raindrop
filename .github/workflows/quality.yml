@@ -16,14 +16,17 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
-      - name: Install Dependencies
-        id: dependencies
-        run: |
-          yarn && yarn install
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: true
       - name: Svelte Check
         id: svelte-check
         run: |
-          yarn svelte-check
+          pnpm svelte-check
+
   prettier-formatted:
     runs-on: ubuntu-latest
 
@@ -33,11 +36,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
-      - name: Install Dependencies
-        id: dependencies
-        run: |
-          yarn && yarn install
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: true
       - name: Svelte Check
         id: svelte-check
         run: |
-          npx prettier --check src/
+          pnpm prettier --check src/

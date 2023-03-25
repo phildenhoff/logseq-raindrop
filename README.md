@@ -47,9 +47,3 @@ advive if you want to write your own Logseq plugin.
 - Your plugin name cannot have slashes.
 - When you build your app, make sure the base path is './' so that your
   index.html is referencing local files (vs. files at the root of your OS)
-- You can totally use `yarn dev` and get HMR.
-  - I didn't think this would work for some reason, but it was approximately
-    zero work to get set up, and works pretty well.
-- You can use Yarn 2. No idea why I thought it wouldn't work, but it does.
-  - That said, I'm not sure I see the value of Yarn 2. No Dependabot is a huge
-    downside.

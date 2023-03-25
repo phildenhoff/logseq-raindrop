@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "tsc watch",
+      "command": "tsc",
+      "args": ["--watch", "--noEmit"],
+      "isBackground": true,
+      "group": "test",
+      "problemMatcher": "$tsc-watch",
+      "detail": "Runs `tsc`"
+    }
+  ]
+}

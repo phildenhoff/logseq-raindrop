@@ -1,8 +1,8 @@
 import "@logseq/libs";
 import "svelte";
 import App from "./App.svelte";
-import { registerCommands } from "@commands/commands";
-import { registerSettings } from "@util/settings";
+import { registerCommands } from "@commands/commands.js";
+import { registerSettings } from "@util/settings.js";
 
 const main = () => {
   const addColorStyle = import.meta.env.PROD ? "" : "color: orange!important;";

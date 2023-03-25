@@ -1,5 +1,5 @@
-import type { Command } from "@commands/Command";
-import { addUrlsToRaindrop } from "@commands/addToRaindrop";
+import type { Command } from "@commands/Command.js";
+import { addUrlsToRaindrop } from "@commands/addToRaindrop.js";
 
 const slashCommands: Command[] = [
   {

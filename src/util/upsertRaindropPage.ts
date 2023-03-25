@@ -1,4 +1,5 @@
 import type { BlockEntity, PageEntity } from "@logseq/libs/dist/LSPlugin.js";
+import type { Just } from "true-myth/maybe";
 import { Maybe, just, nothing } from "true-myth/maybe";
 
 import { findPagesByRaindropID } from "@queries/getBlockBy.js";
@@ -98,7 +99,13 @@ const ioCreateOrLoadPage = async (r: Raindrop) => {
       { createFirstBlock: true, redirect: true }
     );
   }
-  const propBlock = (await logseq.Editor.getCurrentPageBlocksTree()).at(0);
+
+  const currentPage = await logseq.Editor.getCurrentPage();
+  if (!currentPage) throw new Error("No current page found");
+
+  const propBlock =
+    (await logseq.Editor.getCurrentPageBlocksTree()).at(0) ||
+    (await logseq.Editor.insertBlock(currentPage.uuid, ""))!;
   await upsertBlockProperties(propBlock, formattedRaindropProperties);
 };
 
@@ -125,11 +132,14 @@ const ioCreateAnnotationBlock = async (
     .annotation()
     .replace("{text}", annotation.note);
 
-  return await logseq.Editor.appendBlockInPage(
+  // We're asserting this here because the docs online indicate that
+  // appendBlockInPage returns a non-nullable Promise<BlockEntity>, so
+  // I'm going to assume that the type definition is wrong.
+  return (await logseq.Editor.appendBlockInPage(
     currentPage.uuid,
     `${highlightFormatted}\n\n${noteFormatted}`,
     { properties: { "annotation-id": annotation.id } }
-  );
+  ))!;
 };
 
 const upsertAnnotationBlocks = async (
@@ -139,7 +149,7 @@ const upsertAnnotationBlocks = async (
   const currentPageBlocksTree = await logseq.Editor.getCurrentPageBlocksTree();
   const knownRaindropAnnotationIds = new Set(
     currentPageBlocksTree
-      .map((block) => block?.properties?.annotationId ?? (undefined as string))
+      .map((block) => block?.properties?.annotationId ?? undefined)
       .filter((annotationId) => annotationId !== undefined)
   );
 
@@ -153,8 +163,8 @@ const upsertAnnotationBlocks = async (
   );
 
   return addedBlocks
-    .filter((item) => item.isJust)
-    .map((item) => item.isJust && item.value);
+    .filter((item): item is Just<BlockEntity> => item.isJust)
+    .map((item) => item.value);
 };
 
 const getSingleRaindrop = async (id: Raindrop["id"]) => {

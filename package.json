@@ -9,7 +9,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write src/",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "tsc": "tsc --noEmit",
+    "test": "pnpm run check && pnpm run tsc && pnpm run format"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.3",

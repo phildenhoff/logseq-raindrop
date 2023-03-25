@@ -5,6 +5,7 @@ specifiers:
   '@sveltejs/vite-plugin-svelte': ^1.0.0-next.30
   '@tsconfig/svelte': ^2.0.1
   '@types/node': ^18.6.2
+  prettier: 2.8.7
   svelte: ^3.49.0
   svelte-check: ^2.2.7
   svelte-preprocess: ^4.9.8
@@ -22,6 +23,7 @@ devDependencies:
   '@sveltejs/vite-plugin-svelte': 1.4.0_svelte@3.57.0+vite@2.9.15
   '@tsconfig/svelte': 2.0.1
   '@types/node': 18.15.8
+  prettier: 2.8.7
   svelte: 3.57.0
   svelte-check: 2.10.3_svelte@3.57.0
   svelte-preprocess: 4.10.7_wkdgp32a7s6524odeddpfzb52q
@@ -720,6 +722,12 @@ packages:
       nanoid: 3.3.4
       picocolors: 1.0.0
       source-map-js: 1.0.2
+    dev: true
+
+  /prettier/2.8.7:
+    resolution: {integrity: sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
     dev: true
 
   /process/0.11.10:

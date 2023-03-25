@@ -1,7 +1,9 @@
 <script lang="ts">
   import type { ILSPluginUser } from "@logseq/libs/dist/LSPlugin.js";
+
   import logo from "@assets/raindrop.png";
   import ImportRaindrops from "@organisms/ImportRaindrops.svelte";
+  import { ifIsEnter, ifIsEscape } from "@util/keyboardEvents.js";
   import { settings } from "@util/settings.js";
 
   const l = window?.logseq ?? ({} as ILSPluginUser);
@@ -39,10 +41,11 @@
   });
 </script>
 
-<div class="clickOutCaptureContainer" on:click={close}>
+<div class="clickOutCaptureContainer" on:click={close} on:keydown={ifIsEscape(close)}>
   {#await themePromise}
     <p>Loading your theme...</p>
   {:then theme}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <main
       class={theme}
       on:click|stopPropagation|preventDefault={() => undefined}
@@ -56,7 +59,9 @@
           Set your access token in the plugin settings to get started.
         </p>
         <p>
-          <span class="externalLink" on:click={openAccessTokenHelp}>
+          <span class="externalLink"
+           on:click={openAccessTokenHelp}
+           on:keydown={ifIsEnter(openAccessTokenHelp)}>
             How do I get an access token?
           </span>
         </p>

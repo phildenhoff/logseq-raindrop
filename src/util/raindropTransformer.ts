@@ -17,7 +17,7 @@ type RaindropResponse = {
   excerpt: string;
   note: string;
   type: "link" | "article" | "image" | "video" | "document" | "audio";
-  cover: string | URL;
+  cover: string;
   tags: string[];
   removed: boolean;
   _id: number;

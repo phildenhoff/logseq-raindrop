@@ -28,8 +28,10 @@ const uniqueByKey = <T>(keyLabel: keyof T, arr: T[]): T[] =>
  * @throws {KeyError} If `keyLabel` is not a key in all of the objects in `arr`.
  */
 export const uniqueBy = <T>(keyLabel: keyof T, arr: T[]): T[] => {
-  if (!arr.every((item) => keyLabel in item)) {
-    throw new KeyError(`All items must have a key with label ${keyLabel}`);
+  if (!arr.every((item) => item.hasOwnProperty(keyLabel))) {
+    throw new KeyError(
+      `All items must have a key with label ${String(keyLabel)}`
+    );
   }
   return uniqueByKey(keyLabel, arr);
 };

@@ -11,7 +11,7 @@ const main = () => {
   registerSettings();
 
   new App({
-    target: document.getElementById("app"),
+    target: document.getElementById("app")!,
   });
 
   const createModel = () => ({

@@ -24,16 +24,17 @@ const findPagesByProperty =
     // For more info on how page-property is broken, see this PR
     // https://github.com/logseq/logseq/issues/5445
 
-    const blocks: BlockEntity[] = await logseq.DB.q(
-      `(property ${propertyName} ${propertyValue})`
-    );
-    const pagesOfBlocks = await Promise.all(
-      blocks.map(async (block) => await logseq.Editor.getPage(block.page.id))
-    );
+    const blocks: BlockEntity[] =
+      (await logseq.DB.q(`(property ${propertyName} ${propertyValue})`)) ?? [];
+    const pagesOfBlocks = (
+      await Promise.all(
+        blocks.map(async (block) => await logseq.Editor.getPage(block.page.id))
+      )
+    ).filter((page): page is PageEntity => page !== null);
 
-    const pagesByPageProperty: PageEntity[] = await logseq.DB.q(
-      `(page-property ${propertyName} ${propertyValue})`
-    );
+    const pagesByPageProperty: PageEntity[] =
+      (await logseq.DB.q(`(page-property ${propertyName} ${propertyValue})`)) ??
+      [];
 
     const uniquePages = uniqueBy("id", [
       ...pagesByPageProperty,

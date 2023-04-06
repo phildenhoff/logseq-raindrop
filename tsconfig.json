@@ -19,9 +19,9 @@
     "paths": {
       "@types": ["src/types.d.ts"],
       "@assets/*": ["src/assets/*"],
-      "@atoms/*": ["src/atoms/*"],
+      "@atoms/*": ["src/components/atoms/*"],
       "@commands/*": ["src/commands/*"],
-      "@organisms/*": ["src/organisms/*"],
+      "@organisms/*": ["src/components/organisms/*"],
       "@queries/*": ["src/queries/*"],
       "@util/*": ["src/util/*"]
     },

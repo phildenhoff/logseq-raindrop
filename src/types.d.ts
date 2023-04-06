@@ -21,5 +21,3 @@ export type Raindrop = {
   collectionName?: string;
   id: ID;
 };
-
-export type Collection = {};

@@ -1,6 +1,8 @@
 import "@logseq/libs";
 import "svelte";
+
 import App from "./App.svelte";
+
 import { registerCommands } from "@commands/commands.js";
 import { registerSettings } from "@util/settings.js";
 

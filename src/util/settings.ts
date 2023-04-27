@@ -49,12 +49,22 @@ const settingsConfig: SettingSchemaDesc[] = [
     key: "default_page_tags",
     type: "string",
   },
+  {
+    default: false,
+    title: "Enable broken, experimental features",
+    description:
+      "Enable pre-release features that are not yet ready for general use.",
+    key: "broken_experimental_features",
+    type: "boolean",
+  },
 ];
 
 /**
  * Properties within the object return current setting values.
  */
 export const settings = {
+  enable_broken_experimental_features: (): string =>
+    logseq.settings!["broken_experimental_features"],
   access_token: (): string => logseq.settings!["access_token"],
   namespace_label: (): string => logseq.settings!["namespace_label"],
   default_page_tags: (): string => logseq.settings!["default_page_tags"],

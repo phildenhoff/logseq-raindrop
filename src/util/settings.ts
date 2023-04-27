@@ -1,4 +1,5 @@
 import type { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin.js";
+import { userPreferences } from "src/stores/userPreferences.js";
 
 const settingsConfig: SettingSchemaDesc[] = [
   {
@@ -67,6 +68,14 @@ const settingsConfig: SettingSchemaDesc[] = [
       "\n\n" +
       "If you disable this, no blocks will be added but **you will have to delete existing blocks manually**.",
   },
+  {
+    default: 0,
+    title: "Last sync timestamp (milliseconds)",
+    description:
+      "The time of the last sync from the unix epoch. Used to determine which bookmarks have been created since the last sync. You can clear this value to reimport all bookmarks.",
+    key: "last_sync_timestamp",
+    type: "number",
+  },
 ];
 
 /**
@@ -92,5 +101,7 @@ export const settings = {
  *
  */
 export const registerSettings = (): void => {
+  logseq.onSettingsChanged(userPreferences.onUpdate);
+
   logseq.useSettingsSchema(settingsConfig);
 };

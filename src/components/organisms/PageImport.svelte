@@ -11,7 +11,7 @@
     userPreferences,
     ($userPrefences) => Number($userPrefences.last_sync_timestamp) || 0
   );
-  let lastSyncTimestampValueStr = writable($lastSyncTimestampSecs);
+  let lastSyncTimestampValueStr = writable($lastSyncTimestampSecs.toString() || '0');
   const hasEnabledExperimentalFeatures = derived(
     userPreferences,
     ($userPrefences) => $userPrefences.broken_experimental_features
@@ -74,9 +74,6 @@
     userPreferences.updateSetting('last_sync_timestamp', Number(newValue));
   }
 </script>
-
-{hasEnabledExperimentalFeatures}
-{$hasEnabledExperimentalFeatures}
 
 {#if $hasEnabledExperimentalFeatures}
 <div class="experimental">

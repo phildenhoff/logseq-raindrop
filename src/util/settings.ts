@@ -73,8 +73,8 @@ const settingsConfig: SettingSchemaDesc[] = [
  * Properties within the object return current setting values.
  */
 export const settings = {
-  enable_broken_experimental_features: (): string =>
-    logseq.settings!["broken_experimental_features"] as string,
+  enable_broken_experimental_features: () =>
+    logseq.settings!["broken_experimental_features"] as boolean,
   access_token: (): string => logseq.settings!["access_token"] as string,
   namespace_label: (): string => logseq.settings!["namespace_label"] as string,
   default_page_tags: (): string =>

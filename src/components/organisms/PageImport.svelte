@@ -5,14 +5,17 @@
   import { settings } from "@util/settings.js";
   import { raindropTransformer } from "@util/raindropTransformer.js";
   import Raindrop from "@atoms/Raindrop.svelte";
+  import { userPreferences } from "src/stores/userPreferences.js";
 
-  let lastSyncTimestampValueStr = writable('0');
   const lastSyncTimestampSecs = derived(
-    lastSyncTimestampValueStr,
-    ($value) => Number($value) || 0
+    userPreferences,
+    ($userPrefences) => Number($userPrefences.last_sync_timestamp) || 0
   );
-
-  const hasEnabledExperimentalFeatures = settings.enable_broken_experimental_features(); 
+  let lastSyncTimestampValueStr = writable($lastSyncTimestampSecs);
+  const hasEnabledExperimentalFeatures = derived(
+    userPreferences,
+    ($userPrefences) => $userPrefences.broken_experimental_features
+  );
 
   const secondsToMs = (value: number) => value * 1000;
   const formatterOptions = {
@@ -23,7 +26,6 @@
     minute: "numeric",
   } as const;
   const formatSecondsAsDateTime = (seconds: number) => Intl.DateTimeFormat(undefined, formatterOptions).format(secondsToMs(seconds));
-
 
   const remoteData = writable<TRaindrop[]>([]);
   const requestsInFlight = writable(0);
@@ -67,16 +69,25 @@
   const onSearch = (): void => {
     performSearch();
   };
+  const onUpdateTimestamp = (event: Event) => {
+    const newValue = (event.target as HTMLInputElement).value; 
+    userPreferences.updateSetting('last_sync_timestamp', Number(newValue));
+  }
 </script>
 
-{#if hasEnabledExperimentalFeatures}
+{hasEnabledExperimentalFeatures}
+{$hasEnabledExperimentalFeatures}
+
+{#if $hasEnabledExperimentalFeatures}
 <div class="experimental">
   <h3>Import Recently Added</h3>
   <p>Bookmarks new to your Raindrop. This does not include old bookmarks that you've recently updated by adding new tags or annotations.</p>
   <button on:click={onSearch}>Fetch new bookmarks</button>
   <form class="sync-container">
     <label for="last-sync">Last sync: {formatSecondsAsDateTime($lastSyncTimestampSecs)}</label>
-    <input id="last-sync" type="text" bind:value={$lastSyncTimestampValueStr}/>
+    <input id="last-sync" type="text"
+    bind:value={$lastSyncTimestampValueStr} 
+    on:input={onUpdateTimestamp}/>
   </form>
 
   <div>

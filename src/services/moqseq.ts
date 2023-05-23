@@ -112,16 +112,19 @@ export const generateMoqseqClient = (
       left: {
         // this is wrong! We should look at siblings & before
         id: refBlock?.id ?? refPage!.id,
+        uuid: refBlock?.uuid ?? refPage!.uuid,
       },
       format: "markdown",
       id: idGenerator++,
       parent: {
         // this is also wrong! we should look at siblings & before
         id: refBlock?.id ?? refPage!.id,
+        uuid: refBlock?.uuid ?? refPage!.uuid,
       },
       unordered: true,
       page: {
         id: refBlock ? refBlock.page.id : refPage!.id,
+        uuid: refBlock ? refBlock.page.uuid : refPage!.uuid,
       },
     };
 
@@ -131,8 +134,28 @@ export const generateMoqseqClient = (
 
     return newBlock;
   };
-  const deleteBlock: LogseqServiceClient["deleteBlock"] = async (blockUuid) =>
-    Promise.resolve(blocks.delete(blockUuid)).then(() => {});
+  const deleteBlock: LogseqServiceClient["deleteBlock"] = async (blockUuid) => {
+    const block = blocks.get(blockUuid);
+    if (!block) {
+      return;
+    }
+    const blockParentPage = pages.get(block?.parent.uuid);
+
+    const recursiveChildren = await recursiveChildrenOfBlock(blockUuid, blocks);
+    Promise.all(
+      recursiveChildren.map(async (child) => {
+        await deleteBlock(child.uuid);
+      })
+    );
+
+    if (blockParentPage) {
+      blockParentPage.roots =
+        blockParentPage.roots?.filter(
+          ([, rootBlock]) => rootBlock !== blockUuid
+        ) ?? [];
+    }
+    blocks.delete(blockUuid);
+  };
   const getBlockById: LogseqServiceClient["getBlockById"] = async (blockUuid) =>
     Promise.resolve(blocks.get(blockUuid)).then((item) => item ?? null);
   const getPropertiesForBlock: LogseqServiceClient["getPropertiesForBlock"] =

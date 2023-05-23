@@ -2,15 +2,21 @@ import type { BlockEntity } from "@logseq/libs/dist/LSPlugin.js";
 
 import { applyAsyncFunc } from "@util/async.js";
 
+type BlockWithProperties = BlockEntity &
+  Required<Pick<BlockEntity, "properties">>;
+
+// @ts-ignore We require logseq to be undefined here to prevent
+// using it in the wrong context.
+const logseq = null;
+
 const stringMatchesPropertyName = (text: string, propertyName: string) =>
   propertyName.toLowerCase() === text.toLowerCase();
 
 export const blockHasProperty = async (
-  block: BlockEntity,
+  block: BlockWithProperties,
   property: string
 ): Promise<boolean> => {
-  const blockProps = (await logseq.Editor.getBlockProperties(block.uuid)) || [];
-  const hasProp = Object.entries(blockProps).some(([name, _value]) =>
+  const hasProp = Object.entries(block.properties).some(([name, _value]) =>
     stringMatchesPropertyName(property, name)
   );
 
@@ -18,17 +24,18 @@ export const blockHasProperty = async (
 };
 
 export const someBlockHasProperty = async (
-  blocks: BlockEntity[],
+  blocks: BlockWithProperties[],
   property: string
 ): Promise<boolean> => {
-  const blockHasThisProp = async (block: BlockEntity) =>
+  const blockHasThisProp = async (block: BlockWithProperties) =>
     await blockHasProperty(block, property);
+
   const appliedBlocksHaveProp = await applyAsyncFunc(blocks, blockHasThisProp);
   return appliedBlocksHaveProp.some((value) => value);
 };
 
 export const filterBlocksWithProperty = async (
-  blocks: BlockEntity[],
+  blocks: BlockWithProperties[],
   property: string
 ): Promise<BlockEntity[]> => {
   /**
@@ -36,7 +43,7 @@ export const filterBlocksWithProperty = async (
    * provided property.
    */
   const blockAndBlockHasProp = async (
-    block: BlockEntity
+    block: BlockWithProperties
   ): Promise<[BlockEntity, boolean]> => [
     block,
     await blockHasProperty(block, property),

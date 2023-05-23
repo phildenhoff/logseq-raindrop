@@ -183,8 +183,6 @@ describe("recursiveChildrenOfBlock", () => {
   });
 });
 
-// Mogseq client tests
-
 describe("moqseq", () => {
   describe("openPageByname", () => {
     it("must update the current page name when changed", async () => {

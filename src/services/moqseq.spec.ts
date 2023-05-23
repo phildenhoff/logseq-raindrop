@@ -298,4 +298,53 @@ describe("moqseq", () => {
       });
     });
   });
+
+  describe("updateBlock", () => {
+    it("does nothing if the block does not exist", async () => {
+      const mock = generateMoqseqClient({});
+
+      expect(
+        async () =>
+          await mock.updateBlock("uuid-for-missing-block", "New content", {
+            properties: {
+              foo: "bar",
+            },
+          })
+      ).not.toThrow();
+    });
+
+    it("updates the block content", async () => {
+      const mock = generateMoqseqClient({});
+      const rootPage = await mock.createPage("page1");
+      const b1 = await mock.createBlock(rootPage!.uuid, "block1", {
+        properties: { prop1: "before" },
+      });
+
+      expect(b1!.content).toEqual("block1");
+
+      await mock.updateBlock(b1!.uuid, "New content");
+
+      const actual = await mock.getBlockById(b1!.uuid);
+      expect(actual!.content).toEqual("New content");
+    });
+
+    it("replaces the block properties", async () => {
+      const mock = generateMoqseqClient({});
+      const rootPage = await mock.createPage("page1");
+      const b1 = await mock.createBlock(rootPage!.uuid, "block1", {
+        properties: { prop1: "before" },
+      });
+
+      expect(b1!.properties).toEqual({ prop1: "before" });
+
+      await mock.updateBlock(b1!.uuid, "New content", {
+        properties: {
+          prop1: "after",
+        },
+      });
+
+      const actual = await mock.getBlockById(b1!.uuid);
+      expect(actual!.properties).toEqual({ prop1: "after" });
+    });
+  });
 });

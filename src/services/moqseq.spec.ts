@@ -174,6 +174,13 @@ describe("recursiveChildrenOfBlock", () => {
     const actual = await recursiveChildrenOfBlock(b1.uuid, blocks, true);
     expect(actual).toEqual([b2, b3, b4, b5]);
   });
+
+  it("throws an error if the provided block ID doesn't exist", async () => {
+    const blocks: Map<string, BlockEntity> = new Map();
+    await expect(async () =>
+      recursiveChildrenOfBlock("blockDoesNotExist", blocks, true)
+    ).rejects.toThrow();
+  });
 });
 
 // Mogseq client tests

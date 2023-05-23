@@ -249,4 +249,53 @@ describe("moqseq", () => {
       expect(actual).toEqual([]);
     });
   });
+
+  describe("upsertPropertiesForBlock", () => {
+    it("does nothing if the block does not exist", async () => {
+      const mock = generateMoqseqClient({});
+
+      expect(
+        async () =>
+          await mock.upsertPropertiesForBlock("uuid-for-missing-block", {
+            foo: "bar",
+          })
+      ).not.toThrow();
+    });
+
+    it("inserts new properties", async () => {
+      const mock = generateMoqseqClient({});
+      const rootPage = await mock.createPage("page1");
+      const b1 = await mock.createBlock(rootPage!.uuid, "block1");
+
+      expect(b1?.properties).toEqual({});
+
+      await mock.upsertPropertiesForBlock(b1!.uuid, {
+        foo: "bar",
+      });
+
+      const actual = await mock.getBlockById(b1!.uuid);
+      expect(actual?.properties).toEqual({
+        foo: "bar",
+      });
+    });
+
+    it("updates existing properties", async () => {
+      const mock = generateMoqseqClient({});
+      const rootPage = await mock.createPage("page1");
+      const b1 = await mock.createBlock(rootPage!.uuid, "block1", {
+        properties: { prop1: "before" },
+      });
+
+      expect(b1?.properties).toEqual({ prop1: "before" });
+
+      await mock.upsertPropertiesForBlock(b1!.uuid, {
+        prop1: "after",
+      });
+
+      const actual = await mock.getBlockById(b1!.uuid);
+      expect(actual?.properties).toEqual({
+        prop1: "after",
+      });
+    });
+  });
 });

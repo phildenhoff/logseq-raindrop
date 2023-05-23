@@ -52,14 +52,10 @@ export const generateMoqseqClient = (
     [key in keyof LogseqServiceClient]: unknown[];
   }>
 ): LogseqServiceClient => {
-  // let currentPage: IPageEntity | null = null;
   let focusedPageOrBlock: LSBlockEntity | LSPageEntity | null = null;
   let blocks: BlockMap = new Map();
   let pages: PageMap = new Map();
   let idGenerator = 0;
-
-  // TEMP: using to ensure we remove all calls to Logseq
-  const logseq = null;
 
   // Internal functions
   const _addChildToBlock = async (

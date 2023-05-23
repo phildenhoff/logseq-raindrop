@@ -104,7 +104,6 @@ export const generateMoqseqClient = (
       uuid: randomUUID(),
       content: blockContent,
       properties: blockOptions?.properties ?? {},
-      children: [],
       left: {
         // this is wrong! We should look at siblings & before
         id: refBlock?.id ?? refPage!.id,

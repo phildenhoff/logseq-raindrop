@@ -347,4 +347,24 @@ describe("moqseq", () => {
       expect(actual!.properties).toEqual({ prop1: "after" });
     });
   });
+
+  describe("getPropertiesForBlock", () => {
+    it("returns null if the block does not exist", async () => {
+      const mock = generateMoqseqClient({});
+
+      const actual = await mock.getPropertiesForBlock("uuid-for-missing-block");
+      expect(actual).toBeNull();
+    });
+
+    it("returns the block properties", async () => {
+      const mock = generateMoqseqClient({});
+      const rootPage = await mock.createPage("page1");
+      const b1 = await mock.createBlock(rootPage!.uuid, "block1", {
+        properties: { prop1: "value" },
+      });
+
+      const actual = await mock.getPropertiesForBlock(b1!.uuid);
+      expect(actual).toEqual({ prop1: "value" });
+    });
+  });
 });

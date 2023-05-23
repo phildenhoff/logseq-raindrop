@@ -238,5 +238,15 @@ describe("moqseq", () => {
       const actual = await mock.getBlockTreeForCurrentPage();
       expect(actual).toEqual([b1, b2]);
     });
+
+    it("returns an empty list when the page has no blocks", async () => {
+      const mock = generateMoqseqClient({});
+      const page1 = await mock.createPage("page1");
+      if (!page1) throw new Error("page1 not created");
+      await mock.openPageByName("page1");
+
+      const actual = await mock.getBlockTreeForCurrentPage();
+      expect(actual).toEqual([]);
+    });
   });
 });

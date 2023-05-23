@@ -367,4 +367,72 @@ describe("moqseq", () => {
       expect(actual).toEqual({ prop1: "value" });
     });
   });
+
+  describe("deleteBlock", () => {
+    it("does nothing if the block does not exist", async () => {
+      const mock = generateMoqseqClient({});
+
+      expect(
+        async () => await mock.deleteBlock("uuid-for-missing-block")
+      ).not.toThrow();
+    });
+
+    it("removes the block from the page's block tree", async () => {
+      const mock = generateMoqseqClient({});
+      const rootPage = await mock.createPage("page1");
+      const b1 = await mock.createBlock(rootPage!.uuid, "block1");
+      const b2 = await mock.createBlock(rootPage!.uuid, "block2");
+
+      await mock.deleteBlock(b1!.uuid);
+
+      const actual = await mock.getBlockById(b1!.uuid);
+      expect(actual).toBeNull();
+
+      const actual2 = await mock.getBlockTreeForPage(rootPage!.uuid);
+      expect(actual2).toEqual([b2]);
+    });
+
+    it("recursively deletes the block's children", async () => {
+      const mock = generateMoqseqClient({});
+      const rootPage = await mock.createPage("page1");
+      const b1 = await mock.createBlock(rootPage!.uuid, "block1");
+      const b2 = await mock.createBlock(b1!.uuid, "block2");
+
+      await mock.deleteBlock(b1!.uuid);
+
+      const actual1 = await mock.getBlockById(b1!.uuid);
+      expect(actual1).toBeNull();
+      const actual2 = await mock.getBlockById(b2!.uuid);
+      expect(actual2).toBeNull();
+
+      const actual3 = await mock.getBlockTreeForPage(rootPage!.uuid);
+      expect(actual3).toEqual([]);
+    });
+  });
+
+  describe("createBlock", () => {
+    it("creates a block with the given content and properties", async () => {
+      const mock = generateMoqseqClient({});
+      const rootPage = await mock.createPage("page1");
+      const createdBlock = await mock.createBlock(rootPage!.uuid, "block1", {
+        properties: { prop1: "value" },
+      });
+
+      expect(createdBlock!.content).toEqual("block1");
+      expect(createdBlock!.properties).toEqual({ prop1: "value" });
+
+      const actual = await mock.getBlockById(createdBlock!.uuid);
+      expect(actual).toEqual(createdBlock);
+    });
+
+    it("throws an error if the refernce block doesn't exist", async () => {
+      const mock = generateMoqseqClient({});
+
+      await expect(async () => {
+        await mock.createBlock("fake-ref-uuid", "block1", {
+          properties: { prop1: "value" },
+        });
+      }).rejects.toThrow();
+    });
+  });
 });

@@ -1,9 +1,9 @@
 import type { BlockEntity, PageEntity } from "@logseq/libs/dist/LSPlugin.js";
 
-type IBlockEntity = BlockEntity;
-type IBlockUuid = BlockEntity["uuid"];
-type IPageEntity = PageEntity;
-type IPageUuid = PageEntity["uuid"];
+export type IBlockEntity = BlockEntity;
+export type IBlockUuid = BlockEntity["uuid"];
+export type IPageEntity = PageEntity;
+export type IPageUuid = PageEntity["uuid"];
 
 /**
  * Wraps the Logseq client in an interface that we can mock out for testing.
@@ -92,14 +92,14 @@ export interface LogseqServiceClient {
    * - **`before` and `sibling` are both `true`**: the block is created as a
    * sibling before `parentBlockUuid` (prepended).
    *
-   * @param parentBlockUuid The ID of the block to create the new block under.
+   * @param refenceBlockUuid The ID of the block to create the new block near.
    * @param content The text content of the new block.
    * @param options Optional. Additional options for creating the block.
    *
    * @returns A Promise that resolves to the new block.
    */
   createBlock: (
-    parentBlockUuid: IBlockUuid,
+    refenceBlockUuid: IBlockUuid,
     content: string,
     options?: {
       before: boolean;

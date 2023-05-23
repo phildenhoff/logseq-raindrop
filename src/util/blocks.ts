@@ -5,23 +5,6 @@ import { applyAsyncFunc } from "@util/async.js";
 const stringMatchesPropertyName = (text: string, propertyName: string) =>
   propertyName.toLowerCase() === text.toLowerCase();
 
-/*
- * We have to use this because `upsertBlockProperty` and `updateBlock` both
- * seem to have broken behaviour.
- *
- * 1. `upsertBlockProperty` doesn't actually seem to update the rendered
- * content of the block. It also doesn't seem to update what is searchable via
- * queries.
- * 2. `updateBlock` doesn't apply properties if the `content` is empty (??).
- *
- */
-const generateBlockPropertyContent = (
-  properties: Record<string, string>
-): string =>
-  Object.entries(properties)
-    .map(([key, value]) => `${key}:: ${value}`)
-    .join("\n");
-
 export const blockHasProperty = async (
   block: BlockEntity,
   property: string

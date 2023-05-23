@@ -24,6 +24,7 @@
     "tslib": "^2.5.0",
     "typescript": "^5.0.2",
     "vite": "^4.2.1",
+    "vitest": "^0.31.1",
     "vite-plugin-logseq": "^1.1.2"
   },
   "packageManager": "pnpm@7.30.3",

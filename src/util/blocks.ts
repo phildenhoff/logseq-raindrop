@@ -68,36 +68,3 @@ export const filterBlocksWithProperty = async (
     .filter(([, hasProp]) => hasProp)
     .map(([block]) => block);
 };
-
-export const upsertBlockProperties = async (
-  block: BlockEntity,
-  properties: Record<string, string>
-): Promise<void> => {
-  await applyAsyncFunc(
-    Object.entries(properties),
-    async ([key, value]) =>
-      await logseq.Editor.upsertBlockProperty(block.uuid, key, value)
-  );
-
-  // We have to reset the content of the block to be the properties content
-  // so that logseq actually indexes the block. Fun stuff!
-  // Note: we assert this block exists because we just upserted above.
-  const currentContent = (await logseq.Editor.getBlock(block.uuid))!.content;
-  const currentProps: Record<string, string> =
-    await logseq.Editor.getBlockProperties(block.uuid);
-
-  await logseq.Editor.updateBlock(block.uuid, "Updating raindrop props...", {
-    properties: currentProps,
-  });
-  await logseq.Editor.updateBlock(block.uuid, currentContent, {
-    properties: currentProps,
-  });
-
-  return;
-};
-
-export const upsertBlockProperty = async (
-  block: BlockEntity,
-  key: string,
-  value: string
-): Promise<void> => await upsertBlockProperties(block, { [key]: value });

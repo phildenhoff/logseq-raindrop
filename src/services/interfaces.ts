@@ -153,12 +153,12 @@ export interface LogseqServiceClient {
     refenceBlockUuid: BlockUUID,
     content: string,
     options?: {
-      before: boolean;
-      sibling: boolean;
-      isPageBlock: boolean;
-      focus: boolean;
-      customUuid: string;
-      properties: LSBlockEntity["properties"];
+      before?: boolean;
+      sibling?: boolean;
+      isPageBlock?: boolean;
+      focus?: boolean;
+      customUuid?: string;
+      properties?: LSBlockEntity["properties"];
     }
   ) => Promise<LSBlockEntity | null>;
 

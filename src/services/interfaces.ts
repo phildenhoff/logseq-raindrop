@@ -1,8 +1,69 @@
-import type { BlockEntity, PageEntity } from "@logseq/libs/dist/LSPlugin.js";
+import type {
+  BlockEntity,
+  BlockUUID,
+  BlockUUIDTuple,
+  EntityID,
+  IEntityID,
+  PageEntity,
+} from "@logseq/libs/dist/LSPlugin.js";
 
-export type IBlockEntity = BlockEntity;
+// Duplicated from @logseq/libs/dist/LSPlugin.d.ts because the Logseq type
+// includes a `[key: string]: any]` prop which corrupts the rest of the type
+// and makes it impossible to make higher-order-types based off of it.
+// In part, that is because Typescript doesn't have anything for excluding
+// types.
+type LSPlugin = {
+  BlockEntity: {
+    id: EntityID;
+    uuid: BlockUUID;
+    left: IEntityID;
+    format: "markdown" | "org";
+    parent: IEntityID;
+    unordered: boolean;
+    content: string;
+    page: IEntityID;
+    properties?: Record<string, any>;
+    anchor?: string;
+    body?: any;
+    children?: Array<BlockEntity | BlockUUIDTuple>;
+    container?: string;
+    file?: IEntityID;
+    level?: number;
+    meta?: {
+      timestamps: any;
+      properties: any;
+      startPos: number;
+      endPos: number;
+    };
+    title?: Array<any>;
+  };
+  PageEntity: {
+    id: EntityID;
+    uuid: BlockUUID;
+    name: string;
+    originalName: string;
+    "journal?": boolean;
+    file?: IEntityID;
+    namespace?: IEntityID;
+    children?: Array<PageEntity>;
+    properties?: Record<string, any>;
+    format?: "markdown" | "org";
+    journalDay?: number;
+    updatedAt?: number;
+  };
+};
+
+export type LSBlockEntity = LSPlugin["BlockEntity"];
+export type MinimalBlockEntity = Pick<
+  LSPlugin["BlockEntity"],
+  "uuid" | "id" | "content" | "children"
+>;
 export type IBlockUuid = BlockEntity["uuid"];
-export type IPageEntity = PageEntity;
+export type LSPageEntity = LSPlugin["PageEntity"];
+export type MinimalPageEntity = Pick<
+  LSPlugin["PageEntity"],
+  "uuid" | "id" | "name" | "children"
+>;
 export type IPageUuid = PageEntity["uuid"];
 
 /**
@@ -19,7 +80,7 @@ export interface LogseqServiceClient {
    * @returns A promise that resolves to the result of the query.
    *
    */
-  queryDb: (query: string) => Promise<IBlockEntity[]>;
+  queryDb: (query: string) => Promise<MinimalBlockEntity[]>;
 
   /**
    * Get the properties for a block.
@@ -52,7 +113,7 @@ export interface LogseqServiceClient {
    * @param blockUuid The ID of the block to get.
    * @returns A Promise that resolves to a block, if it exists.
    */
-  getBlockById: (blockUuid: IBlockUuid) => Promise<IBlockEntity | null>;
+  getBlockById: (blockUuid: IBlockUuid) => Promise<MinimalBlockEntity | null>;
 
   /**
    * Update the text content and properties of a block.
@@ -67,7 +128,7 @@ export interface LogseqServiceClient {
   updateBlock: (
     blockUuid: IBlockUuid,
     content: string,
-    options?: { properties?: IBlockEntity["properties"] }
+    options?: { properties?: LSBlockEntity["properties"] }
   ) => Promise<void>;
 
   /**
@@ -107,9 +168,9 @@ export interface LogseqServiceClient {
       isPageBlock: boolean;
       focus: boolean;
       customUuid: string;
-      properties: IBlockEntity["properties"];
+      properties: LSBlockEntity["properties"];
     }
-  ) => Promise<IBlockEntity | null>;
+  ) => Promise<MinimalBlockEntity | null>;
 
   /**
    * Opens a page so that it's viewable in Logseq.
@@ -130,14 +191,14 @@ export interface LogseqServiceClient {
    */
   createPage: (
     pageName: string,
-    properties?: IBlockEntity["properties"],
+    properties?: LSBlockEntity["properties"],
     options?: {
       redirect?: boolean;
       createFirstBlock?: boolean;
       format?: "markdown" | "org";
       journal?: boolean;
     }
-  ) => Promise<IPageEntity | null>;
+  ) => Promise<MinimalPageEntity | null>;
 
   /**
    * Returns the current page or block.
@@ -194,7 +255,7 @@ export interface LogseqServiceClient {
    * ```
    *
    */
-  getFocusedPageOrBlock: () => Promise<IPageEntity | IBlockEntity | null>;
+  getFocusedPageOrBlock: () => Promise<LSBlockEntity | LSPageEntity | null>;
 
   /**
    * Throws an error. **You cannot use this.** It's here to ensure you use
@@ -209,9 +270,9 @@ export interface LogseqServiceClient {
    * @param pageUuid The page to get the block tree for.
    * @returns A Promise that resolves to the block tree for the page.
    */
-  getBlockTreeForPage: (pageUuid: IPageUuid) => Promise<IBlockEntity[]>;
+  getBlockTreeForPage: (pageUuid: IPageUuid) => Promise<MinimalBlockEntity[]>;
   // todo: this doesn't belong in the SDK
-  getBlockTreeForCurrentPage: () => Promise<IBlockEntity[]>;
+  getBlockTreeForCurrentPage: () => Promise<MinimalBlockEntity[]>;
 
   /**
    * Display a message to the user.

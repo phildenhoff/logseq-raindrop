@@ -1,5 +1,5 @@
-import type { IBlockEntity } from "src/services/interfaces.js";
-import { assert, describe, expect, it } from "vitest";
+import type { LSBlockEntity } from "src/services/interfaces.js";
+import { describe, expect, it } from "vitest";
 import {
   blockHasProperty,
   filterBlocksWithProperty,
@@ -8,7 +8,7 @@ import {
 
 const generateBlockWithProps = (
   props: Record<string, unknown>
-): IBlockEntity & Required<Pick<IBlockEntity, "properties">> =>
+): LSBlockEntity & Required<Pick<LSBlockEntity, "properties">> =>
   ({
     uuid: "uuid",
     properties: props,

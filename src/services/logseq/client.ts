@@ -1,5 +1,6 @@
 import type { ILSPluginUser } from "@logseq/libs/dist/LSPlugin.user.js";
 import type { LogseqServiceClient as LogseqServiceWrapper } from "../interfaces.js";
+import { applyAsyncFunc } from "@util/async.js";
 
 export const generateLogseqClient = (): LogseqServiceWrapper => {
   const logseq = window.logseq as ILSPluginUser;
@@ -23,14 +24,27 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
     updateBlock: async (blockUuid, content, options) =>
       logseq.Editor.updateBlock(blockUuid, content, options),
     upsertPropertiesForBlock: async (blockUuid, properties) => {
-      const block = await logseq.Editor.getBlock(blockUuid);
-      if (!block) {
-        return;
-      }
-      const newProperties = { ...block.properties, ...properties };
-      await logseq.Editor.updateBlock(blockUuid, block.content, {
-        ...block.properties,
-        properties: newProperties,
+      // Upsert the block's properties
+      await applyAsyncFunc(
+        Object.entries(properties),
+        async ([key, value]) =>
+          await logseq.Editor.upsertBlockProperty(blockUuid, key, value)
+      );
+
+      // After upserting the properties, we have to unset & reset the content
+      // of the block so that Logseq indexes our changes.
+      // First, we get the current block content & the property values we set.
+      const currentContent = (await logseq.Editor.getBlock(blockUuid))!.content;
+      const currentProps: Record<string, string> =
+        await logseq.Editor.getBlockProperties(blockUuid);
+
+      // Then, we unset content
+      await logseq.Editor.updateBlock(blockUuid, "Indexing block props", {
+        properties: currentProps,
+      });
+      // And re-set the block content
+      await logseq.Editor.updateBlock(blockUuid, currentContent, {
+        properties: currentProps,
       });
     },
 

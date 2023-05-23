@@ -435,4 +435,11 @@ describe("moqseq", () => {
       }).rejects.toThrow();
     });
   });
+
+  describe("displayMessage", () => {
+    it("consumes a message", async () => {
+      const mock = generateMoqseqClient({});
+      await mock.displayMessage("Hello World");
+    });
+  });
 });

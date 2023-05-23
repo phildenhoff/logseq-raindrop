@@ -54,17 +54,7 @@ type LSPlugin = {
 };
 
 export type LSBlockEntity = LSPlugin["BlockEntity"];
-export type MinimalBlockEntity = Pick<
-  LSPlugin["BlockEntity"],
-  "uuid" | "id" | "content" | "children"
->;
-export type IBlockUuid = BlockEntity["uuid"];
 export type LSPageEntity = LSPlugin["PageEntity"];
-export type MinimalPageEntity = Pick<
-  LSPlugin["PageEntity"],
-  "uuid" | "id" | "name" | "children"
->;
-export type IPageUuid = PageEntity["uuid"];
 
 /**
  * Wraps the Logseq client in an interface that we can mock out for testing.
@@ -80,7 +70,7 @@ export interface LogseqServiceClient {
    * @returns A promise that resolves to the result of the query.
    *
    */
-  queryDb: (query: string) => Promise<MinimalBlockEntity[]>;
+  queryDb: (query: string) => Promise<LSBlockEntity[]>;
 
   /**
    * Get the properties for a block.
@@ -89,7 +79,7 @@ export interface LogseqServiceClient {
    * @returns A Promise that resolves to a block, if it exists.
    */
   getPropertiesForBlock: (
-    blockUuid: IBlockUuid
+    blockUuid: BlockUUID
   ) => Promise<Record<string, unknown> | null>;
 
   /**
@@ -103,7 +93,7 @@ export interface LogseqServiceClient {
    * @returns A Promise that resolves to void when the updates are complete.
    */
   upsertPropertiesForBlock: (
-    blockUuid: IBlockUuid,
+    blockUuid: BlockUUID,
     properties: Record<string, string>
   ) => Promise<void>;
 
@@ -113,7 +103,7 @@ export interface LogseqServiceClient {
    * @param blockUuid The ID of the block to get.
    * @returns A Promise that resolves to a block, if it exists.
    */
-  getBlockById: (blockUuid: IBlockUuid) => Promise<MinimalBlockEntity | null>;
+  getBlockById: (blockUuid: BlockUUID) => Promise<LSBlockEntity | null>;
 
   /**
    * Update the text content and properties of a block.
@@ -126,7 +116,7 @@ export interface LogseqServiceClient {
    * @returns A Promise that resolves to void when the update is complete.
    */
   updateBlock: (
-    blockUuid: IBlockUuid,
+    blockUuid: BlockUUID,
     content: string,
     options?: { properties?: LSBlockEntity["properties"] }
   ) => Promise<void>;
@@ -136,7 +126,7 @@ export interface LogseqServiceClient {
    * @param blockUuid The ID of the block to delete.
    * @returns A Promise that resolves to void when the block is deleted.
    */
-  deleteBlock: (blockUuid: IBlockUuid) => Promise<void>;
+  deleteBlock: (blockUuid: BlockUUID) => Promise<void>;
 
   /**
    * Adds a block to the graph.
@@ -160,7 +150,7 @@ export interface LogseqServiceClient {
    * @returns A Promise that resolves to the new block.
    */
   createBlock: (
-    refenceBlockUuid: IBlockUuid,
+    refenceBlockUuid: BlockUUID,
     content: string,
     options?: {
       before: boolean;
@@ -170,7 +160,7 @@ export interface LogseqServiceClient {
       customUuid: string;
       properties: LSBlockEntity["properties"];
     }
-  ) => Promise<MinimalBlockEntity | null>;
+  ) => Promise<LSBlockEntity | null>;
 
   /**
    * Opens a page so that it's viewable in Logseq.
@@ -198,7 +188,7 @@ export interface LogseqServiceClient {
       format?: "markdown" | "org";
       journal?: boolean;
     }
-  ) => Promise<MinimalPageEntity | null>;
+  ) => Promise<LSPageEntity | null>;
 
   /**
    * Returns the current page or block.
@@ -270,9 +260,9 @@ export interface LogseqServiceClient {
    * @param pageUuid The page to get the block tree for.
    * @returns A Promise that resolves to the block tree for the page.
    */
-  getBlockTreeForPage: (pageUuid: IPageUuid) => Promise<MinimalBlockEntity[]>;
+  getBlockTreeForPage: (pageUuid: BlockUUID) => Promise<LSBlockEntity[]>;
   // todo: this doesn't belong in the SDK
-  getBlockTreeForCurrentPage: () => Promise<MinimalBlockEntity[]>;
+  getBlockTreeForCurrentPage: () => Promise<LSBlockEntity[]>;
 
   /**
    * Display a message to the user.

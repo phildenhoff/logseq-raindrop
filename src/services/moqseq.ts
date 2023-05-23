@@ -1,23 +1,20 @@
 import { randomUUID } from "crypto";
 import type {
-  MinimalBlockEntity,
-  MinimalPageEntity,
   LogseqServiceClient,
-  IBlockUuid,
-  IPageUuid,
-  LSBlockEntity,
   LSPageEntity,
+  LSBlockEntity,
 } from "./interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
+import type { BlockUUID } from "@logseq/libs/dist/LSPlugin.user.js";
 
 type PageEntityWithRootBlocks = LSPageEntity & {
-  roots?: ["uuid", IBlockUuid][];
+  roots?: ["uuid", BlockUUID][];
 };
 type BlockMap = Map<LSBlockEntity["uuid"], LSBlockEntity>;
 type PageMap = Map<LSPageEntity["uuid"], PageEntityWithRootBlocks>;
 
 export const recursiveChildrenOfBlock = async (
-  blockUuid: MinimalBlockEntity["uuid"],
+  blockUuid: BlockUUID,
   blockMap: BlockMap,
   isRoot = false
 ): Promise<LSBlockEntity[]> => {
@@ -67,7 +64,7 @@ export const generateMoqseqClient = (
   // Internal functions
   const _addChildToBlock = async (
     block: LSBlockEntity,
-    childUuid: MinimalBlockEntity["uuid"]
+    childUuid: BlockUUID
   ) => {
     if (block.children === undefined) {
       block.children = [];
@@ -76,7 +73,7 @@ export const generateMoqseqClient = (
   };
   const _addChildToPage = async (
     page: PageEntityWithRootBlocks,
-    childUuid: MinimalBlockEntity["uuid"]
+    childUuid: BlockUUID
   ) => {
     if (page.roots === undefined) {
       page.roots = [];

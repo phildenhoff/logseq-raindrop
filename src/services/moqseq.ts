@@ -13,6 +13,14 @@ type PageEntityWithRootBlocks = LSPageEntity & {
 type BlockMap = Map<LSBlockEntity["uuid"], LSBlockEntity>;
 type PageMap = Map<LSPageEntity["uuid"], PageEntityWithRootBlocks>;
 
+type TestableLogseqServiceClient = {
+  PRIVATE_FOR_TESTING: {
+    setDbQueryResponseGenerator: (
+      generator: () => Generator<LSBlockEntity>
+    ) => void;
+  };
+};
+
 export const recursiveChildrenOfBlock = async (
   blockUuid: BlockUUID,
   blockMap: BlockMap,
@@ -44,6 +52,12 @@ export const recursiveChildrenOfBlock = async (
   return [block, ...recursiveChildren.flat()];
 };
 
+function* throwErrorGenerator() {
+  throw new Error(
+    "Query responses not configured. Use `setDbQueryResponseGenerator` to configure a new generator for testing query responses."
+  );
+}
+
 /**
  * Create a new Mock Logseq client.
  */
@@ -51,11 +65,12 @@ export const generateMoqseqClient = (
   mockSetup: Partial<{
     [key in keyof LogseqServiceClient]: unknown[];
   }>
-): LogseqServiceClient => {
+): LogseqServiceClient & TestableLogseqServiceClient => {
   let focusedPageOrBlock: LSBlockEntity | LSPageEntity | null = null;
   let blocks: BlockMap = new Map();
   let pages: PageMap = new Map();
   let idGenerator = 0;
+  let queryResponseGenerator: Generator<LSBlockEntity> = throwErrorGenerator();
 
   // Internal functions
   const _addChildToBlock = async (
@@ -84,8 +99,12 @@ export const generateMoqseqClient = (
     throw new Error("Not implemented");
   };
   const getFocusedPageOrBlock = async () => Promise.resolve(focusedPageOrBlock);
+  const setDbQueryResponseGenerator: TestableLogseqServiceClient["PRIVATE_FOR_TESTING"]["setDbQueryResponseGenerator"] =
+    (iterator) => {
+      queryResponseGenerator = iterator();
+    };
   const queryDb: LogseqServiceClient["queryDb"] = async (query) => {
-    throw new Error("Not implemented");
+    return queryResponseGenerator.next(query).value;
   };
 
   // Block
@@ -251,5 +270,8 @@ export const generateMoqseqClient = (
     updateBlock,
     upsertPropertiesForBlock,
     queryDb,
+    PRIVATE_FOR_TESTING: {
+      setDbQueryResponseGenerator,
+    },
   };
 };

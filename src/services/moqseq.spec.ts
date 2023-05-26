@@ -1,7 +1,8 @@
-import type { BlockEntity } from "@logseq/libs/dist/LSPlugin.js";
+import type { BlockEntity, IEntityID } from "@logseq/libs/dist/LSPlugin.js";
 import { assert, describe, expect, it } from "vitest";
 import { generateMoqseqClient, recursiveChildrenOfBlock } from "./moqseq.js";
-import type { LSPageEntity } from "./interfaces.js";
+import type { LSBlockEntity } from "./interfaces.js";
+import { randomUUID } from "crypto";
 
 describe("recursiveChildrenOfBlock", () => {
   it("must return the children of a block one deep", async () => {
@@ -445,6 +446,69 @@ describe("moqseq", () => {
     it("consumes a message", async () => {
       const mock = generateMoqseqClient({});
       await mock.displayMessage("Hello World");
+    });
+  });
+
+  describe("queryDb", () => {
+    const generateRandomBlock = (options?: {
+      uuid?: string;
+      left?: IEntityID;
+      content?: string;
+      parent?: IEntityID;
+      page?: IEntityID;
+    }): LSBlockEntity => {
+      return {
+        id: Math.random() * 1000,
+        uuid: options?.uuid || randomUUID(),
+        left: options?.left || { id: Math.random() * 1000 },
+        format: "markdown",
+        parent: options?.parent || {
+          id: Math.random() * 1000,
+          uuid: randomUUID(),
+        },
+        unordered: true,
+        content: options?.content || randomUUID(),
+        page: options?.page || {
+          id: Math.random() * 1000,
+        },
+      };
+    };
+
+    it("returns the mocked query response", async () => {
+      const mock = generateMoqseqClient({});
+      const sampleLsBlockEntity = generateRandomBlock();
+
+      mock.PRIVATE_FOR_TESTING.setDbQueryResponseGenerator(function* () {
+        yield sampleLsBlockEntity;
+      });
+
+      const actual = await mock.queryDb("foo");
+
+      expect(actual).toBe(sampleLsBlockEntity);
+    });
+
+    it("yields successive responses from the same generator", async () => {
+      const mock = generateMoqseqClient({});
+
+      mock.PRIVATE_FOR_TESTING.setDbQueryResponseGenerator(function* () {
+        let count = 0;
+        while (true) {
+          yield generateRandomBlock({
+            uuid: count.toString(),
+          });
+          count++;
+        }
+      });
+
+      expect(await mock.queryDb("foo")).toHaveProperty("uuid", "0");
+      expect(await mock.queryDb("bar")).toHaveProperty("uuid", "1");
+      expect(await mock.queryDb("baz")).toHaveProperty("uuid", "2");
+    });
+
+    it("it throws an error when not configured", async () => {
+      const mock = generateMoqseqClient({});
+
+      expect(async () => await mock.queryDb("foo")).rejects.toThrowError();
     });
   });
 });

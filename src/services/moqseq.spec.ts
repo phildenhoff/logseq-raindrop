@@ -185,6 +185,34 @@ describe("recursiveChildrenOfBlock", () => {
 });
 
 describe("moqseq", () => {
+  describe("createPage", () => {
+    it("returns the newly created page", async () => {
+      const mock = generateMoqseqClient({});
+
+      const actual = await mock.createPage("page1");
+      expect(actual).not.toBeNull();
+      expect(actual!.name).toBe("page1");
+
+      const actualWithOptions = await mock.createPage(
+        "page2",
+        {},
+        {
+          journal: true,
+        }
+      );
+      expect(actualWithOptions!["journal?"]).toBeTruthy();
+
+      const actualWithProps = await mock.createPage(
+        "page3",
+        {
+          foo: "bar",
+        },
+        {}
+      );
+      expect(actualWithProps!.properties!["foo"]).toBe("bar");
+    });
+  });
+
   describe("openPageByname", () => {
     it("must update the current page name when changed", async () => {
       const mock = generateMoqseqClient({});

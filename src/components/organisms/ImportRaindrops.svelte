@@ -45,7 +45,7 @@
   const onUpsertRaindropPage = async (id: TRaindrop['id']) => {
     const maybeFullRaindrop = await raindropClient.getRaindrop(id);
     match({
-      Just: (fullRaindrop) => upsertRaindropPage(fullRaindrop),
+      Just: (fullRaindrop) => upsertRaindropPage(fullRaindrop, logseqClient),
       Nothing: () => {
       logseqClient.displayMessage(
         "Something went wrong while trying to contact Raindrop",

@@ -15,7 +15,7 @@ export const generateHttpClient = ({
   });
   return {
     getRaindrop: async (id: Raindrop["id"]) => {
-      return fetch(`${apiUrl}/raindrops/${id}`, {
+      return fetch(`${apiUrl}/raindrop/${id}`, {
         method: "GET",
         headers: defaultHeaders,
       });

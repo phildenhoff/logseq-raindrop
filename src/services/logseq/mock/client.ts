@@ -3,7 +3,7 @@ import type {
   LogseqServiceClient,
   LSPageEntity,
   LSBlockEntity,
-} from "./interfaces.js";
+} from "../../interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
 import type { BlockUUID, PageEntity } from "@logseq/libs/dist/LSPlugin.user.js";
 

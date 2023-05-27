@@ -1,4 +1,5 @@
 import type { BlockEntity } from "@logseq/libs/dist/LSPlugin.js";
+import type { LSBlockEntity } from "src/services/interfaces.js";
 
 import { applyAsyncFunc } from "@util/async.js";
 
@@ -59,5 +60,5 @@ export const filterBlocksWithProperty = async (
     .map(([block]) => block);
 };
 
-export const filterBlocksWithPropertyField = (blocks: BlockEntity[]) =>
+export const filterBlocksWithPropertyField = (blocks: LSBlockEntity[]) =>
   blocks.filter((block): block is BlockWithProperties => "properties" in block);

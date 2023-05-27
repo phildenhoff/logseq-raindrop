@@ -545,12 +545,12 @@ describe("moqseq", () => {
       const sampleLsBlockEntity = generateRandomBlock();
 
       mock.PRIVATE_FOR_TESTING.setDbQueryResponseGenerator(function* () {
-        yield sampleLsBlockEntity;
+        yield [sampleLsBlockEntity];
       });
 
       const actual = await mock.queryDb("foo");
 
-      expect(actual).toBe(sampleLsBlockEntity);
+      expect(actual[0]).toBe(sampleLsBlockEntity);
     });
 
     it("yields successive responses from the same generator", async () => {
@@ -559,16 +559,18 @@ describe("moqseq", () => {
       mock.PRIVATE_FOR_TESTING.setDbQueryResponseGenerator(function* () {
         let count = 0;
         while (true) {
-          yield generateRandomBlock({
-            uuid: count.toString(),
-          });
+          yield [
+            generateRandomBlock({
+              uuid: count.toString(),
+            }),
+          ];
           count++;
         }
       });
 
-      expect(await mock.queryDb("foo")).toHaveProperty("uuid", "0");
-      expect(await mock.queryDb("bar")).toHaveProperty("uuid", "1");
-      expect(await mock.queryDb("baz")).toHaveProperty("uuid", "2");
+      expect((await mock.queryDb("foo")).at(0)).toHaveProperty("uuid", "0");
+      expect((await mock.queryDb("bar")).at(0)).toHaveProperty("uuid", "1");
+      expect((await mock.queryDb("baz")).at(0)).toHaveProperty("uuid", "2");
     });
 
     it("it throws an error when not configured", async () => {

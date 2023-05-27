@@ -246,6 +246,9 @@ export const generateMoqseqClient = (
     };
 
     pages.set(newPage.uuid, newPage);
+    if (options?.redirect) {
+      focusedPageOrBlock = newPage;
+    }
 
     return newPage;
   };

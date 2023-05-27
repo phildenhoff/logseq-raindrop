@@ -23,7 +23,7 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
     deleteBlock: async (blockUuid) => logseq.Editor.removeBlock(blockUuid),
     getBlockById: async (blockUuid) => logseq.Editor.getBlock(blockUuid),
     getPropertiesForBlock: async (blockUuid) =>
-      await logseq.Editor.getBlock(blockUuid),
+      await logseq.Editor.getBlockProperties(blockUuid),
     updateBlock: async (blockUuid, content, options) =>
       logseq.Editor.updateBlock(blockUuid, content, options),
     upsertPropertiesForBlock: async (blockUuid, properties) => {

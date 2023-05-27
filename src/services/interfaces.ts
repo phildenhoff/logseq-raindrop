@@ -277,4 +277,9 @@ export interface LogseqServiceClient {
       timeout?: number;
     }
   ) => Promise<void>;
+
+  /**
+   * Exits editing mode.
+   */
+  exitEditMode: () => Promise<void>;
 }

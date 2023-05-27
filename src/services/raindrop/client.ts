@@ -4,15 +4,17 @@ import { just, nothing } from "true-myth/maybe";
 import type { RaindropClient } from "./interfaces.js";
 import { generateHttpClient } from "./http.js";
 
-const DEFAULT_BASE_URL = "https://api.raindrop.io/";
+const DEFAULT_BASE_URL = "https://api.raindrop.io";
 
-const generateRaindropClient = (options: {
+export const raindropClientCtxKey = Symbol();
+
+export const generateRaindropClient = (options: {
   accessToken: string;
   baseUrl?: string;
   apiVersion?: "v1";
 }): RaindropClient => {
   const apiUrl = `${options.baseUrl ?? DEFAULT_BASE_URL}/rest/${
-    options.apiVersion
+    options.apiVersion ?? "v1"
   }`;
   const httpClient = generateHttpClient({
     apiUrl,

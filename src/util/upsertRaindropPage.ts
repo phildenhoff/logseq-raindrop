@@ -19,7 +19,7 @@ import {
   ioRemoveEmptyStateBlock,
 } from "src/services/logseq/emptyState.js";
 
-const ioMaybeGetPageForRaindrop = async (
+export const ioMaybeGetPageForRaindrop = async (
   r: Raindrop,
   logseqClient: LogseqServiceClient
 ): Promise<Maybe<LSPageEntity>> => {
@@ -29,7 +29,7 @@ const ioMaybeGetPageForRaindrop = async (
   )) as (LSPageEntity & Record<"createdAt", number>)[];
 
   if (pagesHavingId.length === 0) return nothing<LSPageEntity>();
-  if (pagesHavingId.length > 1) alertDuplicatePageIdUsed(r);
+  if (pagesHavingId.length > 1) alertDuplicatePageIdUsed(r, logseqClient);
 
   const sortedByAge = [...pagesHavingId].sort(
     (a, b) => a.createdAt - b.createdAt
@@ -45,14 +45,17 @@ export const ioCreateOrLoadPage = async (
 ) => {
   const maybeExistingPage = await ioMaybeGetPageForRaindrop(r, logseqClient);
   const formattedRaindropProperties = formatRaindropToProperties(r, {
-    tags: settings.default_page_tags(),
+    tags: (await logseqClient.settings.get("default_page_tags")) as string,
   });
 
   if (maybeExistingPage.isJust) {
     await logseqClient.openPageByName(maybeExistingPage.value.name);
   } else {
     await logseqClient.createPage(
-      generatePageName(r, settings.namespace_label()),
+      generatePageName(
+        r,
+        (await logseqClient.settings.get("namespace_label")) as string
+      ),
       {},
       { createFirstBlock: true, redirect: true }
     );
@@ -83,19 +86,23 @@ export const ioAddOrRemoveEmptyState = async (
   }
 };
 
-const ioCreateAnnotationBlock = async (
+export const ioCreateAnnotationBlock = async (
   annotation: Annotation,
   currentPage: LSPageEntity,
   logseqClient: LogseqServiceClient
 ): Promise<LSBlockEntity | null> => {
-  const highlightFormatted = settings.formatting_template
-    .highlight()
-    .replace("{text}", annotation.text);
-  const noteFormatted = settings.formatting_template
-    .annotation()
-    .replace("{text}", annotation.note);
+  const highlightFormatted = (
+    (await logseqClient.settings.get("formatting_template")) as {
+      highlight: string;
+    }
+  ).highlight.replace("{text}", annotation.text);
+  const noteFormatted = (
+    (await logseqClient.settings.get("formatting_template")) as {
+      annotation: string;
+    }
+  ).annotation.replace("{text}", annotation.note);
 
-  return await logseqClient.createBlock(
+  return logseqClient.createBlock(
     currentPage.uuid,
     `${highlightFormatted}\n\n${noteFormatted}`,
     {

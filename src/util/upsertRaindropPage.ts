@@ -8,6 +8,7 @@ import { alertDuplicatePageIdUsed } from "@util/notify.js";
 import { formatRaindropToProperties } from "@util/pageFormatter.js";
 import {
   filterBlocksWithProperty,
+  filterBlocksWithPropertyField,
   someBlockHasProperty,
 } from "@util/blocks.js";
 import { settings } from "@util/settings.js";
@@ -30,12 +31,6 @@ const generatePageName = (raindrop: Raindrop, namespace: string): string => {
     return namespace + "/" + raindrop.title;
   }
 };
-
-const filterBlocksWithPropertyField = (blocks: BlockEntity[]) =>
-  blocks.filter(
-    (block): block is BlockEntity & { properties: Record<string, any> } =>
-      "properties" in block
-  );
 
 const ioMaybeGetPageForRaindrop = async (
   r: Raindrop

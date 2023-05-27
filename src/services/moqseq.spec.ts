@@ -251,6 +251,44 @@ describe("moqseq", () => {
     });
   });
 
+  describe("getPageById", () => {
+    it("returns pages by ID", async () => {
+      const mock = generateMoqseqClient({});
+      const page1 = await mock.createPage("page1");
+      const page2 = await mock.createPage("page2");
+
+      assert(page1);
+      assert(page2);
+
+      expect(await mock.getPageById(page1.id)).toBe(page1);
+      expect(await mock.getPageById(page2.id)).toBe(page2);
+    });
+
+    it("returns null if the page does not exist", async () => {
+      const mock = generateMoqseqClient({});
+      expect(await mock.getPageById(1)).toBeNull();
+    });
+  });
+
+  describe("getPageByUuid", () => {
+    it("returns pages by UUID", async () => {
+      const mock = generateMoqseqClient({});
+      const page1 = await mock.createPage("page1");
+      const page2 = await mock.createPage("page2");
+
+      assert(page1);
+      assert(page2);
+
+      expect(await mock.getPageByUuid(page1.uuid)).toBe(page1);
+      expect(await mock.getPageByUuid(page2.uuid)).toBe(page2);
+    });
+
+    it("returns null if the page does not exist", async () => {
+      const mock = generateMoqseqClient({});
+      expect(await mock.getPageByUuid("non-existent")).toBeNull();
+    });
+  });
+
   describe("getBlockTreeForCurrentPage", () => {
     it("does nothing if no page is focused (e.g. journal)", async () => {
       const mock = generateMoqseqClient({});

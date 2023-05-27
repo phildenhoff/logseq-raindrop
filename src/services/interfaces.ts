@@ -256,6 +256,16 @@ export interface LogseqServiceClient {
   getCurrentPage: () => never;
 
   /**
+   * Returns the PageEntity, if one exists, for a Page ID.
+   */
+  getPageById: (pageId: EntityID) => Promise<LSPageEntity | null>;
+
+  /**
+   * Returns the PageEntity, if one exists, for a Page UUID.
+   */
+  getPageByUuid: (pageUuid: BlockUUID) => Promise<LSPageEntity | null>;
+
+  /**
    * Returns all the blocks for the specific page.
    * @param pageUuid The page to get the block tree for.
    * @returns A Promise that resolves to the block tree for the page.

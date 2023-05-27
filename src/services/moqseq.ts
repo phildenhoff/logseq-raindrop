@@ -254,16 +254,27 @@ export const generateMoqseqClient = (
 
     focusedPageOrBlock = pageWithname;
   };
+  const getPageById: LogseqServiceClient["getPageById"] = async (pageId) => {
+    const pageList = [...pages.values()];
+    return Promise.resolve(pageList.find((page) => page.id === pageId) ?? null);
+  };
+  const getPageByUuid: LogseqServiceClient["getPageByUuid"] = async (
+    pageUuid
+  ) => {
+    return Promise.resolve(pages.get(pageUuid) ?? null);
+  };
 
   return {
     displayMessage,
-    exitEditMode: () => Promise.resolve(),
+    exitEditMode: Promise.resolve,
     getBlockById,
     getCurrentPage,
     getFocusedPageOrBlock,
     getPropertiesForBlock,
     getBlockTreeForCurrentPage,
     getBlockTreeForPage,
+    getPageById,
+    getPageByUuid,
     createPage,
     openPageByName,
     createBlock,

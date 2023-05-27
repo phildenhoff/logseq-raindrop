@@ -19,7 +19,6 @@ type LSPlugin = {
     left: IEntityID;
     format: "markdown" | "org";
     parent: IEntityID;
-    unordered: boolean;
     content: string;
     page: IEntityID;
     properties?: Record<string, any>;
@@ -36,6 +35,9 @@ type LSPlugin = {
       endPos: number;
     };
     title?: Array<any>;
+    // Declared as required in the API, but querying the DB does not provide this
+    // field, so it must be optional.
+    unordered?: boolean;
   };
   PageEntity: {
     id: EntityID;

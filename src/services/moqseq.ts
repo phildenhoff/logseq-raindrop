@@ -5,7 +5,7 @@ import type {
   LSBlockEntity,
 } from "./interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
-import type { BlockUUID } from "@logseq/libs/dist/LSPlugin.user.js";
+import type { BlockUUID, PageEntity } from "@logseq/libs/dist/LSPlugin.user.js";
 
 type PageEntityWithRootBlocks = LSPageEntity & {
   roots?: ["uuid", BlockUUID][];
@@ -16,7 +16,7 @@ type PageMap = Map<LSPageEntity["uuid"], PageEntityWithRootBlocks>;
 type TestableLogseqServiceClient = {
   PRIVATE_FOR_TESTING: {
     setDbQueryResponseGenerator: (
-      generator: () => Generator<LSBlockEntity>
+      generator: () => Generator<(LSBlockEntity | LSPageEntity)[]>
     ) => void;
   };
 };
@@ -62,15 +62,20 @@ function* throwErrorGenerator() {
  * Create a new Mock Logseq client.
  */
 export const generateMoqseqClient = (
-  mockSetup: Partial<{
+  mockSetup?: Partial<{
     [key in keyof LogseqServiceClient]: unknown[];
-  }>
+  }> & {
+    defaultPages?: PageEntity[];
+  }
 ): LogseqServiceClient & TestableLogseqServiceClient => {
   let focusedPageOrBlock: LSBlockEntity | LSPageEntity | null = null;
   let blocks: BlockMap = new Map();
-  let pages: PageMap = new Map();
+  let pages: PageMap = new Map(
+    mockSetup?.defaultPages?.map((item) => [item.uuid, item]) ?? []
+  );
   let idGenerator = 0;
-  let queryResponseGenerator: Generator<LSBlockEntity> = throwErrorGenerator();
+  let queryResponseGenerator: Generator<(LSBlockEntity | LSPageEntity)[]> =
+    throwErrorGenerator();
 
   // Internal functions
   const _addChildToBlock = async (

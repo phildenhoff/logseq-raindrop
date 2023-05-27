@@ -211,6 +211,18 @@ describe("moqseq", () => {
       );
       expect(actualWithProps!.properties!["foo"]).toBe("bar");
     });
+
+    it("sets the current page if `redirect: true`", async () => {
+      const mock = generateMoqseqClient({});
+      mock.createPage("page1");
+      mock.createPage("page2", {}, { redirect: true });
+
+      const actual = await mock.getFocusedPageOrBlock();
+      expect(actual).not.toBeNull();
+      assert(actual);
+      assert("name" in actual);
+      expect(actual.name).toBe("page2");
+    });
   });
 
   describe("openPageByname", () => {

@@ -1,39 +1,23 @@
 import type { Just } from "true-myth/maybe";
 import { Maybe, nothing } from "true-myth/maybe";
 
-import { findPagesByRaindropID } from "src/queries/getBlockBy.js";
 import type { Annotation, Raindrop } from "@types";
-import { alertDuplicatePageIdUsed } from "@util/notify.js";
-import { formatRaindropToProperties } from "@util/pageFormatter.js";
-import {
-  filterBlocksWithProperty,
-  filterBlocksWithPropertyField,
-  someBlockHasProperty,
-} from "@util/blocks.js";
-import { settings } from "@util/settings.js";
-import { applyAsyncFunc } from "@util/async.js";
 import type {
   LSBlockEntity,
   LSPageEntity,
   LogseqServiceClient,
 } from "src/services/interfaces.js";
+import { findPagesByRaindropID } from "src/queries/getBlockBy.js";
+import { alertDuplicatePageIdUsed } from "@util/notify.js";
+import { formatRaindropToProperties } from "@util/pageFormatter.js";
+import { settings } from "@util/settings.js";
+import { applyAsyncFunc } from "@util/async.js";
 
-const noAnnotationsProp = "noannotations";
-
-/**
- * Create the name for a page using the Raindrop and any hierarchy.
- *
- * @param raindrop The Raindrop to create a name for
- * @param namespace A namespace to create pages in. If this string is empty,
- * no hierarchy is used.
- */
-const generatePageName = (raindrop: Raindrop, namespace: string): string => {
-  if (namespace.length === 0) {
-    return raindrop.title;
-  } else {
-    return namespace + "/" + raindrop.title;
-  }
-};
+import { generatePageName } from "./generatePageName.js";
+import {
+  ioAddEmptyStateBlock,
+  ioRemoveEmptyStateBlock,
+} from "src/services/logseq/emptyState.js";
 
 const ioMaybeGetPageForRaindrop = async (
   r: Raindrop,
@@ -55,55 +39,7 @@ const ioMaybeGetPageForRaindrop = async (
   return Maybe.of(oldestPage);
 };
 
-/**
- * Adds a new block (once) to let the user know that there are no annotations
- * to import for this raindrop.
- *
- * Only insert the paragraph if the noAnnotationsProp field is missing.
- * Sets that field every time.
- *
- * The property must be removed once there are annotations to import.
- */
-const ioAddEmptyStateBlock = async (
-  pageBlocks: LSBlockEntity[],
-  pageUuid: string,
-  logseqClient: LogseqServiceClient
-) => {
-  const blocksWithProperties = filterBlocksWithPropertyField(pageBlocks);
-  const pageHasBlockWithNoAnnotationProp = await someBlockHasProperty(
-    blocksWithProperties,
-    noAnnotationsProp
-  );
-  if (!pageHasBlockWithNoAnnotationProp) {
-    await logseqClient.createBlock(
-      pageUuid,
-      "There's nothing to import from Raindrop. Write some notes in Raindrop and sync this page again to bring the notes into Logseq. Don't delete this block. It will be automatically cleaned up by the Raindrop plugin.",
-      {
-        properties: { [noAnnotationsProp]: true },
-        sibling: false,
-        before: false,
-      }
-    );
-    await logseqClient.exitEditMode();
-  }
-};
-
-const ioRemoveEmptyStateBlock = async (
-  pageBlocks: LSBlockEntity[],
-  logseqClient: LogseqServiceClient
-) => {
-  const pageBlocksWithProperties = pageBlocks.filter(
-    (block): block is LSBlockEntity & { properties: Record<string, any> } =>
-      "properties" in block
-  );
-  (
-    await filterBlocksWithProperty(pageBlocksWithProperties, noAnnotationsProp)
-  ).forEach(async (block) => {
-    await logseqClient.deleteBlock(block.uuid);
-  });
-};
-
-const ioCreateOrLoadPage = async (
+export const ioCreateOrLoadPage = async (
   r: Raindrop,
   logseqClient: LogseqServiceClient
 ) => {
@@ -134,7 +70,7 @@ const ioCreateOrLoadPage = async (
   );
 };
 
-const ioAddOrRemoveEmptyState = async (
+export const ioAddOrRemoveEmptyState = async (
   r: Raindrop,
   pageBlocks: LSBlockEntity[],
   currentPage: LSPageEntity,
@@ -170,7 +106,7 @@ const ioCreateAnnotationBlock = async (
   );
 };
 
-const ioUpsertAnnotationBlocks = async (
+export const ioUpsertAnnotationBlocks = async (
   r: Raindrop,
   currentPage: LSPageEntity,
   logseqClient: LogseqServiceClient

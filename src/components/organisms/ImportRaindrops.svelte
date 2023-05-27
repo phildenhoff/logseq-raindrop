@@ -1,13 +1,14 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { getContext, onMount } from "svelte";
   import { writable, derived } from "svelte/store";
 
   import type {Raindrop as TRaindrop} from "@types";
   import Raindrop from "@atoms/Raindrop.svelte";
   import LoadingSpinner from "@atoms/LoadingSpinner.svelte";
-  import { settings } from "@util/settings.js";
   import { upsertRaindropPage } from "@util/upsertRaindropPage.js";
   import { raindropTransformer } from "@util/raindropTransformer.js";
+  import { raindropClientCtxKey } from "src/services/raindrop/client.js";
+  import type { RaindropClient } from "src/services/raindrop/interfaces.js";
 
   const remoteData = writable<TRaindrop[]>([]);
   const requestsInFlight = writable(0);
@@ -17,20 +18,13 @@
     ($requestsInFlight) => $requestsInFlight > 0
   );
 
+  const raindropClient = getContext<RaindropClient>(raindropClientCtxKey);
+
   const performSearch = async (term: string): Promise<void> => {
     const requestTime = new Date();
     requestsInFlight.update((n) => n + 1);
 
-    const res = await fetch(
-      `https://api.raindrop.io/rest/v1/raindrops/0?search=${term}`,
-      {
-        method: "GET",
-        headers: new Headers({
-          Authorization: `Bearer ${settings.access_token()}`,
-          "Content-Type": "application/json",
-        }),
-      }
-    );
+    const res = await raindropClient.searchTerm(term, '0');
     const { items } = await res.json();
     // do some work
     requestsInFlight.update((n) => n - 1);

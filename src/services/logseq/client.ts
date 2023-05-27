@@ -2,6 +2,8 @@ import type { ILSPluginUser } from "@logseq/libs/dist/LSPlugin.user.js";
 import type { LogseqServiceClient as LogseqServiceWrapper } from "../interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
 
+export const logseqClientCtxKey = Symbol();
+
 export const generateLogseqClient = (): LogseqServiceWrapper => {
   const logseq = window.logseq as ILSPluginUser;
 

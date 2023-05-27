@@ -5,6 +5,7 @@ import type {
   EntityID,
   IEntityID,
   PageEntity,
+  SettingSchemaDesc,
 } from "@logseq/libs/dist/LSPlugin.js";
 
 // Duplicated from @logseq/libs/dist/LSPlugin.d.ts because the Logseq type
@@ -294,4 +295,10 @@ export interface LogseqServiceClient {
    * Exits editing mode.
    */
   exitEditMode: () => Promise<void>;
+
+  settings: {
+    registerSchema: (schema: SettingSchemaDesc[]) => void;
+    get: (key: string) => Promise<unknown>;
+    set: (key: string, value: unknown) => Promise<void>;
+  };
 }

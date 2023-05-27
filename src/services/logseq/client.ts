@@ -67,5 +67,10 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
       if (typeof id !== "string") return null;
       return logseq.Editor.getPage(id);
     },
+    settings: {
+      get: async (key) => logseq.settings![key],
+      set: async (key, value) => logseq.updateSettings({ [key]: value }),
+      registerSchema: async (schema) => logseq.useSettingsSchema(schema),
+    },
   };
 };

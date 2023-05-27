@@ -61,13 +61,10 @@ function* throwErrorGenerator() {
 /**
  * Create a new Mock Logseq client.
  */
-export const generateMoqseqClient = (
-  mockSetup?: Partial<{
-    [key in keyof LogseqServiceClient]: unknown[];
-  }> & {
-    defaultPages?: PageEntity[];
-  }
-): LogseqServiceClient & TestableLogseqServiceClient => {
+export const generateMoqseqClient = (mockSetup?: {
+  defaultPages?: PageEntity[];
+  settings?: Record<string, string | number | boolean | unknown>;
+}): LogseqServiceClient & TestableLogseqServiceClient => {
   let focusedPageOrBlock: LSBlockEntity | LSPageEntity | null = null;
   let blocks: BlockMap = new Map();
   let pages: PageMap = new Map(
@@ -76,6 +73,9 @@ export const generateMoqseqClient = (
   let idGenerator = 0;
   let queryResponseGenerator: Generator<(LSBlockEntity | LSPageEntity)[]> =
     throwErrorGenerator();
+  let settings = new Map<string, string | number | boolean | unknown>(
+    Object.entries(mockSetup?.settings ?? {})
+  );
 
   // Internal functions
   const _addChildToBlock = async (
@@ -272,6 +272,24 @@ export const generateMoqseqClient = (
     return Promise.resolve(pages.get(pageUuid) ?? null);
   };
 
+  // Settings
+  const registerSchema: LogseqServiceClient["settings"]["registerSchema"] =
+    async (_schema) => {
+      return;
+    };
+  const getSetting: LogseqServiceClient["settings"]["get"] = async (
+    settingName
+  ) => {
+    return Promise.resolve(settings.get(settingName));
+  };
+  const setSetting: LogseqServiceClient["settings"]["set"] = async (
+    key,
+    value
+  ) => {
+    settings.set(key, value);
+    return Promise.resolve();
+  };
+
   return {
     displayMessage,
     exitEditMode: () => Promise.resolve(),
@@ -290,6 +308,11 @@ export const generateMoqseqClient = (
     updateBlock,
     upsertPropertiesForBlock,
     queryDb,
+    settings: {
+      registerSchema,
+      get: getSetting,
+      set: setSetting,
+    },
     PRIVATE_FOR_TESTING: {
       setDbQueryResponseGenerator,
     },

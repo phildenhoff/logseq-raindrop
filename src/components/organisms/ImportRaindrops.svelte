@@ -9,6 +9,7 @@
   import { raindropTransformer } from "@util/raindropTransformer.js";
   import { raindropClientCtxKey } from "src/services/raindrop/client.js";
   import type { RaindropClient } from "src/services/raindrop/interfaces.js";
+  import { match } from "true-myth/maybe";
 
   const remoteData = writable<TRaindrop[]>([]);
   const requestsInFlight = writable(0);
@@ -37,6 +38,19 @@
   const onSearch = (event: Event): void => {
     performSearch((event.target as HTMLInputElement).value);
   };
+
+  const onUpsertRaindropPage = async (id: TRaindrop['id']) => {
+    const maybeFullRaindrop = await raindropClient.getRaindrop(id);
+    match({
+      Just: (fullRaindrop) => upsertRaindropPage(fullRaindrop),
+      Nothing: () => {
+      logseq.UI.showMsg(
+        "Something went wrong while trying to contact Raindrop",
+        "error"
+      );
+      }
+    }, maybeFullRaindrop)
+  }
 
   onMount(() => {
     performSearch("");
@@ -68,7 +82,7 @@
             created={result?.created}
             collectionName={result?.collectionName}
             coverImage={result?.coverImage}
-            onClick={() => upsertRaindropPage(result)}
+            onClick={() => onUpsertRaindropPage(result.id)}
           />
         </li>
       {/each}

@@ -13,7 +13,6 @@ import {
 } from "@util/blocks.js";
 import { settings } from "@util/settings.js";
 import { applyAsyncFunc } from "@util/async.js";
-import { raindropTransformer } from "@util/raindropTransformer.js";
 
 const noAnnotationsProp = "noannotations";
 
@@ -167,48 +166,14 @@ const upsertAnnotationBlocks = async (
     .map((item) => item.value);
 };
 
-const getSingleRaindrop = async (id: Raindrop["id"]) => {
-  try {
-    return await fetch(`https://api.raindrop.io/rest/v1/raindrop/${id}`, {
-      method: "GET",
-      headers: new Headers({
-        Authorization: `Bearer ${settings.access_token()}`,
-        "Content-Type": "application/json",
-      }),
-    })
-      .then((res) => {
-        if (res.status !== 200) {
-          throw new Error("Request not successful");
-        }
-
-        return res;
-      })
-      .then((res) => res.json())
-      .then((parsed) => raindropTransformer(parsed["item"]))
-      .then((transformed) => just(transformed));
-  } catch {
-    return nothing();
-  }
-};
-
-export const upsertRaindropPage = async (r: Raindrop) => {
-  const maybeRaindrop = await getSingleRaindrop(r.id);
-
-  if (maybeRaindrop.isJust) {
-    const fullRaindrop = maybeRaindrop.value;
-    await ioCreateOrLoadPage(fullRaindrop);
-    const pageBlocks = await logseq.Editor.getCurrentPageBlocksTree();
-    const currentPage = await logseq.Editor.getCurrentPage();
-    await ioAddOrRemoveEmptyState(
-      fullRaindrop,
-      pageBlocks,
-      currentPage as PageEntity
-    );
-    await upsertAnnotationBlocks(fullRaindrop, currentPage as PageEntity);
-  } else {
-    logseq.UI.showMsg(
-      "Error while trying to receive content from Raindrop API",
-      "error"
-    );
-  }
+export const upsertRaindropPage = async (fullRaindrop: Raindrop) => {
+  await ioCreateOrLoadPage(fullRaindrop);
+  const pageBlocks = await logseq.Editor.getCurrentPageBlocksTree();
+  const currentPage = await logseq.Editor.getCurrentPage();
+  await ioAddOrRemoveEmptyState(
+    fullRaindrop,
+    pageBlocks,
+    currentPage as PageEntity
+  );
+  await upsertAnnotationBlocks(fullRaindrop, currentPage as PageEntity);
 };

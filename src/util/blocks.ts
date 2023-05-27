@@ -1,10 +1,9 @@
-import type { BlockEntity } from "@logseq/libs/dist/LSPlugin.js";
 import type { LSBlockEntity } from "src/services/interfaces.js";
 
 import { applyAsyncFunc } from "@util/async.js";
 
-type BlockWithProperties = BlockEntity &
-  Required<Pick<BlockEntity, "properties">>;
+type BlockWithProperties = LSBlockEntity &
+  Required<Pick<LSBlockEntity, "properties">>;
 
 // @ts-ignore We require logseq to be undefined here to prevent
 // using it in the wrong context.
@@ -38,14 +37,14 @@ export const someBlockHasProperty = async (
 export const filterBlocksWithProperty = async (
   blocks: BlockWithProperties[],
   property: string
-): Promise<BlockEntity[]> => {
+): Promise<LSBlockEntity[]> => {
   /**
    * A tuple containing a block and whether or not that block has that
    * provided property.
    */
   const blockAndBlockHasProp = async (
     block: BlockWithProperties
-  ): Promise<[BlockEntity, boolean]> => [
+  ): Promise<[LSBlockEntity, boolean]> => [
     block,
     await blockHasProperty(block, property),
   ];

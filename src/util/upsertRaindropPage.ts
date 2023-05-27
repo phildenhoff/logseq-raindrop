@@ -1,4 +1,3 @@
-import type { BlockEntity, PageEntity } from "@logseq/libs/dist/LSPlugin.js";
 import type { Just } from "true-myth/maybe";
 import { Maybe, nothing } from "true-myth/maybe";
 
@@ -15,6 +14,7 @@ import { settings } from "@util/settings.js";
 import { applyAsyncFunc } from "@util/async.js";
 import type {
   LSBlockEntity,
+  LSPageEntity,
   LogseqServiceClient,
 } from "src/services/interfaces.js";
 
@@ -38,13 +38,13 @@ const generatePageName = (raindrop: Raindrop, namespace: string): string => {
 const ioMaybeGetPageForRaindrop = async (
   r: Raindrop,
   logseqClient: LogseqServiceClient
-): Promise<Maybe<PageEntity>> => {
+): Promise<Maybe<LSPageEntity>> => {
   const pagesHavingId = (await findPagesByRaindropID(
     r.id,
     logseqClient
-  )) as (PageEntity & Record<"createdAt", number>)[];
+  )) as (LSPageEntity & Record<"createdAt", number>)[];
 
-  if (pagesHavingId.length === 0) return nothing<PageEntity>();
+  if (pagesHavingId.length === 0) return nothing<LSPageEntity>();
   if (pagesHavingId.length > 1) alertDuplicatePageIdUsed(r);
 
   const sortedByAge = [...pagesHavingId].sort(
@@ -93,7 +93,7 @@ const ioRemoveEmptyStateBlock = async (
   logseqClient: LogseqServiceClient
 ) => {
   const pageBlocksWithProperties = pageBlocks.filter(
-    (block): block is BlockEntity & { properties: Record<string, any> } =>
+    (block): block is LSBlockEntity & { properties: Record<string, any> } =>
       "properties" in block
   );
   (
@@ -137,7 +137,7 @@ const ioCreateOrLoadPage = async (
 const ioAddOrRemoveEmptyState = async (
   r: Raindrop,
   pageBlocks: LSBlockEntity[],
-  currentPage: PageEntity,
+  currentPage: LSPageEntity,
   logseqClient: LogseqServiceClient
 ) => {
   if (r.annotations.length === 0) {
@@ -149,7 +149,7 @@ const ioAddOrRemoveEmptyState = async (
 
 const ioCreateAnnotationBlock = async (
   annotation: Annotation,
-  currentPage: PageEntity,
+  currentPage: LSPageEntity,
   logseqClient: LogseqServiceClient
 ): Promise<LSBlockEntity | null> => {
   const highlightFormatted = settings.formatting_template
@@ -172,9 +172,9 @@ const ioCreateAnnotationBlock = async (
 
 const ioUpsertAnnotationBlocks = async (
   r: Raindrop,
-  currentPage: PageEntity,
+  currentPage: LSPageEntity,
   logseqClient: LogseqServiceClient
-): Promise<BlockEntity[]> => {
+): Promise<LSBlockEntity[]> => {
   const currentPageBlocksTree = await logseqClient.getBlockTreeForCurrentPage();
   const knownRaindropAnnotationIds = new Set(
     currentPageBlocksTree
@@ -186,7 +186,7 @@ const ioUpsertAnnotationBlocks = async (
     r.annotations,
     async (annotation) => {
       if (knownRaindropAnnotationIds.has(annotation.id))
-        return Promise.resolve(nothing<BlockEntity>());
+        return Promise.resolve(nothing<LSBlockEntity>());
       return Maybe.of(
         await ioCreateAnnotationBlock(annotation, currentPage, logseqClient)
       );
@@ -194,7 +194,7 @@ const ioUpsertAnnotationBlocks = async (
   );
 
   return addedBlocks
-    .filter((item): item is Just<BlockEntity> => item.isJust)
+    .filter((item): item is Just<LSBlockEntity> => item.isJust)
     .map((item) => item.value);
 };
 
@@ -208,12 +208,12 @@ export const upsertRaindropPage = async (
   await ioAddOrRemoveEmptyState(
     fullRaindrop,
     pageBlocks,
-    currentPage as PageEntity,
+    currentPage as LSPageEntity,
     logseqClient
   );
   await ioUpsertAnnotationBlocks(
     fullRaindrop,
-    currentPage as PageEntity,
+    currentPage as LSPageEntity,
     logseqClient
   );
 };

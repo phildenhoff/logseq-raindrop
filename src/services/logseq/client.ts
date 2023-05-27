@@ -58,7 +58,7 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
       logseq.Editor.getPageBlocksTree(pageUuid),
     createPage: async (page, properties, options) =>
       logseq.Editor.createPage(page, properties, options),
-    openPageByName: async (name) => logseq.Editor.openPage(name),
+    openPageByName: async (name) => logseq.App.pushState("page", { name }),
     getPageById: async (id) => {
       if (typeof id !== "number") return null;
       return logseq.Editor.getPage(id);

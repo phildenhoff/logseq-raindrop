@@ -10,6 +10,8 @@
   import { raindropClientCtxKey } from "src/services/raindrop/client.js";
   import type { RaindropClient } from "src/services/raindrop/interfaces.js";
   import { match } from "true-myth/maybe";
+  import type { LogseqServiceClient } from "src/services/interfaces.js";
+  import { logseqClientCtxKey } from "src/services/logseq/client.js";
 
   const remoteData = writable<TRaindrop[]>([]);
   const requestsInFlight = writable(0);
@@ -20,6 +22,7 @@
   );
 
   const raindropClient = getContext<RaindropClient>(raindropClientCtxKey);
+  const logseqClient = getContext<LogseqServiceClient>(logseqClientCtxKey);
 
   const performSearch = async (term: string): Promise<void> => {
     const requestTime = new Date();
@@ -44,7 +47,7 @@
     match({
       Just: (fullRaindrop) => upsertRaindropPage(fullRaindrop),
       Nothing: () => {
-      logseq.UI.showMsg(
+      logseqClient.displayMessage(
         "Something went wrong while trying to contact Raindrop",
         "error"
       );

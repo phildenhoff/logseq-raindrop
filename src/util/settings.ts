@@ -64,14 +64,15 @@ const settingsConfig: SettingSchemaDesc[] = [
  */
 export const settings = {
   enable_broken_experimental_features: (): string =>
-    logseq.settings!["broken_experimental_features"],
-  access_token: (): string => logseq.settings!["access_token"],
-  namespace_label: (): string => logseq.settings!["namespace_label"],
-  default_page_tags: (): string => logseq.settings!["default_page_tags"],
+    logseq.settings!["broken_experimental_features"] as string,
+  access_token: (): string => logseq.settings!["access_token"] as string,
+  namespace_label: (): string => logseq.settings!["namespace_label"] as string,
+  default_page_tags: (): string =>
+    logseq.settings!["default_page_tags"] as string,
   formatting_template: {
-    highlight: (): string => logseq.settings!["template_highlight"],
-    annotation: (): string => logseq.settings!["template_annotation"],
-    deleted: (): string => logseq.settings!["template_deleted"],
+    highlight: (): string => logseq.settings!["template_highlight"] as string,
+    annotation: (): string => logseq.settings!["template_annotation"] as string,
+    deleted: (): string => logseq.settings!["template_deleted"] as string,
   },
 };
 

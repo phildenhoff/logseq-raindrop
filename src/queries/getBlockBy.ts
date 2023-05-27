@@ -2,9 +2,13 @@ import type { BlockEntity, PageEntity } from "@logseq/libs/dist/LSPlugin.js";
 import type { ID } from "@types";
 
 import { uniqueBy } from "@util/unique.js";
+import type { LogseqServiceClient } from "src/services/interfaces.js";
 
 const findPagesByProperty =
-  (propertyName: string): ((propertyValue: string) => Promise<PageEntity[]>) =>
+  (
+    propertyName: string,
+    logseqClient: LogseqServiceClient
+  ): ((propertyValue: string) => Promise<PageEntity[]>) =>
   async (propertyValue) => {
     // Searching for pages by page-properties is really broken in Logseq right
     // now. If you've recently added a page and haven't re-indexed, a
@@ -24,17 +28,20 @@ const findPagesByProperty =
     // For more info on how page-property is broken, see this PR
     // https://github.com/logseq/logseq/issues/5445
 
-    const blocks: BlockEntity[] =
-      (await logseq.DB.q(`(property ${propertyName} ${propertyValue})`)) ?? [];
+    const blocks = ((await logseqClient.queryDb(
+      `(property ${propertyName} ${propertyValue})`
+    )) ?? []) as BlockEntity[];
     const pagesOfBlocks = (
       await Promise.all(
-        blocks.map(async (block) => await logseq.Editor.getPage(block.page.id))
+        blocks.map(
+          async (block) => await logseqClient.getPageById(block.page.id)
+        )
       )
     ).filter((page): page is PageEntity => page !== null);
 
-    const pagesByPageProperty: PageEntity[] =
-      (await logseq.DB.q(`(page-property ${propertyName} ${propertyValue})`)) ??
-      [];
+    const pagesByPageProperty = ((await logseqClient.queryDb(
+      `(page-property ${propertyName} ${propertyValue})`
+    )) ?? []) as PageEntity[];
 
     const uniquePages = uniqueBy("id", [
       ...pagesByPageProperty,
@@ -43,6 +50,9 @@ const findPagesByProperty =
     return [...uniquePages];
   };
 
-export const findPagesByRaindropID = async (id: ID): Promise<PageEntity[]> => {
-  return findPagesByProperty("raindrop-id")(id.toString());
+export const findPagesByRaindropID = async (
+  id: ID,
+  logseqClient: LogseqServiceClient
+): Promise<PageEntity[]> => {
+  return findPagesByProperty("raindrop-id", logseqClient)(id.toString());
 };

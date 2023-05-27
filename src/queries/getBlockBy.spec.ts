@@ -1,4 +1,4 @@
-import { generateMoqseqClient } from "src/services/moqseq.js";
+import { generateMoqseqClient } from "src/services/logseq/mock/client.js";
 import { describe, expect, it } from "vitest";
 import { findPagesByRaindropID } from "./getBlockBy.js";
 import type { LSBlockEntity, LSPageEntity } from "src/services/interfaces.js";

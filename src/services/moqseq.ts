@@ -257,6 +257,7 @@ export const generateMoqseqClient = (
 
   return {
     displayMessage,
+    exitEditMode: () => Promise.resolve(),
     getBlockById,
     getCurrentPage,
     getFocusedPageOrBlock,

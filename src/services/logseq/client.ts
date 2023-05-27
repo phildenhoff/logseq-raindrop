@@ -10,6 +10,7 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
   return {
     displayMessage: async (message, status, options) =>
       await logseq.UI.showMsg(message, status, options).then(() => {}),
+    exitEditMode: async () => await logseq.Editor.exitEditingMode(),
     getCurrentPage: () => {
       throw new Error("Not implemented");
     },

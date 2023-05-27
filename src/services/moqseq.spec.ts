@@ -1,4 +1,4 @@
-import type { BlockEntity, IEntityID } from "@logseq/libs/dist/LSPlugin.js";
+import type { IEntityID } from "@logseq/libs/dist/LSPlugin.js";
 import { assert, describe, expect, it } from "vitest";
 import { generateMoqseqClient, recursiveChildrenOfBlock } from "./moqseq.js";
 import type { LSBlockEntity } from "./interfaces.js";
@@ -6,7 +6,7 @@ import { randomUUID } from "crypto";
 
 describe("recursiveChildrenOfBlock", () => {
   it("must return the children of a block one deep", async () => {
-    const b1: BlockEntity = {
+    const b1: LSBlockEntity = {
       uuid: "block1",
       properties: {},
       id: 1,
@@ -27,7 +27,7 @@ describe("recursiveChildrenOfBlock", () => {
         ["uuid", "block3"],
       ],
     };
-    const b2: BlockEntity = {
+    const b2: LSBlockEntity = {
       uuid: "block2",
       properties: {},
       id: 1,
@@ -45,7 +45,7 @@ describe("recursiveChildrenOfBlock", () => {
       },
       children: [],
     };
-    const b3: BlockEntity = {
+    const b3: LSBlockEntity = {
       uuid: "block3",
       properties: {},
       id: 1,
@@ -63,7 +63,7 @@ describe("recursiveChildrenOfBlock", () => {
       },
       children: [],
     };
-    const blocks = new Map<string, BlockEntity>([
+    const blocks = new Map<string, LSBlockEntity>([
       [b1.uuid, b1],
       [b2.uuid, b2],
       [b3.uuid, b3],
@@ -74,7 +74,7 @@ describe("recursiveChildrenOfBlock", () => {
   });
 
   it("must return the children of a block many levels deep", async () => {
-    const b1: BlockEntity = {
+    const b1: LSBlockEntity = {
       uuid: "block1",
       properties: {},
       id: 1,
@@ -92,7 +92,7 @@ describe("recursiveChildrenOfBlock", () => {
       },
       children: [["uuid", "block2"]],
     };
-    const b2: BlockEntity = {
+    const b2: LSBlockEntity = {
       uuid: "block2",
       properties: {},
       id: 2,
@@ -110,7 +110,7 @@ describe("recursiveChildrenOfBlock", () => {
       },
       children: [["uuid", "block3"]],
     };
-    const b3: BlockEntity = {
+    const b3: LSBlockEntity = {
       uuid: "block3",
       properties: {},
       id: 3,
@@ -128,7 +128,7 @@ describe("recursiveChildrenOfBlock", () => {
       },
       children: [["uuid", "block4"]],
     };
-    const b4: BlockEntity = {
+    const b4: LSBlockEntity = {
       uuid: "block4",
       properties: {},
       id: 4,
@@ -146,7 +146,7 @@ describe("recursiveChildrenOfBlock", () => {
       },
       children: [["uuid", "block5"]],
     };
-    const b5: BlockEntity = {
+    const b5: LSBlockEntity = {
       uuid: "block5",
       properties: {},
       id: 5,
@@ -164,7 +164,7 @@ describe("recursiveChildrenOfBlock", () => {
       },
       children: [],
     };
-    const blocks = new Map<string, BlockEntity>([
+    const blocks = new Map<string, LSBlockEntity>([
       [b1.uuid, b1],
       [b2.uuid, b2],
       [b3.uuid, b3],
@@ -177,7 +177,7 @@ describe("recursiveChildrenOfBlock", () => {
   });
 
   it("throws an error if the provided block ID doesn't exist", async () => {
-    const blocks: Map<string, BlockEntity> = new Map();
+    const blocks: Map<string, LSBlockEntity> = new Map();
     await expect(async () =>
       recursiveChildrenOfBlock("blockDoesNotExist", blocks, true)
     ).rejects.toThrow();

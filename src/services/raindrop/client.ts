@@ -34,6 +34,7 @@ export const generateRaindropClient = (options: {
           throw new Error("Invalid response");
         }
 
+        // @ts-expect-error TODO: Parse the item to make sure it can be transformed
         const transformed = raindropTransformer(resJson.item);
         return just(transformed);
       } catch {

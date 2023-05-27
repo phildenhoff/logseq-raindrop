@@ -1,14 +1,17 @@
-import type { BlockEntity, PageEntity } from "@logseq/libs/dist/LSPlugin.js";
 import type { ID } from "@types";
 
 import { uniqueBy } from "@util/unique.js";
-import type { LogseqServiceClient } from "src/services/interfaces.js";
+import type {
+  LSBlockEntity,
+  LSPageEntity,
+  LogseqServiceClient,
+} from "src/services/interfaces.js";
 
 const findPagesByProperty =
   (
     propertyName: string,
     logseqClient: LogseqServiceClient
-  ): ((propertyValue: string) => Promise<PageEntity[]>) =>
+  ): ((propertyValue: string) => Promise<LSPageEntity[]>) =>
   async (propertyValue) => {
     // Searching for pages by page-properties is really broken in Logseq right
     // now. If you've recently added a page and haven't re-indexed, a
@@ -30,18 +33,18 @@ const findPagesByProperty =
 
     const blocks = ((await logseqClient.queryDb(
       `(property ${propertyName} ${propertyValue})`
-    )) ?? []) as BlockEntity[];
+    )) ?? []) as LSBlockEntity[];
     const pagesOfBlocks = (
       await Promise.all(
         blocks.map(
           async (block) => await logseqClient.getPageById(block.page.id)
         )
       )
-    ).filter((page): page is PageEntity => page !== null);
+    ).filter((page): page is LSPageEntity => page !== null);
 
     const pagesByPageProperty = ((await logseqClient.queryDb(
       `(page-property ${propertyName} ${propertyValue})`
-    )) ?? []) as PageEntity[];
+    )) ?? []) as LSPageEntity[];
 
     const uniquePages = uniqueBy("id", [
       ...pagesByPageProperty,
@@ -53,6 +56,6 @@ const findPagesByProperty =
 export const findPagesByRaindropID = async (
   id: ID,
   logseqClient: LogseqServiceClient
-): Promise<PageEntity[]> => {
+): Promise<LSPageEntity[]> => {
   return findPagesByProperty("raindrop-id", logseqClient)(id.toString());
 };

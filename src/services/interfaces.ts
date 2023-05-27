@@ -70,7 +70,7 @@ export interface LogseqServiceClient {
    * @returns A promise that resolves to the result of the query.
    *
    */
-  queryDb: (query: string) => Promise<LSBlockEntity[]>;
+  queryDb: (query: string) => Promise<(LSBlockEntity | LSPageEntity)[]>;
 
   /**
    * Get the properties for a block.

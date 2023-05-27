@@ -58,3 +58,6 @@ export const filterBlocksWithProperty = async (
     .filter(([, hasProp]) => hasProp)
     .map(([block]) => block);
 };
+
+export const filterBlocksWithPropertyField = (blocks: BlockEntity[]) =>
+  blocks.filter((block): block is BlockWithProperties => "properties" in block);

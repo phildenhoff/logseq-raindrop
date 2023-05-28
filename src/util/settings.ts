@@ -57,6 +57,16 @@ const settingsConfig: SettingSchemaDesc[] = [
     key: "broken_experimental_features",
     type: "boolean",
   },
+  {
+    type: "boolean",
+    key: "enable_empty_page_state",
+    title: "Enable empty page state",
+    default: true,
+    description:
+      "When a Raindrop page is imported, but has no annotations, a block will be added to the page letting you know that the page is empty (and that nothing went wrong)." +
+      "\n\n" +
+      "If you disable this, no blocks will be added but **you will have to delete existing blocks manually**.",
+  },
 ];
 
 /**

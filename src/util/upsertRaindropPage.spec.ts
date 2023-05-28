@@ -1,12 +1,13 @@
 import type { LSPageEntity } from "src/services/interfaces.js";
-import { describe, it, expect, assert } from "vitest";
+import { describe, it, expect, assert, vi, afterEach } from "vitest";
 import {
   ioMaybeGetPageForRaindrop,
   ioCreateOrLoadPage,
   ioCreateAnnotationBlock,
+  ioUpsertAnnotationBlocks,
 } from "./upsertRaindropPage.js";
 import { generateMoqseqClient } from "src/services/logseq/mock/client.js";
-import type { Annotation } from "@types";
+import type { Annotation, Raindrop } from "@types";
 
 const emptyQueryGenerator = function* () {
   // Blocks
@@ -132,7 +133,7 @@ describe("ioCreateOrLoadPage", () => {
 
     assert("properties" in propBlock);
     assert(propBlock.properties !== undefined);
-    expect(propBlock.properties["raindrop-id"]).toBe(raindropId);
+    expect(propBlock.properties["raindropId"]).toBe(raindropId);
   });
 
   it("opens a page if it exists", async () => {
@@ -193,7 +194,7 @@ describe("ioCreateOrLoadPage", () => {
 
     assert("properties" in propBlock);
     assert(propBlock.properties !== undefined);
-    expect(propBlock.properties["raindrop-id"]).toBe(raindropId);
+    expect(propBlock.properties["raindropId"]).toBe(raindropId);
   });
 });
 
@@ -233,7 +234,7 @@ describe("ioCreateAnnotationBlock", () => {
     expect(firstBlock.content).includes(highlightedText);
     expect(firstBlock.content).includes(noteText);
     assert("properties" in firstBlock, "Block must have properties");
-    expect(firstBlock.properties).toHaveProperty("annotation-id", annotationId);
+    expect(firstBlock.properties).toHaveProperty("annotationId", annotationId);
   });
 
   it("creates new annotations below existing annotations", async () => {
@@ -278,5 +279,126 @@ describe("ioCreateAnnotationBlock", () => {
     expect(firstBlock.content).includes("1");
     expect(secondBlock.content).includes("2");
     expect(secondBlock.content).includes("2");
+  });
+});
+
+describe("ioUpsertAnnotationBlocks", () => {
+  it("creates a new annotation block", async () => {
+    const raindrop: Raindrop = {
+      id: "123",
+      title: "RD1",
+      description: "",
+      annotations: [
+        {
+          id: "annotation1",
+          created: new Date(),
+          note: "this is a note",
+          color: "yellow",
+          text: "this is highlighted",
+        },
+      ],
+      tags: [],
+      coverImage: "",
+      url: new URL("https://example.com"),
+      created: new Date(),
+    };
+
+    const logseqClient = generateMoqseqClient({
+      settings: {
+        formatting_template: {
+          highlight: "> {text}",
+          annotation: "{text}",
+        },
+      },
+    });
+    const page = await logseqClient.createPage(
+      "Page 1",
+      {},
+      { redirect: true }
+    );
+    assert(page);
+
+    await ioUpsertAnnotationBlocks(raindrop, page, logseqClient);
+
+    const blocks = await logseqClient.getBlockTreeForPage(page.uuid);
+    assert(blocks);
+    const firstBlock = blocks.at(0);
+    assert(firstBlock);
+    expect(firstBlock.content).includes("this is highlighted");
+  });
+
+  it.skip("updates existing annotation blocks", async () => {
+    const raindropBefore: Raindrop = {
+      id: "123",
+      title: "RD1",
+      description: "",
+      annotations: [
+        {
+          id: "annotation1",
+          created: new Date(),
+          note: "note Before",
+          color: "yellow",
+          text: "highlightBefore",
+        },
+      ],
+      tags: [],
+      coverImage: "",
+      url: new URL("https://example.com"),
+      created: new Date(),
+    };
+    const raindropAfter: Raindrop = {
+      id: "123",
+      title: "RD1",
+      description: "",
+      annotations: [
+        {
+          id: "annotation1",
+          created: new Date(),
+          note: "note After",
+          color: "yellow",
+          text: "highlightAfter",
+        },
+      ],
+      tags: [],
+      coverImage: "",
+      url: new URL("https://example.com"),
+      created: new Date(),
+    };
+
+    const logseqClient = generateMoqseqClient({
+      settings: {
+        formatting_template: {
+          highlight: "> {text}",
+          annotation: "{text}",
+        },
+      },
+    });
+    const page = await logseqClient.createPage(
+      "Page 1",
+      {},
+      { redirect: true }
+    );
+    assert(page);
+
+    // Insert original annotation
+    await ioUpsertAnnotationBlocks(raindropBefore, page, logseqClient);
+
+    // Verify annotation was inserted
+    const blocksBefore = await logseqClient.getBlockTreeForPage(page.uuid);
+    assert(blocksBefore);
+    const firstBlockBefore = blocksBefore.at(0);
+    assert(firstBlockBefore);
+    expect(firstBlockBefore.content).includes("note Before");
+    expect(firstBlockBefore.content).includes("highlightBefore");
+
+    // Update existing annotation by ID
+    await ioUpsertAnnotationBlocks(raindropAfter, page, logseqClient);
+    // Verify annotation was updated
+    const blocksAfter = await logseqClient.getBlockTreeForPage(page.uuid);
+    assert(blocksAfter);
+    const firstBlockAfter = blocksAfter.at(0);
+    assert(firstBlockAfter);
+    expect(firstBlockAfter.content).includes("note After");
+    expect(firstBlockAfter.content).includes("highlightAfter");
   });
 });

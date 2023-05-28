@@ -334,6 +334,31 @@ describe("moqseq", () => {
     });
   });
 
+  describe("getBlockTreeForPage", () => {
+    it("normalizes property names to camelCase", async () => {
+      const mock = generateMoqseqClient({});
+      const page1 = await mock.createPage("page1");
+      if (!page1) throw new Error("page1 not created");
+      await mock.openPageByName("page1");
+
+      const b1 = await mock.createBlock(page1.uuid, "block1");
+      assert(b1);
+      await mock.upsertPropertiesForBlock(b1.uuid, {
+        "foo-bar": "baz",
+      });
+
+      const actual = await mock.getBlockTreeForCurrentPage();
+      expect(actual).toEqual([
+        {
+          ...b1,
+          properties: {
+            fooBar: "baz",
+          },
+        },
+      ]);
+    });
+  });
+
   describe("upsertPropertiesForBlock", () => {
     it("does nothing if the block does not exist", async () => {
       const mock = generateMoqseqClient({});

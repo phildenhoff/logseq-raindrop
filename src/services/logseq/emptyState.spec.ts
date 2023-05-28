@@ -6,7 +6,11 @@ import { ioAddEmptyStateBlock, ioRemoveEmptyStateBlock } from "./emptyState.js";
 
 describe("ioAddEmptyStateBlock", () => {
   it("should add a new block to let the user know that there are no annotations", async () => {
-    const mockLogseqClient = generateMoqseqClient();
+    const mockLogseqClient = generateMoqseqClient({
+      settings: {
+        enable_empty_page_state: true,
+      },
+    });
     const page = await mockLogseqClient.createPage("test");
     assert(page);
     const pageBlocksBefore = await mockLogseqClient.getBlockTreeForPage(
@@ -25,7 +29,11 @@ describe("ioAddEmptyStateBlock", () => {
   });
 
   it("must only add the block once", async () => {
-    const mockLogseqClient = generateMoqseqClient();
+    const mockLogseqClient = generateMoqseqClient({
+      settings: {
+        enable_empty_page_state: true,
+      },
+    });
     const page = await mockLogseqClient.createPage("test");
     assert(page);
     const pageBlocksBefore = await mockLogseqClient.getBlockTreeForPage(
@@ -44,11 +52,33 @@ describe("ioAddEmptyStateBlock", () => {
     expect(actualSecond).toBeTruthy();
     expect(actualSecond.length).toBe(1);
   });
+
+  it("must not add a block when `enable_empty_page_state` is disabled", async () => {
+    const mockLogseqClient = generateMoqseqClient({
+      settings: {
+        enable_empty_page_state: false,
+      },
+    });
+    const page = await mockLogseqClient.createPage("test");
+    assert(page);
+    const pageBlocksBefore = await mockLogseqClient.getBlockTreeForPage(
+      page.uuid
+    );
+    await ioAddEmptyStateBlock(pageBlocksBefore, page.uuid, mockLogseqClient);
+
+    const actual = await mockLogseqClient.getBlockTreeForPage(page.uuid);
+    expect(actual).toBeTruthy();
+    expect(actual.length).toBe(0);
+  });
 });
 
 describe("ioRemoveEmptyStateBlock", () => {
   it("must remove the block", async () => {
-    const mockLogseqClient = generateMoqseqClient();
+    const mockLogseqClient = generateMoqseqClient({
+      settings: {
+        enable_empty_page_state: true,
+      },
+    });
     const page = await mockLogseqClient.createPage("test");
     assert(page);
 
@@ -76,7 +106,11 @@ describe("ioRemoveEmptyStateBlock", () => {
   });
 
   it("must not remove any other blocks", async () => {
-    const mockLogseqClient = generateMoqseqClient();
+    const mockLogseqClient = generateMoqseqClient({
+      settings: {
+        enable_empty_page_state: true,
+      },
+    });
     const page = await mockLogseqClient.createPage("test");
     assert(page);
 

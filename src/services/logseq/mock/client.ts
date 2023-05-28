@@ -21,6 +21,29 @@ type TestableLogseqServiceClient = {
   };
 };
 
+const kebabToCamelCase = (str: string) =>
+  str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+
+/**
+ * Apply normalizations to block.
+ * In particular, this converts kebab-case properties to camelCase.
+ *
+ * @param block The block to normalize
+ */
+const normalizeBlock: (block: LSBlockEntity) => LSBlockEntity = (block) => {
+  const blockProperties = block.properties ?? {};
+
+  return {
+    ...block,
+    properties: Object.fromEntries(
+      Object.entries(blockProperties).map(([key, value]) => [
+        kebabToCamelCase(key),
+        value,
+      ])
+    ),
+  };
+};
+
 export const recursiveChildrenOfBlock = async (
   blockUuid: BlockUUID,
   blockMap: BlockMap,
@@ -220,9 +243,13 @@ export const generateMoqseqClient = (mockSetup?: {
         return [];
       }
 
-      return applyAsyncFunc(page.roots, async ([, rootBlock]) =>
-        recursiveChildrenOfBlock(rootBlock, blocks, true)
+      const childrenBlocks = await applyAsyncFunc(
+        page.roots,
+        async ([, rootBlock]) =>
+          recursiveChildrenOfBlock(rootBlock, blocks, true)
       ).then((children) => children.flat());
+
+      return childrenBlocks.map(normalizeBlock);
     };
   const getBlockTreeForCurrentPage = async () => {
     if (!focusedPageOrBlock) {

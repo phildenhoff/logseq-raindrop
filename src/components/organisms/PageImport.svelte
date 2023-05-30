@@ -6,6 +6,7 @@
   import { raindropTransformer } from "@util/raindropTransformer.js";
   import Raindrop from "@atoms/Raindrop.svelte";
   import { userPreferences } from "src/stores/userPreferences.js";
+  import { formatSecondsAsDateTime } from "@util/time.js";
 
   const lastSyncTimestampSecs = derived(
     userPreferences,
@@ -16,16 +17,6 @@
     userPreferences,
     ($userPrefences) => $userPrefences.broken_experimental_features
   );
-
-  const secondsToMs = (value: number) => value * 1000;
-  const formatterOptions = {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  } as const;
-  const formatSecondsAsDateTime = (seconds: number) => Intl.DateTimeFormat(undefined, formatterOptions).format(secondsToMs(seconds));
 
   const remoteData = writable<TRaindrop[]>([]);
   const requestsInFlight = writable(0);
@@ -41,7 +32,6 @@
       return $remoteData2.filter((raindrop) => raindrop.created > lastSyncDate);
     }
   )
-
 
   const performSearch = async (): Promise<void> => {
     const requestTime = new Date();

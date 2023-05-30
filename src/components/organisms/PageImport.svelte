@@ -7,6 +7,11 @@
   import Raindrop from "@atoms/Raindrop.svelte";
   import { userPreferences } from "src/stores/userPreferences.js";
   import { formatSecondsAsDateTime } from "@util/time.js";
+  import { raindropClientCtxKey } from "src/services/raindrop/client.js";
+  import { getContext } from "svelte";
+  import type { RaindropClient } from "src/services/raindrop/interfaces.js";
+
+  const raindropClient = getContext<RaindropClient>(raindropClientCtxKey);
 
   const lastSyncTimestampSecs = derived(
     userPreferences,
@@ -37,16 +42,9 @@
     const requestTime = new Date();
     requestsInFlight.update((n) => n + 1);
 
-    const res = await fetch(
-      `https://api.raindrop.io/rest/v1/raindrops/0?sort=-created&perpage=40&version=2`,
-      {
-        method: "GET",
-        headers: new Headers({
-          Authorization: `Bearer ${settings.access_token()}`,
-          "Content-Type": "application/json",
-        }),
-      }
-    );
+    const lastSyncDate = new Date($lastSyncTimestampSecs * 1000);
+
+    const res = await raindropClient.getCollectionAfter(lastSyncDate, "0");
     const { items } = await res.json();
 
     requestsInFlight.update((n) => n - 1);

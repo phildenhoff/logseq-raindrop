@@ -5,9 +5,9 @@ import type {
   LSBlockEntity,
 } from "../../interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
-import type { BlockUUID, PageEntity } from "@logseq/libs/dist/LSPlugin.user.js";
+import type { BlockUUID } from "@logseq/libs/dist/LSPlugin.user.js";
 
-type PageEntityWithRootBlocks = LSPageEntity & {
+export type PageEntityWithRootBlocks = LSPageEntity & {
   roots?: ["uuid", BlockUUID][];
 };
 type BlockMap = Map<LSBlockEntity["uuid"], LSBlockEntity>;
@@ -24,6 +24,14 @@ type TestableLogseqServiceClient = {
 const kebabToCamelCase = (str: string) =>
   str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
 
+const normalizeBlockProperties = (properties: Record<string, unknown>) =>
+  Object.fromEntries(
+    Object.entries(properties).map(([key, value]) => [
+      kebabToCamelCase(key),
+      value,
+    ])
+  );
+
 /**
  * Apply normalizations to block.
  * In particular, this converts kebab-case properties to camelCase.
@@ -35,12 +43,7 @@ const normalizeBlock: (block: LSBlockEntity) => LSBlockEntity = (block) => {
 
   return {
     ...block,
-    properties: Object.fromEntries(
-      Object.entries(blockProperties).map(([key, value]) => [
-        kebabToCamelCase(key),
-        value,
-      ])
-    ),
+    properties: normalizeBlockProperties(blockProperties),
   };
 };
 
@@ -85,11 +88,14 @@ function* throwErrorGenerator() {
  * Create a new Mock Logseq client.
  */
 export const generateMoqseqClient = (mockSetup?: {
-  defaultPages?: PageEntity[];
+  defaultPages?: LSPageEntity[];
+  defaultBlocks?: LSBlockEntity[];
   settings?: Record<string, string | number | boolean | unknown>;
 }): LogseqServiceClient & TestableLogseqServiceClient => {
   let focusedPageOrBlock: LSBlockEntity | LSPageEntity | null = null;
-  let blocks: BlockMap = new Map();
+  let blocks: BlockMap = new Map(
+    mockSetup?.defaultBlocks?.map((item) => [item.uuid, item]) ?? []
+  );
   let pages: PageMap = new Map(
     mockSetup?.defaultPages?.map((item) => [item.uuid, item]) ?? []
   );
@@ -119,27 +125,13 @@ export const generateMoqseqClient = (mockSetup?: {
     }
     page.roots.push(["uuid", childUuid]);
   };
-
-  const displayMessage: LogseqServiceClient["displayMessage"] = async (
-    ..._args
-  ) => Promise.resolve();
-  const getCurrentPage = () => {
-    throw new Error("Not implemented");
-  };
-  const getFocusedPageOrBlock = async () => Promise.resolve(focusedPageOrBlock);
-  const setDbQueryResponseGenerator: TestableLogseqServiceClient["PRIVATE_FOR_TESTING"]["setDbQueryResponseGenerator"] =
-    (iterator) => {
-      queryResponseGenerator = iterator();
-    };
-  const queryDb: LogseqServiceClient["queryDb"] = async (query) => {
-    return queryResponseGenerator.next(query).value;
-  };
-
-  // Block
-  const createBlock: LogseqServiceClient["createBlock"] = async (
-    referenceBlockUuid,
-    blockContent,
-    blockOptions
+  const _createBlock = async (
+    referenceBlockUuid: BlockUUID,
+    blockContent: string,
+    blockOptions: Record<string, unknown> | undefined,
+    creationOptions: {
+      isPreBlock: boolean;
+    }
   ) => {
     const refBlock = blocks.get(referenceBlockUuid);
     const refPage = pages.get(referenceBlockUuid);
@@ -168,6 +160,7 @@ export const generateMoqseqClient = (mockSetup?: {
         id: refBlock ? refBlock.page.id : refPage!.id,
         uuid: refBlock ? refBlock.page.uuid : refPage!.uuid,
       },
+      preBlock: creationOptions.isPreBlock || false,
     };
 
     if (refBlock) _addChildToBlock(refBlock, newBlock.uuid);
@@ -175,6 +168,32 @@ export const generateMoqseqClient = (mockSetup?: {
     blocks.set(newBlock.uuid, newBlock);
 
     return newBlock;
+  };
+
+  const displayMessage: LogseqServiceClient["displayMessage"] = async (
+    ..._args
+  ) => Promise.resolve();
+  const getCurrentPage = () => {
+    throw new Error("Not implemented");
+  };
+  const getFocusedPageOrBlock = async () => Promise.resolve(focusedPageOrBlock);
+  const setDbQueryResponseGenerator: TestableLogseqServiceClient["PRIVATE_FOR_TESTING"]["setDbQueryResponseGenerator"] =
+    (iterator) => {
+      queryResponseGenerator = iterator();
+    };
+  const queryDb: LogseqServiceClient["queryDb"] = async (query) => {
+    return queryResponseGenerator.next(query).value;
+  };
+
+  // Block
+  const createBlock: LogseqServiceClient["createBlock"] = async (
+    referenceBlockUuid,
+    blockContent,
+    blockOptions
+  ) => {
+    return _createBlock(referenceBlockUuid, blockContent, blockOptions, {
+      isPreBlock: false,
+    });
   };
   const deleteBlock: LogseqServiceClient["deleteBlock"] = async (blockUuid) => {
     const block = blocks.get(blockUuid);
@@ -266,7 +285,11 @@ export const generateMoqseqClient = (mockSetup?: {
       id: idGenerator++,
       uuid: randomUUID(),
       name: pageName,
-      properties: properties,
+      // WARNING: This is 100% going to be a problem later. We create the
+      // properties twice: once on the page, and once as a prop block below.
+      // We're not keeping them in sync if we update the page, which just seems
+      // ripe for bugs with Moqseq.
+      properties: normalizeBlockProperties(properties ?? {}),
       originalName: pageName,
       "journal?": options?.journal ?? false,
       ...options,
@@ -275,6 +298,14 @@ export const generateMoqseqClient = (mockSetup?: {
     pages.set(newPage.uuid, newPage);
     if (options?.redirect) {
       focusedPageOrBlock = newPage;
+    }
+    if (properties) {
+      await _createBlock(
+        newPage.uuid,
+        "",
+        { properties },
+        { isPreBlock: true }
+      );
     }
 
     return newPage;

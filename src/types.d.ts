@@ -17,6 +17,7 @@ export type Raindrop = {
   tags: Tag[];
   coverImage: string;
   created: Date;
+  lastUpdate: Date;
   url: URL;
   collectionName?: string;
   id: ID;

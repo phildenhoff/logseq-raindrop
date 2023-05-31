@@ -129,7 +129,6 @@ export const upsertRaindropPage = async (
   fullRaindrop: Raindrop,
   logseqClient: LogseqServiceClient
 ) => {
-  console.log(fullRaindrop);
   await ioCreateOrLoadPage(fullRaindrop, logseqClient);
   const pageBlocks = await logseqClient.getBlockTreeForCurrentPage();
   const currentPage = await logseqClient.getFocusedPageOrBlock();

@@ -88,6 +88,7 @@ export const raindropTransformer = (r: RaindropResponse): Raindrop => {
     coverImage: r.cover,
     url: new URL(r.link),
     created: new Date(r.created),
+    lastUpdate: new Date(r.lastUpdate),
     tags: r.tags,
     annotations,
   };

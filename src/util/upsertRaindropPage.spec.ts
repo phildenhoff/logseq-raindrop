@@ -60,6 +60,7 @@ describe("ioMaybeGetPageForRaindrop", () => {
         tags: [],
         coverImage: "",
         created: new Date(),
+        lastUpdate: new Date(),
         url: new URL("https://example.com"),
       },
       logseqClient
@@ -85,6 +86,7 @@ describe("ioMaybeGetPageForRaindrop", () => {
         tags: [],
         coverImage: "",
         created: new Date(),
+        lastUpdate: new Date(),
         url: new URL("https://example.com"),
       },
       logseqClient
@@ -120,6 +122,7 @@ describe("ioCreateOrLoadPage", () => {
         tags: [],
         coverImage: "",
         created: new Date(),
+        lastUpdate: new Date(),
         url: new URL("https://example.com"),
       },
       logseqClient
@@ -203,6 +206,7 @@ describe("ioCreateOrLoadPage", () => {
         tags: [],
         coverImage: "",
         created: new Date(),
+        lastUpdate: new Date(),
         url: new URL("https://example.com"),
       },
       logseqClient
@@ -322,6 +326,7 @@ describe("ioUpsertAnnotationBlocks", () => {
       coverImage: "",
       url: new URL("https://example.com"),
       created: new Date(),
+      lastUpdate: new Date(),
     };
 
     const logseqClient = generateMoqseqClient({
@@ -366,6 +371,7 @@ describe("ioUpsertAnnotationBlocks", () => {
       coverImage: "",
       url: new URL("https://example.com"),
       created: new Date(),
+      lastUpdate: new Date(),
     };
     const raindropAfter: Raindrop = {
       id: "123",
@@ -384,6 +390,7 @@ describe("ioUpsertAnnotationBlocks", () => {
       coverImage: "",
       url: new URL("https://example.com"),
       created: new Date(),
+      lastUpdate: new Date(),
     };
 
     const logseqClient = generateMoqseqClient({

@@ -4,10 +4,16 @@ import "svelte";
 import App from "./App.svelte";
 
 import { registerCommands } from "@commands/commands.js";
-import { registerSettings } from "@util/settings.js";
+import { registerSettings, settings } from "@util/settings.js";
+import { setupRaindropHttpClient } from "@services/raindrop/index.js";
 
 const main = () => {
   const addColorStyle = import.meta.env.PROD ? "" : "color: orange!important;";
+
+  setupRaindropHttpClient({
+    accessToken: settings.access_token(),
+    apiUrl: "https://api.raindrop.io/rest/v1",
+  });
 
   registerCommands();
   registerSettings();

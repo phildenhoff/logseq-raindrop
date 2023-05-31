@@ -6,13 +6,7 @@
   import { ifIsEnter, ifIsEscape } from "@util/keyboardEvents.js";
   import { settings } from "@util/settings.js";
   import { setContext } from "svelte";
-  import { raindropClientCtxKey, generateRaindropClient } from "./services/raindrop/client.js";
   import { generateLogseqClient, logseqClientCtxKey } from "./services/logseq/client.js";
-
-  const raindropClient = generateRaindropClient({
-    accessToken: settings.access_token(),
-  });
-  setContext(raindropClientCtxKey, raindropClient);
 
   const logseqClient = generateLogseqClient();
   setContext(logseqClientCtxKey, logseqClient);

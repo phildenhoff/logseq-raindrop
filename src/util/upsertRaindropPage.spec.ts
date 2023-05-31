@@ -206,10 +206,8 @@ describe("ioCreateAnnotationBlock", () => {
 
     const logseqClient = generateMoqseqClient({
       settings: {
-        formatting_template: {
-          highlight: "> {text}",
-          annotation: "{text}",
-        },
+        template_highlight: "> {text}",
+        template_annotation: "{text}",
       },
     });
 
@@ -240,10 +238,8 @@ describe("ioCreateAnnotationBlock", () => {
   it("creates new annotations below existing annotations", async () => {
     const logseqClient = generateMoqseqClient({
       settings: {
-        formatting_template: {
-          highlight: "> {text}",
-          annotation: "{text}",
-        },
+        template_highlight: "> {text}",
+        template_annotation: "{text}",
       },
     });
 
@@ -305,10 +301,8 @@ describe("ioUpsertAnnotationBlocks", () => {
 
     const logseqClient = generateMoqseqClient({
       settings: {
-        formatting_template: {
-          highlight: "> {text}",
-          annotation: "{text}",
-        },
+        template_highlight: "> {text}",
+        template_annotation: "{text}",
       },
     });
     const page = await logseqClient.createPage(

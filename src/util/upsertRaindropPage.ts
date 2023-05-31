@@ -92,15 +92,11 @@ export const ioCreateAnnotationBlock = async (
   logseqClient: LogseqServiceClient
 ): Promise<LSBlockEntity | null> => {
   const highlightFormatted = (
-    (await logseqClient.settings.get("formatting_template")) as {
-      highlight: string;
-    }
-  ).highlight.replace("{text}", annotation.text);
+    (await logseqClient.settings.get("template_highlight")) as string
+  ).replace("{text}", annotation.text);
   const noteFormatted = (
-    (await logseqClient.settings.get("formatting_template")) as {
-      annotation: string;
-    }
-  ).annotation.replace("{text}", annotation.note);
+    (await logseqClient.settings.get("template_annotation")) as string
+  ).replace("{text}", annotation.note);
 
   return logseqClient.createBlock(
     currentPage.uuid,
@@ -145,6 +141,7 @@ export const upsertRaindropPage = async (
   fullRaindrop: Raindrop,
   logseqClient: LogseqServiceClient
 ) => {
+  console.log(fullRaindrop);
   await ioCreateOrLoadPage(fullRaindrop, logseqClient);
   const pageBlocks = await logseqClient.getBlockTreeForCurrentPage();
   const currentPage = await logseqClient.getFocusedPageOrBlock();

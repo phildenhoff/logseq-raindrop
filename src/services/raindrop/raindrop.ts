@@ -32,3 +32,19 @@ export const getRaindrop = async (
     return err("Getting Raindrop failed");
   }
 };
+
+export const createRaindrop = async ({ link }: { link: string }) => {
+  if (!httpClient) {
+    throw new Error("Raindrop client not initialized");
+  }
+
+  try {
+    const res = await httpClient.post("/raindrop", {
+      link,
+      pleaseParse: {},
+    });
+    return ok(res);
+  } catch {
+    return err("Creating Raindrop failed");
+  }
+};

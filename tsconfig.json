@@ -23,6 +23,7 @@
       "@commands/*": ["src/commands/*"],
       "@organisms/*": ["src/components/organisms/*"],
       "@queries/*": ["src/queries/*"],
+      "@services/*": ["src/services/*"],
       "@util/*": ["src/util/*"]
     },
     // The Svelte config uses some deprecated features.

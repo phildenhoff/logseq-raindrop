@@ -39,6 +39,9 @@ type LSPlugin = {
     // Declared as required in the API, but querying the DB does not provide this
     // field, so it must be optional.
     unordered?: boolean;
+    // Undocumented, but this is true for blocks that are the props block of a
+    // page.
+    preBlock?: boolean;
   };
   PageEntity: {
     id: EntityID;

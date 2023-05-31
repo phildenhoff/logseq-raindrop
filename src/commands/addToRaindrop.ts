@@ -1,4 +1,6 @@
+import { createRaindrop } from "@services/raindrop/raindrop.js";
 import { extractUrlFromText } from "@util/url.js";
+import { isOk, type Ok } from "true-myth/result";
 
 const strings = {
   error: {
@@ -52,22 +54,12 @@ export const addUrlsToRaindrop = async (): Promise<void> => {
   }
 
   const responses = await Promise.all(
-    urls.map((url) =>
-      fetch("https://api.raindrop.io/rest/v1/raindrop", {
-        method: "POST",
-        headers: new Headers({
-          Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify({
-          link: url,
-          pleaseParse: {},
-        }),
-      })
-    )
+    urls.map((url) => createRaindrop({ link: url }))
   );
 
-  const newRaindrops = await convertResponsesToRaindrops(responses);
+  const newRaindrops = await convertResponsesToRaindrops(
+    responses.filter(isOk).map((res) => (res as Ok<Response, unknown>).value)
+  );
   const linksText = newRaindrops.map(convertRaindropToMdLink);
   const savedLinksBlockText = "Saved to Raindrop: \n" + linksText.join("\n");
   await logseq.Editor.insertBlock(uuid, savedLinksBlockText, {

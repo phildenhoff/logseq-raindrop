@@ -7,11 +7,10 @@
   import LoadingSpinner from "@atoms/LoadingSpinner.svelte";
   import { upsertRaindropPage } from "@util/upsertRaindropPage.js";
   import { raindropTransformer } from "@util/raindropTransformer.js";
-  import { raindropClientCtxKey } from "src/services/raindrop/client.js";
-  import type { RaindropClient } from "src/services/raindrop/interfaces.js";
-  import { match } from "true-myth/maybe";
+  import { match } from "true-myth/result";
   import type { LogseqServiceClient } from "src/services/interfaces.js";
   import { logseqClientCtxKey } from "src/services/logseq/client.js";
+  import { getRaindrop, searchTerm } from "@services/raindrop/index.js";
 
   const remoteData = writable<TRaindrop[]>([]);
   const requestsInFlight = writable(0);
@@ -21,14 +20,13 @@
     ($requestsInFlight) => $requestsInFlight > 0
   );
 
-  const raindropClient = getContext<RaindropClient>(raindropClientCtxKey);
   const logseqClient = getContext<LogseqServiceClient>(logseqClientCtxKey);
 
   const performSearch = async (term: string): Promise<void> => {
     const requestTime = new Date();
     requestsInFlight.update((n) => n + 1);
 
-    const res = await raindropClient.searchTerm(term, '0');
+    const res = await searchTerm(term, '0');
     const { items } = await res.json();
     // do some work
     requestsInFlight.update((n) => n - 1);
@@ -38,15 +36,16 @@
       return requestTime;
     });
   };
+
   const onSearch = (event: Event): void => {
     performSearch((event.target as HTMLInputElement).value);
   };
 
   const onUpsertRaindropPage = async (id: TRaindrop['id']) => {
-    const maybeFullRaindrop = await raindropClient.getRaindrop(id);
+    const maybeFullRaindrop = await getRaindrop(id);
     match({
-      Just: (fullRaindrop) => upsertRaindropPage(fullRaindrop, logseqClient),
-      Nothing: () => {
+      Ok: (fullRaindrop) => upsertRaindropPage(fullRaindrop, logseqClient),
+      Err: () => {
       logseqClient.displayMessage(
         "Something went wrong while trying to contact Raindrop",
         "error"

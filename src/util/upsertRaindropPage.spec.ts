@@ -1,4 +1,4 @@
-import type { LSPageEntity } from "src/services/interfaces.js";
+import type { LSBlockEntity, LSPageEntity } from "src/services/interfaces.js";
 import { describe, it, expect, assert, vi, afterEach } from "vitest";
 import {
   ioMaybeGetPageForRaindrop,
@@ -6,7 +6,10 @@ import {
   ioCreateAnnotationBlock,
   ioUpsertAnnotationBlocks,
 } from "./upsertRaindropPage.js";
-import { generateMoqseqClient } from "src/services/logseq/mock/client.js";
+import {
+  generateMoqseqClient,
+  type PageEntityWithRootBlocks,
+} from "src/services/logseq/mock/client.js";
 import type { Annotation, Raindrop } from "@types";
 
 const emptyQueryGenerator = function* () {
@@ -142,15 +145,36 @@ describe("ioCreateOrLoadPage", () => {
     const raindropId = "123";
     const expectedPageName = "logseq-raindrop/RD1";
 
-    const existingRdPage: LSPageEntity & Record<"createdAt", Date> = {
-      id: 2020,
-      uuid: "2020",
-      name: expectedPageName,
-      originalName: expectedPageName,
-      "journal?": false,
-      createdAt: new Date("2020-01-01"),
+    const existingRdPage: PageEntityWithRootBlocks & Record<"createdAt", Date> =
+      {
+        id: 2020,
+        uuid: "2020",
+        name: expectedPageName,
+        originalName: expectedPageName,
+        "journal?": false,
+        createdAt: new Date("2020-01-01"),
+        properties: {
+          "raindrop-id": raindropId,
+        },
+        roots: [["uuid", "rd-props"]],
+      };
+    const existingRdPagePropBlock: LSBlockEntity = {
+      id: 4040,
+      uuid: "rd-props",
       properties: {
         "raindrop-id": raindropId,
+      },
+      preBlock: true,
+      left: {
+        id: existingRdPage.id,
+      },
+      parent: {
+        id: existingRdPage.id,
+      },
+      content: "",
+      format: "markdown",
+      page: {
+        id: existingRdPage.id,
       },
     };
 
@@ -160,6 +184,7 @@ describe("ioCreateOrLoadPage", () => {
         namespace_label: namespaceLabel,
       },
       defaultPages: [existingRdPage],
+      defaultBlocks: [existingRdPagePropBlock],
     });
     logseqClient.PRIVATE_FOR_TESTING.setDbQueryResponseGenerator(function* () {
       // Matching blocks
@@ -316,9 +341,11 @@ describe("ioUpsertAnnotationBlocks", () => {
 
     const blocks = await logseqClient.getBlockTreeForPage(page.uuid);
     assert(blocks);
-    const firstBlock = blocks.at(0);
-    assert(firstBlock);
-    expect(firstBlock.content).includes("this is highlighted");
+    const propBlock = blocks.at(0);
+    assert(propBlock);
+    const firstContentBlock = blocks.at(1);
+    assert(firstContentBlock);
+    expect(firstContentBlock.content).includes("this is highlighted");
   });
 
   it.skip("updates existing annotation blocks", async () => {

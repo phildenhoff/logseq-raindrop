@@ -10,7 +10,6 @@ import type {
 import { findPagesByRaindropID } from "src/queries/getBlockBy.js";
 import { alertDuplicatePageIdUsed } from "@util/notify.js";
 import { formatRaindropToProperties } from "@util/pageFormatter.js";
-import { settings } from "@util/settings.js";
 import { applyAsyncFunc } from "@util/async.js";
 
 import { generatePageName } from "./generatePageName.js";
@@ -56,21 +55,10 @@ export const ioCreateOrLoadPage = async (
         r,
         (await logseqClient.settings.get("namespace_label")) as string
       ),
-      {},
+      formattedRaindropProperties,
       { createFirstBlock: true, redirect: true }
     );
   }
-
-  const currentPage = await logseqClient.getFocusedPageOrBlock();
-  if (!currentPage) throw new Error("No current page found");
-
-  const propBlock =
-    (await logseqClient.getBlockTreeForCurrentPage()).at(0) ||
-    (await logseqClient.createBlock(currentPage.uuid, ""))!;
-  await logseqClient.upsertPropertiesForBlock(
-    propBlock.uuid,
-    formattedRaindropProperties
-  );
 };
 
 export const ioAddOrRemoveEmptyState = async (

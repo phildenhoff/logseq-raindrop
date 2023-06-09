@@ -1,4 +1,5 @@
 import type { Annotation, Raindrop } from "@types";
+import type { RaindropResponse } from "@util/raindropTransformer.js";
 import { randomUUID } from "crypto";
 
 const generateAnnotation = (opts?: Partial<Annotation>): Annotation => ({
@@ -20,6 +21,39 @@ const runRandomNumberOfTimes = (generator: () => Annotation) => {
 
   return returnable;
 };
+
+export const generateRaindropResponse = (
+  opts?: Partial<RaindropResponse>
+): RaindropResponse => {
+  return {
+    _id: opts?._id ?? Math.random() * 10000,
+    link: opts?.link ?? `https://www.${randomUUID()}.com`,
+    title: opts?.title ?? randomUUID(),
+    created: opts?.created ?? new Date().toISOString(),
+    lastUpdate: opts?.lastUpdate ?? new Date().toISOString(),
+    media: opts?.media ?? ([] as unknown as [{ link: string }]),
+    user: opts?.user ?? ({} as RaindropResponse["user"]),
+    collection: opts?.collection ?? ({} as RaindropResponse["collection"]),
+    highlights:
+      opts?.highlights ?? ([] as unknown as RaindropResponse["highlights"]),
+    domain: opts?.domain ?? randomUUID(),
+    creatorRef: opts?.creatorRef ?? ({} as RaindropResponse["creatorRef"]),
+    sort: opts?.sort ?? 0,
+    cache: opts?.cache ?? {
+      status: "ready",
+      size: 0,
+      created: new Date().toISOString(),
+    },
+    collectionId: opts?.collectionId ?? 0,
+    excerpt: opts?.excerpt ?? randomUUID(),
+    note: opts?.note ?? randomUUID(),
+    type: opts?.type ?? "link",
+    cover: opts?.cover ?? randomUUID(),
+    tags: opts?.tags ?? [],
+    removed: opts?.removed ?? false,
+  };
+};
+
 export const generateRaindrop = (opts?: Partial<Raindrop>): Raindrop => {
   return {
     title: opts?.title ?? randomUUID(),

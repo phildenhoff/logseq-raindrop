@@ -2,7 +2,7 @@ import { assert, describe, expect, it, vi } from "vitest";
 
 import { createCollectionUpdatedSinceGenerator } from "./collection.js";
 import { httpClient } from "./http.js";
-import { generateRaindrop } from "src/testing/raindropFactory.js";
+import { generateRaindropResponse } from "src/testing/raindropFactory.js";
 
 vi.mock("./http.js", () => {
   const get = vi.fn();
@@ -36,13 +36,13 @@ describe("getCollectionUpdatedSince", () => {
   it("returns a list of raindrops", async () => {
     vi.mocked(httpClient)!.get.mockResolvedValueOnce(
       createMockHttpClientResponse([
-        generateRaindrop({
+        generateRaindropResponse({
           title: "Raindrop 1",
-          lastUpdate: new Date("2020-01-01T00:00:00.000Z"),
+          lastUpdate: new Date("2020-01-01T00:00:00.000Z").toISOString(),
         }),
-        generateRaindrop({
+        generateRaindropResponse({
           title: "Raindrop 2",
-          lastUpdate: new Date("2020-01-02T00:00:00.000Z"),
+          lastUpdate: new Date("2020-01-02T00:00:00.000Z").toISOString(),
         }),
       ])
     );
@@ -60,13 +60,13 @@ describe("getCollectionUpdatedSince", () => {
   it("only returns raindrops updated since the given date", async () => {
     vi.mocked(httpClient)!.get.mockResolvedValueOnce(
       createMockHttpClientResponse([
-        generateRaindrop({
+        generateRaindropResponse({
           title: "Raindrop 1",
-          lastUpdate: new Date("1999-01-01T00:00:00.000Z"),
+          lastUpdate: new Date("1999-01-01T00:00:00.000Z").toISOString(),
         }),
-        generateRaindrop({
+        generateRaindropResponse({
           title: "Raindrop 2",
-          lastUpdate: new Date("2020-01-02T00:00:00.000Z"),
+          lastUpdate: new Date("2020-01-02T00:00:00.000Z").toISOString(),
         }),
       ])
     );
@@ -85,9 +85,9 @@ describe("getCollectionUpdatedSince", () => {
     const moreRecentThanPastDate = new Date("2020-01-01T00:00:00.000Z");
     vi.mocked(httpClient)!.get.mockResolvedValueOnce(
       createMockHttpClientResponse([
-        generateRaindrop({
+        generateRaindropResponse({
           title: "Raindrop 1",
-          lastUpdate: moreRecentThanPastDate,
+          lastUpdate: moreRecentThanPastDate.toISOString(),
         }),
       ])
     );
@@ -103,9 +103,9 @@ describe("getCollectionUpdatedSince", () => {
     // Second page of data
     vi.mocked(httpClient)!.get.mockResolvedValueOnce(
       createMockHttpClientResponse([
-        generateRaindrop({
+        generateRaindropResponse({
           title: "Raindrop 2",
-          lastUpdate: moreRecentThanPastDate,
+          lastUpdate: moreRecentThanPastDate.toISOString(),
         }),
       ])
     );

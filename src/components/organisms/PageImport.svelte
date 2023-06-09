@@ -2,16 +2,11 @@
   import { derived, writable } from "svelte/store";
 
   import type {Raindrop as TRaindrop} from "@types";
-  import { settings } from "@util/settings.js";
-  import { raindropTransformer } from "@util/raindropTransformer.js";
   import Raindrop from "@atoms/Raindrop.svelte";
   import { userPreferences } from "src/stores/userPreferences.js";
   import { formatSecondsAsDateTime } from "@util/time.js";
-  import { raindropClientCtxKey } from "src/services/raindrop/client.js";
-  import { getContext } from "svelte";
-  import type { RaindropClient } from "src/services/raindrop/interfaces.js";
+  import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collection.js";
 
-  const raindropClient = getContext<RaindropClient>(raindropClientCtxKey);
 
   const lastSyncTimestampSecs = derived(
     userPreferences,
@@ -30,28 +25,37 @@
     requestsInFlight,
     ($requestsInFlight) => $requestsInFlight > 0
   );
+  const lastSyncDate = new Date($lastSyncTimestampSecs * 1000);
   const sinceLastUpdate = derived(
     [remoteData, lastSyncTimestampSecs],
     ([$remoteData2, $lastSyncDatetime]) => {
-      const lastSyncDate = new Date($lastSyncDatetime * 1000);
+      console.log($remoteData2, $lastSyncDatetime);
       return $remoteData2.filter((raindrop) => raindrop.created > lastSyncDate);
     }
   )
+  const generator = createCollectionUpdatedSinceGenerator(lastSyncDate);
+  const generatorIsDone = writable(false);
 
   const performSearch = async (): Promise<void> => {
-    const requestTime = new Date();
+    const currentRequestStartedAt = new Date();
     requestsInFlight.update((n) => n + 1);
 
-    const lastSyncDate = new Date($lastSyncTimestampSecs * 1000);
 
-    const res = await raindropClient.getCollectionAfter(lastSyncDate, "0");
-    const { items } = await res.json();
+    const {done, value: items} = await generator.next();
 
     requestsInFlight.update((n) => n - 1);
-    mostRecentRequestTime.update((currentRequestTime) => {
-      if (requestTime < currentRequestTime) return currentRequestTime;
-      remoteData.update((_) => items.map(raindropTransformer));
-      return requestTime;
+
+    if (done) {
+      generatorIsDone.update((_) => true);
+      return;
+    }
+
+    mostRecentRequestTime.update((activeRequestDatetime) => {
+      if (currentRequestStartedAt < activeRequestDatetime) return activeRequestDatetime;
+
+      remoteData.update((previousItems) => [...previousItems, ...items]);
+
+      return currentRequestStartedAt;
     });
   };
   const onSearch = (): void => {
@@ -75,7 +79,7 @@
     on:input={onUpdateTimestamp}/>
   </form>
 
-  <div>
+  <div class="results">
     <h4>Raindrops since last sync</h4>
     {#each $sinceLastUpdate as result}
       <Raindrop 
@@ -91,6 +95,11 @@
         onClick={() => console.log("ok")}
       />
     {/each}
+    {#if $generatorIsDone === false}
+      <button on:click={onSearch}>get more</button>
+    {:else}
+      <p>showing all results</p> 
+    {/if}
   </div>
 </div>
 {/if}
@@ -109,6 +118,11 @@
     display: flex;
     flex-direction: column;
     max-width: 24ch;
+  }
+
+  .results {
+    overflow-y: scroll;
+    max-height: 50vh;
   }
 
   @media (prefers-color-scheme: light) {

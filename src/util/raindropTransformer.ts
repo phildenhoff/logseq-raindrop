@@ -13,7 +13,7 @@ type HighlightsColor =
   | "red"
   | "teal"
   | "yellow";
-type RaindropResponse = {
+export type RaindropResponse = {
   excerpt: string;
   note: string;
   type: "link" | "article" | "image" | "video" | "document" | "audio";

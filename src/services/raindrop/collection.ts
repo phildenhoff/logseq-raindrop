@@ -1,9 +1,12 @@
-import type { Raindrop } from "@types";
 import { httpClient } from "./http.js";
+import {
+  raindropTransformer,
+  type RaindropResponse,
+} from "@util/raindropTransformer.js";
 
 type CollectionResponse = {
   result: boolean;
-  items: Raindrop[];
+  items?: RaindropResponse[];
   count: number;
   collectionId: "string";
 };
@@ -53,12 +56,12 @@ export async function* createCollectionUpdatedSinceGenerator(
       }&page=${pageOffset}`
     );
     const raindrops = (await response.json()) as CollectionResponse;
-    const raindropsUpdatedSince = raindrops.items.filter(
+    const raindropsUpdatedSince = (raindrops.items ?? []).filter(
       (r) => new Date(r.lastUpdate) >= since
     );
 
     if (raindropsUpdatedSince.length === 0) break;
-    yield raindropsUpdatedSince;
+    yield raindropsUpdatedSince.map(raindropTransformer);
 
     pageOffset += 1;
   }

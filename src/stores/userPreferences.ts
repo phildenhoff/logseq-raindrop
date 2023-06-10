@@ -3,6 +3,7 @@ import { writable } from "svelte/store";
 type UserPreferences = {
   broken_experimental_features: boolean;
   last_sync_timestamp: number;
+  sync_to_single_page: boolean;
 };
 
 function createUserPreferences() {

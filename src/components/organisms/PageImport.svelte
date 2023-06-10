@@ -17,6 +17,10 @@
     userPreferences,
     ($userPrefences) => $userPrefences.broken_experimental_features
   );
+  const hasEnabledSinglePageImports = derived(
+    userPreferences,
+    ($userPrefences) => $userPrefences.sync_to_single_page
+  );
 
   const remoteData = writable<TRaindrop[]>([]);
   const requestsInFlight = writable(0);
@@ -67,7 +71,7 @@
   }
 </script>
 
-{#if $hasEnabledExperimentalFeatures}
+{#if $hasEnabledExperimentalFeatures && $hasEnabledSinglePageImports}
 <div class="experimental">
   <h3>Import Recently Added</h3>
   <p>Bookmarks new to your Raindrop. This does not include old bookmarks that you've recently updated by adding new tags or annotations.</p>

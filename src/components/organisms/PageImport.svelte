@@ -6,7 +6,12 @@
   import { userPreferences } from "src/stores/userPreferences.js";
   import { formatSecondsAsDateTime } from "@util/time.js";
   import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collection.js";
+  import { importHighlightsSinceLastSync } from "src/importHighlights.js";
+  import { getContext } from "svelte";
+  import type { LogseqServiceClient } from "@services/interfaces.js";
+  import { logseqClientCtxKey } from "@services/logseq/client.js";
 
+  const logseqClient = getContext<LogseqServiceClient>(logseqClientCtxKey);
 
   const lastSyncTimestampSecs = derived(
     userPreferences,
@@ -69,6 +74,15 @@
     const newValue = (event.target as HTMLInputElement).value; 
     userPreferences.updateSetting('last_sync_timestamp', Number(newValue));
   }
+  const onSyncUpdatedRaindrops = (): void => {
+    const lastSyncDate = new Date($lastSyncTimestampSecs * 1000);
+    importHighlightsSinceLastSync(
+      lastSyncDate,
+      logseqClient,
+      "Raindrop"
+    );
+    userPreferences.updateSetting('last_sync_timestamp', (Number(new Date()) / 1000));
+  }
 </script>
 
 {#if $hasEnabledExperimentalFeatures && $hasEnabledSinglePageImports}
@@ -76,6 +90,7 @@
   <h3>Import Recently Added</h3>
   <p>Bookmarks new to your Raindrop. This does not include old bookmarks that you've recently updated by adding new tags or annotations.</p>
   <button on:click={onSearch}>Fetch new bookmarks</button>
+  <button on:click={onSyncUpdatedRaindrops}>Sync bookmarks</button>
   <form class="sync-container">
     <label for="last-sync">Last sync: {formatSecondsAsDateTime($lastSyncTimestampSecs)}</label>
     <input id="last-sync" type="text"

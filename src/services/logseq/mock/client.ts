@@ -195,6 +195,32 @@ export const generateMoqseqClient = (mockSetup?: {
       isPreBlock: false,
     });
   };
+  const createBlockBatch: LogseqServiceClient["createBlockBatch"] = async (
+    referenceBlockUuid,
+    blocks,
+    batchOptions
+  ) => {
+    // ensure that no blocks have children: that is not supported by moqseq
+    if (blocks.some((block) => block.children?.length)) {
+      throw new Error(
+        "Batch creation is not supported for blocks with children"
+      );
+    }
+
+    return Promise.all(
+      blocks.map((block) =>
+        _createBlock(
+          referenceBlockUuid,
+          block.content,
+          {
+            properties: block.properties,
+            ...batchOptions,
+          },
+          { isPreBlock: false }
+        )
+      )
+    );
+  };
   const deleteBlock: LogseqServiceClient["deleteBlock"] = async (blockUuid) => {
     const block = blocks.get(blockUuid);
     if (!block) {
@@ -329,6 +355,14 @@ export const generateMoqseqClient = (mockSetup?: {
   ) => {
     return Promise.resolve(pages.get(pageUuid) ?? null);
   };
+  const getPageByName: LogseqServiceClient["getPageByUuid"] = async (
+    pageName
+  ) => {
+    const pageList = [...pages.values()];
+    return Promise.resolve(
+      pageList.find((page) => page.name === pageName) ?? null
+    );
+  };
 
   // Settings
   const registerSchema: LogseqServiceClient["settings"]["registerSchema"] =
@@ -359,9 +393,11 @@ export const generateMoqseqClient = (mockSetup?: {
     getBlockTreeForPage,
     getPageById,
     getPageByUuid,
+    getPageByName,
     createPage,
     openPageByName,
     createBlock,
+    createBlockBatch,
     deleteBlock,
     updateBlock,
     upsertPropertiesForBlock,

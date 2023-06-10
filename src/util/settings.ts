@@ -1,7 +1,41 @@
 import type { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin.js";
 import { userPreferences } from "src/stores/userPreferences.js";
 
+export const importFilterOptions = {
+  ALL: "Import all Raindrops",
+  WITH_ANNOTATIONS: "Import only Raindrops with highlights",
+};
+
 const settingsConfig: SettingSchemaDesc[] = [
+  {
+    default: false,
+    type: "boolean",
+    key: "sync_to_single_page",
+    title: "Sync to a single page?",
+    description:
+      "If enabled, all Raindrops will be imported to a single page, instead of each in their own page under the hierarchy page name." +
+      "\n\n" +
+      "**For example**, when this is off, an article _Great Logseq Plugins_ might be imported in a page `logseq-raindrop/Great Logseq Plugins`." +
+      " With it on, this page would be created as a new block under the page `Raindrop`.",
+  },
+  {
+    default: importFilterOptions.ALL,
+    type: "enum",
+    enumChoices: Object.values(importFilterOptions),
+    enumPicker: "select",
+    key: "import_filter",
+    title: "Which Raindrops should be imported?",
+    description:
+      "When you import Raindrops to a single page, choose which Raindrops you import. The default is to import all of them, but you can choose to only import Raindrops with highlights.",
+  },
+  {
+    default: "Raindrop",
+    type: "string",
+    key: "page_name",
+    title: "Page Name for Single Page imports",
+    description:
+      "If 'Sync to a single page?' is enabled, all Raindrops will be imported to this page. It will be created if it does not exist.",
+  },
   {
     default: "",
     description:
@@ -38,7 +72,11 @@ const settingsConfig: SettingSchemaDesc[] = [
     default: "logseq-raindrop",
     title: "Hierarchy parent page name",
     description:
-      "The page under which all imported pages are put. By default, pages are created with a title like 'logseq-raindrop/My Imported Page Name'. If you **do not** want namespaced pages, you can leave this empty.",
+      "The page under which all imported pages are put." +
+      " By default, pages are created with a title like 'logseq-raindrop/My Imported Page Name'." +
+      " If you **do not** want namespaced pages, you can leave this empty." +
+      "\n\n" +
+      "Note: this setting is **unused** if 'Sync to a single page?' is enabled.",
     key: "namespace_label",
     type: "string",
   },
@@ -88,6 +126,8 @@ export const settings = {
   namespace_label: (): string => logseq.settings!["namespace_label"] as string,
   default_page_tags: (): string =>
     logseq.settings!["default_page_tags"] as string,
+  import_filter: () =>
+    logseq.settings!["import_filter"] as keyof typeof importFilterOptions,
   formatting_template: {
     highlight: (): string => logseq.settings!["template_highlight"] as string,
     annotation: (): string => logseq.settings!["template_annotation"] as string,

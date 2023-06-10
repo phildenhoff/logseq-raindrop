@@ -3,6 +3,7 @@ import type {
   BlockUUID,
   BlockUUIDTuple,
   EntityID,
+  IBatchBlock,
   IEntityID,
   PageEntity,
   SettingSchemaDesc,
@@ -169,6 +170,25 @@ export interface LogseqServiceClient {
   ) => Promise<LSBlockEntity | null>;
 
   /**
+   * Batched version of `creatBlock`. Creates multiple blocks in a single call.
+   *
+   * @see createBlock
+   *
+   * @param refenceBlockUuid
+   * @param blocks
+   * @param options
+   * @returns
+   */
+  createBlockBatch: (
+    refenceBlockUuid: BlockUUID,
+    blocks: IBatchBlock[],
+    options?: {
+      before?: boolean;
+      sibling?: boolean;
+    }
+  ) => Promise<LSBlockEntity[] | null>;
+
+  /**
    * Opens a page so that it's viewable in Logseq.
    *
    * @param pageName The name of the page to open.
@@ -270,6 +290,11 @@ export interface LogseqServiceClient {
    * Returns the PageEntity, if one exists, for a Page UUID.
    */
   getPageByUuid: (pageUuid: BlockUUID) => Promise<LSPageEntity | null>;
+
+  /**
+   * Returns the PageEntity, if one exists, for a Page UUID.
+   */
+  getPageByName: (pageName: string) => Promise<LSPageEntity | null>;
 
   /**
    * Returns all the blocks for the specific page.

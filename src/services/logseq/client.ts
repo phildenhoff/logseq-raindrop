@@ -20,6 +20,8 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
     // Block
     createBlock: async (parentBlockUuid, blockContent, blockOptions) =>
       logseq.Editor.insertBlock(parentBlockUuid, blockContent, blockOptions),
+    createBlockBatch: async (parentBlockUuid, blocks, batchOptions) =>
+      logseq.Editor.insertBatchBlock(parentBlockUuid, blocks, batchOptions),
     deleteBlock: async (blockUuid) => logseq.Editor.removeBlock(blockUuid),
     getBlockById: async (blockUuid) => logseq.Editor.getBlock(blockUuid),
     getPropertiesForBlock: async (blockUuid) =>
@@ -66,6 +68,10 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
     getPageByUuid: async (id) => {
       if (typeof id !== "string") return null;
       return logseq.Editor.getPage(id);
+    },
+    getPageByName: async (name) => {
+      if (typeof name !== "string") return null;
+      return logseq.Editor.getPage(name);
     },
     settings: {
       get: async (key) => logseq.settings![key],

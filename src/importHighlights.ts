@@ -8,6 +8,8 @@ import type {
 import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collection.js";
 import type { Raindrop } from "@types";
 import { importFilterOptions } from "@util/settings.js";
+import type { Result } from "true-myth";
+import { err, ok } from "true-myth/result";
 
 const importHighlightsForRaindrop = async (
   raindrop: Raindrop,
@@ -37,6 +39,39 @@ const importHighlightsForRaindrop = async (
   });
 };
 
+const importRaindrop = async (
+  raindrop: Raindrop,
+  logseqClient: LogseqServiceClient,
+  lastInsertedBlock: LSBlockEntity,
+  isFirstInsertion: boolean
+): Promise<Result<LSBlockEntity, Error>> => {
+  const articleBlock = await logseqClient.createBlock(
+    lastInsertedBlock.uuid,
+    `[${raindrop.title}](${raindrop.url})
+        title:: ${raindrop.title}
+        url:: ${raindrop.url}
+        Tags:: ${raindrop.tags.join(", ")}
+        `,
+    // We want to insert the FIRST block from the generator as the first child of
+    // the "Articles" block.
+    // However, every subsequent block should be inserted as a sibling of that
+    // first block, and MUST be inserted before it to get a chronological order.
+    // NOTE: THIS ASSUMES that the generator returns the blocks in reverse
+    // chronological order (e.g. the most recently edited block is the LAST
+    // element provided by the generator).
+    { sibling: !isFirstInsertion, before: isFirstInsertion }
+  );
+
+  if (!articleBlock) {
+    return err(
+      new Error(
+        "Failed to import pages, could not create block to put highlights into"
+      )
+    );
+  }
+  return ok(articleBlock);
+};
+
 const importRaindropsFromGenerator = async (
   generator: AsyncGenerator<Raindrop[]>,
   logseqClient: LogseqServiceClient,
@@ -53,33 +88,21 @@ const importRaindropsFromGenerator = async (
         if (r.annotations.length === 0) return;
       }
 
-      const articleBlock = await logseqClient.createBlock(
-        lastInsertedBlock.uuid,
-        `[${r.title}](${r.url})
-        title:: ${r.title}
-        url:: ${r.url}
-        Tags:: ${r.tags.join(", ")}
-        `,
-        // We want to insert the FIRST block from the generator as the first child of
-        // the "Articles" block.
-        // However, every subsequent block should be inserted as a sibling of that
-        // first block, and MUST be inserted before it to get a chronological order.
-        // NOTE: THIS ASSUMES that the generator returns the blocks in reverse
-        // chronological order (e.g. the most recently edited block is the LAST
-        // element provided by the generator).
-        { sibling: !isFirstInsertion, before: isFirstInsertion }
+      const importedBlockResult = await importRaindrop(
+        r,
+        logseqClient,
+        lastInsertedBlock,
+        isFirstInsertion
       );
-
-      if (!articleBlock) {
-        throw new Error(
-          "Failed to import pages, could not create block to put highlights into"
-        );
+      if (importedBlockResult.isErr) {
+        throw importedBlockResult.error;
       }
-      lastInsertedBlock = articleBlock;
+
+      lastInsertedBlock = importedBlockResult.value;
       isFirstInsertion = false;
 
       if (r.annotations.length !== 0) {
-        importHighlightsForRaindrop(r, logseqClient, articleBlock);
+        importHighlightsForRaindrop(r, logseqClient, importedBlockResult.value);
       }
     });
   }

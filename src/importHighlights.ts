@@ -6,38 +6,15 @@ import type {
   LogseqServiceClient,
 } from "@services/interfaces.js";
 import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collection.js";
+import type { Raindrop } from "@types";
 import { importFilterOptions } from "@util/settings.js";
 
-export const importHighlightsSinceLastSync = async (
-  lastSync: Date,
+const importRaindropsFromGenerator = async (
+  generator: AsyncGenerator<Raindrop[]>,
   logseqClient: LogseqServiceClient,
-  pageName: string
+  parentBlock: LSBlockEntity
 ) => {
-  // get Raindrop page, or create it if it doesn't exist
-  const page = await getOrCreatePageByName(logseqClient, pageName);
-  if (page.isErr) {
-    throw new Error(
-      "Failed to import pages, could not create page to put highlights into"
-    );
-  }
-
-  // Get the block under which we import the page, and underneath that, the
-  // highlights. This generally looks like `# Articles`, and is one of the first
-  // children of the page.
-  const articleListParentBlock = await getOrCreateBlockInPage(
-    logseqClient,
-    page.value.uuid,
-    (block) => block.content === "# Articles",
-    "# Articles"
-  );
-  if (articleListParentBlock.isErr) {
-    throw new Error(
-      "Failed to import pages, could not create block to put highlights into"
-    );
-  }
-
-  const generator = createCollectionUpdatedSinceGenerator(lastSync);
-  let lastInsertedBlock: LSBlockEntity = articleListParentBlock.value;
+  let lastInsertedBlock: LSBlockEntity = parentBlock;
   let isFirstInsertion = true;
 
   // iterate over generator pages
@@ -103,4 +80,40 @@ export const importHighlightsSinceLastSync = async (
       );
     });
   }
+};
+
+export const importHighlightsSinceLastSync = async (
+  lastSync: Date,
+  logseqClient: LogseqServiceClient,
+  pageName: string
+) => {
+  // get Raindrop page, or create it if it doesn't exist
+  const page = await getOrCreatePageByName(logseqClient, pageName);
+  if (page.isErr) {
+    throw new Error(
+      "Failed to import pages, could not create page to put highlights into"
+    );
+  }
+
+  // Get the block under which we import the page, and underneath that, the
+  // highlights. This generally looks like `# Articles`, and is one of the first
+  // children of the page.
+  const articleListParentBlock = await getOrCreateBlockInPage(
+    logseqClient,
+    page.value.uuid,
+    (block) => block.content === "# Articles",
+    "# Articles"
+  );
+  if (articleListParentBlock.isErr) {
+    throw new Error(
+      "Failed to import pages, could not create block to put highlights into"
+    );
+  }
+
+  const generator = createCollectionUpdatedSinceGenerator(lastSync);
+  await importRaindropsFromGenerator(
+    generator,
+    logseqClient,
+    articleListParentBlock.value
+  );
 };

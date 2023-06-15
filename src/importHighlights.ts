@@ -79,13 +79,16 @@ const importRaindropsFromGenerator = async (
 ) => {
   let lastInsertedBlock: LSBlockEntity = parentBlock;
   let isFirstInsertion = true;
+  const importFilter = await logseqClient.settings.get("import_filter");
 
   // iterate over generator pages
   for await (const raindropListWindow of generator) {
     raindropListWindow.forEach(async (r) => {
-      const importFilter = await logseqClient.settings.get("import_filter");
-      if (importFilter === importFilterOptions.WITH_ANNOTATIONS) {
-        if (r.annotations.length === 0) return;
+      if (
+        importFilter === importFilterOptions.WITH_ANNOTATIONS &&
+        r.annotations.length === 0
+      ) {
+        return;
       }
 
       const importedBlockResult = await importRaindrop(

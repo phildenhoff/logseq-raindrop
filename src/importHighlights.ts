@@ -11,6 +11,14 @@ import { importFilterOptions } from "@util/settings.js";
 import type { Result } from "true-myth";
 import { err, ok } from "true-myth/result";
 
+/**
+ * Import highlights (and notes) for a single Raindrop as blocks underneath the
+ * given block.
+ *
+ * @param raindrop Raindrop to import
+ * @param logseqClient Logseq client to use
+ * @param raindropBlock Block to put the highlights underneath
+ */
 const importHighlightsForRaindrop = async (
   raindrop: Raindrop,
   logseqClient: LogseqServiceClient,
@@ -27,7 +35,6 @@ const importHighlightsForRaindrop = async (
     );
   }
 
-  // batch import highlights
   const highlightBatch = raindrop.annotations.map(
     (a): IBatchBlock => ({
       content: [`> ${a.text}`, "", `${a.note}`].join("\n"),
@@ -39,6 +46,18 @@ const importHighlightsForRaindrop = async (
   });
 };
 
+/**
+ * Import a single Raindrop as a block underneath OR before the given block,
+ * depending on the value of `isFirstInsertion`.
+ *
+ * @param raindrop The Raindrop to import
+ * @param logseqClient Logseq Client to use for inserting blocks
+ * @param lastInsertedBlock The last block that was inserted
+ * @param isFirstInsertion If this is the first block to be inserted. This affects the
+ * insertion strategy (to maintain chronological order).
+ * @returns A Result containing the block that was inserted, or an error if the
+ * insertion failed.
+ */
 const importRaindrop = async (
   raindrop: Raindrop,
   logseqClient: LogseqServiceClient,
@@ -72,6 +91,16 @@ const importRaindrop = async (
   return ok(articleBlock);
 };
 
+/**
+ * Import all of the Raindrops provided by the generator as blocks underneath the
+ * `parentBlock`.
+ *
+ * Inserts highlights as well, if each Raindrop has any.
+ *
+ * @param generator A generator that returns arrays of Raindrops to import.
+ * @param logseqClient The Logseq Client to use for insertion, getting settings.
+ * @param parentBlock The block to insert the Raindrops underneath.
+ */
 const importRaindropsFromGenerator = async (
   generator: AsyncGenerator<Raindrop[]>,
   logseqClient: LogseqServiceClient,
@@ -81,7 +110,6 @@ const importRaindropsFromGenerator = async (
   let isFirstInsertion = true;
   const importFilter = await logseqClient.settings.get("import_filter");
 
-  // iterate over generator pages
   for await (const raindropListWindow of generator) {
     raindropListWindow.forEach(async (r) => {
       if (
@@ -116,7 +144,6 @@ export const importHighlightsSinceLastSync = async (
   logseqClient: LogseqServiceClient,
   pageName: string
 ) => {
-  // get Raindrop page, or create it if it doesn't exist
   const page = await getOrCreatePageByName(logseqClient, pageName);
   if (page.isErr) {
     throw new Error(

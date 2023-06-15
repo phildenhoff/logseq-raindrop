@@ -1,0 +1,28 @@
+- [ ] Add new elements to the top of the list based on sort order, e.g. newest first
+  - so if I have a list like this:
+    - Articles:
+      - 1
+      - 2
+      - 3
+  - and then resync, my NEW list is
+    - Articles:
+      - x
+      - y
+      - 1
+      - 2
+      - 3
+- [ ] Upserting
+  - If a block exists in the page that has content matching the highlight, re-render that block using the highlight and note.
+    - that seems like it would re-render everything...? v expensive??
+- [ ] Split up `importHighlightsSinceLastSync` into smaller functions
+- [ ] Update the page generator to start the next request just before yielding
+  - See https://github.com/phildenhoff/logseq-raindrop/pull/50#discussion_r1224999537
+- [ ] Organize settings interfaces, there shall be only one. Maybe two.
+- [ ] Redirect to the page Raindrop page by default when syncing begins.
+- [ ] Add a "Syncing..." notification
+- [ ] Sync on a schedule
+- [ ] Clean up UI for syncing, remove the drop down menu and just have a small element (a-la Omnivore) that indicates syncing has begun & that we're redirecting.
+- [ ] Add "last synced" to the page
+- [ ] Add "last updated" to each bookmark
+- [ ] Rename "Articles" to Bookmarks — match Raindrop.io terminology
+  - This is an overhaul — replace "raindrop" with Bookmark everywhere.

@@ -1,7 +1,10 @@
 import type { IBatchBlock } from "@logseq/libs/dist/LSPlugin.user.js";
 import { getOrCreateBlockInPage } from "@queries/getOrCreateBlockInPage.js";
 import { getOrCreatePageByName } from "@queries/getOrCreatePage.js";
-import type { LogseqServiceClient } from "@services/interfaces.js";
+import type {
+  LSBlockEntity,
+  LogseqServiceClient,
+} from "@services/interfaces.js";
 import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collection.js";
 import { importFilterOptions } from "@util/settings.js";
 
@@ -34,6 +37,8 @@ export const importHighlightsSinceLastSync = async (
   }
 
   const generator = createCollectionUpdatedSinceGenerator(lastSync);
+  let lastInsertedBlock: LSBlockEntity = articleListParentBlock.value;
+  let isFirstInsertion = true;
 
   // iterate over generator pages
   for await (const raindropListWindow of generator) {
@@ -44,13 +49,20 @@ export const importHighlightsSinceLastSync = async (
       }
 
       const articleBlock = await logseqClient.createBlock(
-        articleListParentBlock.value.uuid,
+        lastInsertedBlock.uuid,
         `[${r.title}](${r.url})
         title:: ${r.title}
         url:: ${r.url}
         Tags:: ${r.tags.join(", ")}
         `,
-        { sibling: false }
+        // We want to insert the FIRST block from the generator as the first child of
+        // the "Articles" block.
+        // However, every subsequent block should be inserted as a sibling of that
+        // first block, and MUST be inserted before it to get a chronological order.
+        // NOTE: THIS ASSUMES that the generator returns the blocks in reverse
+        // chronological order (e.g. the most recently edited block is the LAST
+        // element provided by the generator).
+        { sibling: !isFirstInsertion, before: isFirstInsertion }
       );
 
       if (!articleBlock) {
@@ -58,6 +70,9 @@ export const importHighlightsSinceLastSync = async (
           "Failed to import pages, could not create block to put highlights into"
         );
       }
+      lastInsertedBlock = articleBlock;
+      isFirstInsertion = false;
+
       // Early return if the page doesn't have any highlights.
       if (r.annotations.length === 0) return;
 

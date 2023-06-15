@@ -9,6 +9,34 @@ import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collec
 import type { Raindrop } from "@types";
 import { importFilterOptions } from "@util/settings.js";
 
+const importHighlightsForRaindrop = async (
+  raindrop: Raindrop,
+  logseqClient: LogseqServiceClient,
+  raindropBlock: LSBlockEntity
+) => {
+  const highlightsBlock = await logseqClient.createBlock(
+    raindropBlock.uuid,
+    `## Highlights`,
+    { sibling: false, before: false }
+  );
+  if (!highlightsBlock) {
+    throw new Error(
+      "Failed to import pages, could not create block to put highlights into"
+    );
+  }
+
+  // batch import highlights
+  const highlightBatch = raindrop.annotations.map(
+    (a): IBatchBlock => ({
+      content: [`> ${a.text}`, "", `${a.note}`].join("\n"),
+    })
+  );
+  await logseqClient.createBlockBatch(highlightsBlock.uuid, highlightBatch, {
+    before: true,
+    sibling: false,
+  });
+};
+
 const importRaindropsFromGenerator = async (
   generator: AsyncGenerator<Raindrop[]>,
   logseqClient: LogseqServiceClient,
@@ -50,34 +78,9 @@ const importRaindropsFromGenerator = async (
       lastInsertedBlock = articleBlock;
       isFirstInsertion = false;
 
-      // Early return if the page doesn't have any highlights.
-      if (r.annotations.length === 0) return;
-
-      const highlightsBlock = await logseqClient.createBlock(
-        articleBlock.uuid,
-        `## Highlights`,
-        { sibling: false, before: false }
-      );
-      if (!highlightsBlock) {
-        throw new Error(
-          "Failed to import pages, could not create block to put highlights into"
-        );
+      if (r.annotations.length !== 0) {
+        importHighlightsForRaindrop(r, logseqClient, articleBlock);
       }
-
-      // batch import highlights
-      const highlightBatch = r.annotations.map(
-        (a): IBatchBlock => ({
-          content: [`> ${a.text}`, "", `${a.note}`].join("\n"),
-        })
-      );
-      await logseqClient.createBlockBatch(
-        highlightsBlock.uuid,
-        highlightBatch,
-        {
-          before: true,
-          sibling: false,
-        }
-      );
     });
   }
 };

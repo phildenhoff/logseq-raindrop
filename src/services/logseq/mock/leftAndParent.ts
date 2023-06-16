@@ -1,6 +1,82 @@
-import type { BlockUUID, IEntityID } from "@logseq/libs/dist/LSPlugin.js";
-import type { BlockMap, PageMap } from "./types.js";
+import type { Maybe } from "true-myth";
+import { just, nothing } from "true-myth/maybe";
 
+import type {
+  BlockEntity,
+  BlockUUID,
+  BlockUUIDTuple,
+  EntityID,
+  IEntityID,
+} from "@logseq/libs/dist/LSPlugin.js";
+
+import type { BlockMap, PageMap } from "./types.js";
+import type { LSBlockEntity } from "@services/interfaces.js";
+
+const updateBlockLeft = (
+  sibling: boolean,
+  before: boolean,
+  blocksMap: BlockMap,
+  pagesMap: PageMap,
+  referenceBlockUuid: BlockUUID,
+  newBlockIdentity: IEntityID
+) => {
+  const refIsPage = pagesMap.has(referenceBlockUuid);
+  const refBlock = blocksMap.get(referenceBlockUuid);
+  const refPage = pagesMap.get(referenceBlockUuid);
+  const parentBlockOrPage = refIsPage ? refPage : refBlock;
+
+  if (sibling && before && refBlock) {
+    // We're able to mutate the objects in our map directly; we receive the
+    // object by reference and not by copy.
+    refBlock.left = newBlockIdentity;
+  } else if (!sibling && before && parentBlockOrPage) {
+    const maybeLeftmostChild = getLeftmostChild(
+      (refIsPage ? refPage?.roots : refBlock?.children) ?? [],
+      parentBlockOrPage.id,
+      blocksMap
+    );
+    if (maybeLeftmostChild.isJust) {
+      maybeLeftmostChild.value.left = newBlockIdentity;
+    }
+  }
+};
+
+const getLeftmostChild = (
+  children: (BlockEntity | BlockUUIDTuple)[],
+  parentBlockId: EntityID,
+  blocksMap: BlockMap
+): Maybe<LSBlockEntity> => {
+  const result = children
+    .map((item) => {
+      if (Array.isArray(item)) {
+        return blocksMap.get(item[1]);
+      } else {
+        return blocksMap.get(item.uuid);
+      }
+    })
+    .filter((block) => block?.left.id === parentBlockId)
+    .at(0);
+
+  if (result) {
+    return just(result);
+  } else {
+    return nothing();
+  }
+};
+
+/**
+ * Get the left and parent blocks for a new block, and mutate any relevant blocks
+ * to point to the correct left block.
+ *
+ * @param sibling If true, insert as a sibling of the reference block. If false, insert as a child of the reference block.
+ * @param before If true, insert before the reference block. If false, insert after the reference block.
+ * @param blocksMap A map of UUIDs to blocks
+ * @param pagesMap A map of UUIDs to pages
+ * @param newBlockEntityId The id and uuid of the new block
+ * @param referenceBlockUuid The uuid of the reference block, which we will insert
+ * the new block relative to
+ * @returns
+ */
 export const getLeftAndParentBlocksAndMutateBlocks = async (
   sibling: boolean,
   before: boolean,
@@ -9,7 +85,6 @@ export const getLeftAndParentBlocksAndMutateBlocks = async (
   newBlockEntityId: IEntityID,
   referenceBlockUuid: BlockUUID
 ): Promise<{ left: IEntityID; parent: IEntityID }> => {
-  const { id: generatedId, uuid: generatedUuid } = newBlockEntityId;
   const blockOptions = {
     sibling,
     before,
@@ -33,14 +108,14 @@ export const getLeftAndParentBlocksAndMutateBlocks = async (
       // inserted before the reference block, under the same parent
       left = refBlock ? refBlock.left : refPageEntityId!;
       // Update refBlock, if it exists, to point to the new block
-      if (refBlock) {
-        // We're able to mutate the objects in our map directly; we receive the
-        // object by reference and not by copy.
-        refBlock.left = {
-          id: generatedId,
-          uuid: generatedUuid,
-        };
-      }
+      updateBlockLeft(
+        sibling,
+        before,
+        blocksMap,
+        pagesMap,
+        referenceBlockUuid,
+        newBlockEntityId
+      );
     } else {
       // insert after the reference block, under the same parent
       left = refBlock
@@ -56,33 +131,30 @@ export const getLeftAndParentBlocksAndMutateBlocks = async (
       };
       parent = parentBlockOrPageIdentity;
 
-      const firstChild = (
-        (refIsPage ? refPage?.roots : refBlock?.children) ?? []
-      )
-        .map((item) => {
-          const block = Array.isArray(item)
-            ? blocksMap.get(item[1])
-            : blocksMap.get(item.uuid);
-          return block;
-        })
-        .filter((block) => {
-          return block?.left.id === parentBlockOrPage.id;
-        })
-        .at(0);
+      const maybeLeftmostChild = getLeftmostChild(
+        (refIsPage ? refPage?.roots : refBlock?.children) ?? [],
+        parentBlockOrPageIdentity.id,
+        blocksMap
+      );
 
       if (blockOptions?.before) {
         left = parentBlockOrPageIdentity;
 
         // update first child of parent to point to the new block
-        if (firstChild) {
-          firstChild.left = {
-            id: generatedId,
-            uuid: generatedUuid,
-          };
-        }
+        updateBlockLeft(
+          sibling,
+          before,
+          blocksMap,
+          pagesMap,
+          referenceBlockUuid,
+          newBlockEntityId
+        );
       } else {
-        left = firstChild
-          ? { id: firstChild?.id, uuid: firstChild?.uuid }
+        left = maybeLeftmostChild.isJust
+          ? {
+              id: maybeLeftmostChild.value.id,
+              uuid: maybeLeftmostChild.value.uuid,
+            }
           : parentBlockOrPageIdentity;
       }
     }

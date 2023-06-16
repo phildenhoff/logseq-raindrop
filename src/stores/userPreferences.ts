@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 
 type UserPreferences = {
   broken_experimental_features: boolean;
-  last_sync_timestamp: number;
+  last_sync_timestamp: string;
   sync_to_single_page: boolean;
 };
 

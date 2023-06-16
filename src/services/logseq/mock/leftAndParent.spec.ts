@@ -72,8 +72,8 @@ describe("getLeftAndParentBlocks", () => {
       BEFORE,
       blocksMap,
       pagesMap,
-      { id: 4, uuid: "_new" },
-      "_a"
+      "_a",
+      { id: 4, uuid: "_new" }
     );
 
     expect(result).toEqual({
@@ -154,8 +154,8 @@ describe("getLeftAndParentBlocks", () => {
       BEFORE,
       blocksMap,
       pagesMap,
-      { id: 4, uuid: "_new" },
-      "_a"
+      "_a",
+      { id: 4, uuid: "_new" }
     );
 
     expect(result).toEqual({
@@ -236,8 +236,8 @@ describe("getLeftAndParentBlocks", () => {
       BEFORE,
       blocksMap,
       pagesMap,
-      { id: 4, uuid: "_new" },
-      "_a"
+      "_a",
+      { id: 4, uuid: "_new" }
     );
 
     expect(result).toEqual({
@@ -318,8 +318,8 @@ describe("getLeftAndParentBlocks", () => {
       BEFORE,
       blocksMap,
       pagesMap,
-      { id: 4, uuid: "_new" },
-      "_a"
+      "_a",
+      { id: 4, uuid: "_new" }
     );
 
     expect(result).toEqual({

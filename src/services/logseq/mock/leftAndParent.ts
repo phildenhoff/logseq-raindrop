@@ -82,8 +82,8 @@ export const getLeftAndParentBlocksAndMutateBlocks = async (
   before: boolean,
   blocksMap: BlockMap,
   pagesMap: PageMap,
-  newBlockEntityId: IEntityID,
-  referenceBlockUuid: BlockUUID
+  referenceBlockUuid: BlockUUID,
+  newBlockEntityId: IEntityID
 ): Promise<{ left: IEntityID; parent: IEntityID }> => {
   const blockOptions = {
     sibling,

@@ -5,19 +5,9 @@ import type {
   LSBlockEntity,
 } from "../../interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
-import type {
-  BlockUUID,
-  BlockUUIDTuple,
-  IEntityID,
-  PageEntity,
-} from "@logseq/libs/dist/LSPlugin.user.js";
-import { first } from "true-myth/maybe";
-
-export type PageEntityWithRootBlocks = LSPageEntity & {
-  roots?: ["uuid", BlockUUID][];
-};
-type BlockMap = Map<LSBlockEntity["uuid"], LSBlockEntity>;
-type PageMap = Map<LSPageEntity["uuid"], PageEntityWithRootBlocks>;
+import type { BlockUUID } from "@logseq/libs/dist/LSPlugin.user.js";
+import type { BlockMap, PageMap } from "./types.js";
+import { getLeftAndParentBlocksAndMutateBlocks } from "./leftAndParent.js";
 
 type TestableLogseqServiceClient = {
   PRIVATE_FOR_TESTING: {
@@ -84,13 +74,6 @@ export const recursiveChildrenOfBlock = async (
   return [block, ...recursiveChildren.flat()];
 };
 
-export const getLeftAndParentBlocks = async (
-  left: boolean,
-  parent: boolean,
-  blocksMap: BlockMap,
-  pagesMap: PageMap
-): Promise<{ left: IEntityID; parent: IEntityID }> => {};
-
 function* throwErrorGenerator() {
   throw new Error(
     "Query responses not configured. Use `setDbQueryResponseGenerator` to configure a new generator for testing query responses."
@@ -150,85 +133,23 @@ export const generateMoqseqClient = (mockSetup?: {
       isPreBlock: boolean;
     }
   ) => {
-    const refIsPage = pages.has(referenceBlockUuid);
     const refBlock = blocks.get(referenceBlockUuid);
     const refPage = pages.get(referenceBlockUuid);
     if (!refBlock && !refPage) {
       throw new Error("Parent block not found");
     }
-    const refPageEntityId: IEntityID | null = refPage
-      ? {
-          id: refPage.id,
-          uuid: refPage.uuid,
-        }
-      : null;
 
     const generatedId = idGenerator++;
     const generatedUuid = randomUUID();
 
-    let left: IEntityID;
-    let parent: IEntityID;
-
-    if (blockOptions?.sibling) {
-      parent = refBlock ? refBlock.parent : refPageEntityId!;
-      if (blockOptions?.before) {
-        // inserted before the reference block, under the same parent
-        left = refBlock ? refBlock.left : refPageEntityId!;
-        // Update refBlock, if it exists, to point to the new block
-        if (refBlock) {
-          // We're able to mutate the objects in our map directly; we receive the
-          // object by reference and not by copy.
-          refBlock.left = {
-            id: generatedId,
-            uuid: generatedUuid,
-          };
-        }
-      } else {
-        // insert after the reference block, under the same parent
-        left = refBlock
-          ? { id: refBlock.id, uuid: refBlock.uuid }
-          : refPageEntityId!;
-      }
-    } else {
-      const parentBlockOrPage = refIsPage ? refPage : refBlock;
-      if (parentBlockOrPage) {
-        const parentBlockOrPageIdentity = {
-          id: parentBlockOrPage?.id,
-          uuid: parentBlockOrPage?.uuid,
-        };
-        parent = parentBlockOrPageIdentity;
-
-        const firstChild = (
-          (refIsPage ? refPage?.roots : refBlock?.children) ?? []
-        )
-          .map((item) => {
-            const block = Array.isArray(item)
-              ? blocks.get(item[1])
-              : blocks.get(item.uuid);
-            return block;
-          })
-          .filter((block) => {
-            return block?.left.id === parentBlockOrPage.id;
-          })
-          .at(0);
-
-        if (blockOptions?.before) {
-          left = parentBlockOrPageIdentity;
-
-          // update first child of parent to point to the new block
-          if (firstChild) {
-            firstChild.left = {
-              id: generatedId,
-              uuid: generatedUuid,
-            };
-          }
-        } else {
-          left = firstChild
-            ? { id: firstChild?.id, uuid: firstChild?.uuid }
-            : parentBlockOrPageIdentity;
-        }
-      }
-    }
+    const { left, parent } = await getLeftAndParentBlocksAndMutateBlocks(
+      blockOptions?.sibling || false,
+      blockOptions?.before || false,
+      blocks,
+      pages,
+      { id: generatedId, uuid: generatedUuid },
+      referenceBlockUuid
+    );
 
     const newBlock: LSBlockEntity = {
       uuid: generatedUuid,

@@ -20,3 +20,11 @@ const formatterOptions = {
  */
 export const formatSecondsAsDateTime = (seconds: number) =>
   Intl.DateTimeFormat(undefined, formatterOptions).format(secondsToMs(seconds));
+
+/**
+ * Formats a date as a date string formatted like `4/27/2023, 2:11 AM`.
+ * @param date The date to display.
+ * @returns A formatted date string.
+ */
+export const formatDatetime = (date: Date) =>
+  Intl.DateTimeFormat(undefined, formatterOptions).format(date);

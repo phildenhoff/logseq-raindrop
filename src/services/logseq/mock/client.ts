@@ -7,7 +7,7 @@ import type {
 import { applyAsyncFunc } from "@util/async.js";
 import type { BlockUUID } from "@logseq/libs/dist/LSPlugin.user.js";
 import type { BlockMap, PageEntityWithRootBlocks, PageMap } from "./types.js";
-import { getLeftAndParentBlocksAndMutateBlocks } from "./leftAndParent.js";
+import { getLeftAndParentBlocks, updateBlockLeft } from "./leftAndParent.js";
 
 type TestableLogseqServiceClient = {
   PRIVATE_FOR_TESTING: {
@@ -142,7 +142,14 @@ export const generateMoqseqClient = (mockSetup?: {
     const generatedId = idGenerator++;
     const generatedUuid = randomUUID();
 
-    const { left, parent } = await getLeftAndParentBlocksAndMutateBlocks(
+    const { left, parent } = await getLeftAndParentBlocks(
+      blockOptions?.sibling || false,
+      blockOptions?.before || false,
+      blocks,
+      pages,
+      referenceBlockUuid
+    );
+    updateBlockLeft(
       blockOptions?.sibling || false,
       blockOptions?.before || false,
       blocks,

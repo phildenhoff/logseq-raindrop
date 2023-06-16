@@ -6,7 +6,7 @@ import type {
 } from "../../interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
 import type { BlockUUID } from "@logseq/libs/dist/LSPlugin.user.js";
-import type { BlockMap, PageMap } from "./types.js";
+import type { BlockMap, PageEntityWithRootBlocks, PageMap } from "./types.js";
 import { getLeftAndParentBlocksAndMutateBlocks } from "./leftAndParent.js";
 
 type TestableLogseqServiceClient = {
@@ -155,19 +155,10 @@ export const generateMoqseqClient = (mockSetup?: {
       uuid: generatedUuid,
       content: blockContent,
       properties: blockOptions?.properties ?? {},
-      left: {
-        // "which block is the predecessor of this block"
-        id: refBlock?.id ?? refPage!.id,
-        uuid: refBlock?.uuid ?? refPage!.uuid,
-      },
+      left,
       format: "markdown",
       id: generatedId,
-      parent: {
-        // "which block this is a child of"
-        // this is also wrong! we should look at siblings & before
-        id: refBlock?.id ?? refPage!.id,
-        uuid: refBlock?.uuid ?? refPage!.uuid,
-      },
+      parent,
       unordered: true,
       page: {
         id: refBlock ? refBlock.page.id : refPage!.id,

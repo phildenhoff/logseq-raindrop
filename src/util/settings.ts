@@ -107,12 +107,13 @@ const settingsConfig: SettingSchemaDesc[] = [
       "If you disable this, no blocks will be added but **you will have to delete existing blocks manually**.",
   },
   {
-    default: 0,
+    default: "",
     title: "Last sync timestamp (milliseconds)",
+    inputAs: "datetime-local",
     description:
       "The time of the last sync from the unix epoch. Used to determine which bookmarks have been created since the last sync. You can clear this value to reimport all bookmarks.",
     key: "last_sync_timestamp",
-    type: "number",
+    type: "string",
   },
 ];
 

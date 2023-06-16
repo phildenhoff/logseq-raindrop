@@ -7,6 +7,7 @@
   import { settings } from "@util/settings.js";
   import { setContext } from "svelte";
   import { generateLogseqClient, logseqClientCtxKey } from "./services/logseq/client.js";
+  import SinglePageSyncMenu from "@organisms/SinglePageSyncMenu.svelte";
 
   const logseqClient = generateLogseqClient();
   setContext(logseqClientCtxKey, logseqClient);
@@ -34,6 +35,7 @@
   };
 
   let promptUserToCompleteSetup = !setupComplete();
+  let isUsingSyncToSinglePage = settings.sync_to_single_page();
   let themePromise = getTheme();
 
   // We need to update state when these events occurr
@@ -72,7 +74,11 @@
         </p>
         <span on:click={showSettings} class="button">Open settings</span>
       {:else}
-        <ImportRaindrops />
+        {#if isUsingSyncToSinglePage}
+          <SinglePageSyncMenu />
+        {:else}
+          <ImportRaindrops />
+          {/if}
       {/if}
     </main>
   {/await}
@@ -103,6 +109,7 @@
     /* General colour palette */
     --rd-blue-base-color: #1888df;
     --rd-blue-light-color: #0db3e1;
+    --rd-blue-extra-light-color: #80d4ed;
     --rd-yellow-base-color: #fe0;
     --rd-yellow-dark-color: #dcc28f;
   }

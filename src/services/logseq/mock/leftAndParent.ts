@@ -12,7 +12,46 @@ import type {
 import type { BlockMap, PageMap } from "./types.js";
 import type { LSBlockEntity } from "@services/interfaces.js";
 
-const updateBlockLeft = (
+const getLeftmostChild = (
+  children: (BlockEntity | BlockUUIDTuple)[],
+  parentBlockId: EntityID,
+  blocksMap: BlockMap
+): Maybe<LSBlockEntity> => {
+  const result = children
+    .map((item) => {
+      if (Array.isArray(item)) {
+        return blocksMap.get(item[1]);
+      } else {
+        return blocksMap.get(item.uuid);
+      }
+    })
+    .filter((block) => block?.left.id === parentBlockId)
+    .at(0);
+
+  if (result) {
+    return just(result);
+  } else {
+    return nothing();
+  }
+};
+
+/**
+ * Update references to add a new block. Mutates the state so that other blocks
+ * correctly point to a new block when it's added to the page tree.
+ *
+ * Update the left reference of either the reference block or the leftmost child of
+ * the reference block to point to the new block (`newBlockIdentity`), depending on
+ * the values of `sibling` and `before`.
+ *
+ * @param sibling If true, insert as a sibling of the reference block. If false, insert as a child of the reference block.
+ * @param before If true, insert before the reference block. If false, insert after the reference block.
+ * @param blocksMap A map of UUIDs to blocks
+ * @param pagesMap A map of UUIDs to pages
+ * @param referenceBlockUuid The uuid of the reference block, which we will insert
+ * the new block relative to.
+ * @param newBlockIdentity The id and uuid of the new block
+ */
+export const updateBlockLeft = (
   sibling: boolean,
   before: boolean,
   blocksMap: BlockMap,
@@ -41,49 +80,23 @@ const updateBlockLeft = (
   }
 };
 
-const getLeftmostChild = (
-  children: (BlockEntity | BlockUUIDTuple)[],
-  parentBlockId: EntityID,
-  blocksMap: BlockMap
-): Maybe<LSBlockEntity> => {
-  const result = children
-    .map((item) => {
-      if (Array.isArray(item)) {
-        return blocksMap.get(item[1]);
-      } else {
-        return blocksMap.get(item.uuid);
-      }
-    })
-    .filter((block) => block?.left.id === parentBlockId)
-    .at(0);
-
-  if (result) {
-    return just(result);
-  } else {
-    return nothing();
-  }
-};
-
 /**
- * Get the left and parent blocks for a new block, and mutate any relevant blocks
- * to point to the correct left block.
+ * Get the left and parent blocks for a new block. Does not mutate the state.
  *
  * @param sibling If true, insert as a sibling of the reference block. If false, insert as a child of the reference block.
  * @param before If true, insert before the reference block. If false, insert after the reference block.
  * @param blocksMap A map of UUIDs to blocks
  * @param pagesMap A map of UUIDs to pages
- * @param newBlockEntityId The id and uuid of the new block
  * @param referenceBlockUuid The uuid of the reference block, which we will insert
  * the new block relative to
  * @returns
  */
-export const getLeftAndParentBlocksAndMutateBlocks = async (
+export const getLeftAndParentBlocks = async (
   sibling: boolean,
   before: boolean,
   blocksMap: BlockMap,
   pagesMap: PageMap,
-  referenceBlockUuid: BlockUUID,
-  newBlockEntityId: IEntityID
+  referenceBlockUuid: BlockUUID
 ): Promise<{ left: IEntityID; parent: IEntityID }> => {
   const blockOptions = {
     sibling,
@@ -107,15 +120,6 @@ export const getLeftAndParentBlocksAndMutateBlocks = async (
     if (blockOptions?.before) {
       // inserted before the reference block, under the same parent
       left = refBlock ? refBlock.left : refPageEntityId!;
-      // Update refBlock, if it exists, to point to the new block
-      updateBlockLeft(
-        sibling,
-        before,
-        blocksMap,
-        pagesMap,
-        referenceBlockUuid,
-        newBlockEntityId
-      );
     } else {
       // insert after the reference block, under the same parent
       left = refBlock
@@ -139,16 +143,6 @@ export const getLeftAndParentBlocksAndMutateBlocks = async (
 
       if (blockOptions?.before) {
         left = parentBlockOrPageIdentity;
-
-        // update first child of parent to point to the new block
-        updateBlockLeft(
-          sibling,
-          before,
-          blocksMap,
-          pagesMap,
-          referenceBlockUuid,
-          newBlockEntityId
-        );
       } else {
         left = maybeLeftmostChild.isJust
           ? {

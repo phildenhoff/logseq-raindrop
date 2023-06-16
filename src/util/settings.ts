@@ -134,6 +134,8 @@ export const settings = {
     annotation: (): string => logseq.settings!["template_annotation"] as string,
     deleted: (): string => logseq.settings!["template_deleted"] as string,
   },
+  sync_to_single_page: (): boolean =>
+    logseq.settings!["sync_to_single_page"] as boolean,
 };
 
 /**

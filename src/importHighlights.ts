@@ -101,7 +101,7 @@ const importRaindrop = async (
  * @param logseqClient The Logseq Client to use for insertion, getting settings.
  * @param parentBlock The block to insert the Raindrops underneath.
  */
-const importRaindropsFromGenerator = async (
+export const importRaindropsFromGenerator = async (
   generator: AsyncGenerator<Raindrop[]>,
   logseqClient: LogseqServiceClient,
   parentBlock: LSBlockEntity

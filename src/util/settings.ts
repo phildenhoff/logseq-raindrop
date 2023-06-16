@@ -108,10 +108,10 @@ const settingsConfig: SettingSchemaDesc[] = [
   },
   {
     default: "",
-    title: "Last sync timestamp (milliseconds)",
+    title: "Last sync time",
     inputAs: "datetime-local",
     description:
-      "The time of the last sync from the unix epoch. Used to determine which bookmarks have been created since the last sync. You can clear this value to reimport all bookmarks.",
+      "The time of the last sync. Used to determine which bookmarks have been created since the last sync. You can clear this value to reimport all bookmarks.",
     key: "last_sync_timestamp",
     type: "string",
   },

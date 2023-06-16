@@ -147,8 +147,8 @@ export const generateMoqseqClient = (mockSetup?: {
       blockOptions?.before || false,
       blocks,
       pages,
-      { id: generatedId, uuid: generatedUuid },
-      referenceBlockUuid
+      referenceBlockUuid,
+      { id: generatedId, uuid: generatedUuid }
     );
 
     const newBlock: LSBlockEntity = {

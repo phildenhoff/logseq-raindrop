@@ -1,16 +1,14 @@
 import type { LSBlockEntity, LSPageEntity } from "src/services/interfaces.js";
-import { describe, it, expect, assert, vi, afterEach } from "vitest";
+import { describe, it, expect, assert } from "vitest";
 import {
   ioMaybeGetPageForRaindrop,
   ioCreateOrLoadPage,
   ioCreateAnnotationBlock,
   ioUpsertAnnotationBlocks,
 } from "./upsertRaindropPage.js";
-import {
-  generateMoqseqClient,
-  type PageEntityWithRootBlocks,
-} from "src/services/logseq/mock/client.js";
 import type { Annotation, Raindrop } from "@types";
+import { generateMoqseqClient } from "@services/logseq/mock/client.js";
+import type { PageEntityWithRootBlocks } from "@services/logseq/mock/types.js";
 
 const emptyQueryGenerator = function* () {
   // Blocks

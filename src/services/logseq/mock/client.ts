@@ -17,6 +17,14 @@ type TestableLogseqServiceClient = {
     setDbQueryResponseGenerator: (
       generator: () => Generator<(LSBlockEntity | LSPageEntity)[]>
     ) => void;
+    /**
+     * Write the set of blocks to stdout.
+     */
+    displayBlocks: () => void;
+    /**
+     * Write the set of pages to stdout.
+     */
+    displayPages: () => void;
   };
 };
 
@@ -194,6 +202,27 @@ export const generateMoqseqClient = (mockSetup?: {
   const setDbQueryResponseGenerator: TestableLogseqServiceClient["PRIVATE_FOR_TESTING"]["setDbQueryResponseGenerator"] =
     (iterator) => {
       queryResponseGenerator = iterator();
+    };
+  const displayBlocks: TestableLogseqServiceClient["PRIVATE_FOR_TESTING"]["displayBlocks"] =
+    () => {
+      console.table(
+        Array.from(blocks.values()).map((block) => ({
+          id: block.id,
+          uuid: block.uuid,
+          content: block.content,
+          parent: block.parent,
+          page: block.page,
+          left: block.left,
+          children: block.children?.map((child) =>
+            Array.isArray(child) ? child[1] : child.uuid
+          ),
+          properties: block.properties,
+        }))
+      );
+    };
+  const displayPages: TestableLogseqServiceClient["PRIVATE_FOR_TESTING"]["displayPages"] =
+    () => {
+      console.table(Array.from(pages.values()));
     };
   const queryDb: LogseqServiceClient["queryDb"] = async (query) => {
     return queryResponseGenerator.next(query).value;
@@ -448,6 +477,8 @@ export const generateMoqseqClient = (mockSetup?: {
     getUserConfig,
     PRIVATE_FOR_TESTING: {
       setDbQueryResponseGenerator,
+      displayBlocks,
+      displayPages,
     },
   };
 };

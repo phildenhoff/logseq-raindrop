@@ -7,6 +7,7 @@ specifiers:
   '@types/node': ^18.15.8
   '@vitest/coverage-c8': ^0.31.1
   date-fns: ^2.30.0
+  mustache: ^4.2.0
   prettier: 2.8.7
   svelte: ^3.57.0
   svelte-check: ^3.1.4
@@ -21,6 +22,7 @@ specifiers:
 dependencies:
   '@logseq/libs': 0.0.14
   date-fns: 2.30.0
+  mustache: 4.2.0
   true-myth: 6.2.0
 
 devDependencies:
@@ -1057,6 +1059,11 @@ packages:
 
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
+
+  /mustache/4.2.0:
+    resolution: {integrity: sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==}
+    hasBin: true
+    dev: false
 
   /nanoid/3.3.4:
     resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}

@@ -4,6 +4,7 @@ specifiers:
   '@logseq/libs': ^0.0.14
   '@sveltejs/vite-plugin-svelte': ^2.0.3
   '@tsconfig/svelte': ^3.0.0
+  '@types/mustache': ^4.2.2
   '@types/node': ^18.15.8
   '@vitest/coverage-c8': ^0.31.1
   date-fns: ^2.30.0
@@ -28,6 +29,7 @@ dependencies:
 devDependencies:
   '@sveltejs/vite-plugin-svelte': 2.0.3_svelte@3.57.0+vite@4.2.1
   '@tsconfig/svelte': 3.0.0
+  '@types/mustache': 4.2.2
   '@types/node': 18.15.8
   '@vitest/coverage-c8': 0.31.1_vitest@0.31.1
   prettier: 2.8.7
@@ -365,6 +367,10 @@ packages:
 
   /@types/istanbul-lib-coverage/2.0.4:
     resolution: {integrity: sha512-z/QT1XN4K4KYuslS23k62yDIDLwLFkzxOuMplDtObz0+y7VqJCaO2o+SPwHCvLFZh7xazvvoor2tA/hPz9ee7g==}
+    dev: true
+
+  /@types/mustache/4.2.2:
+    resolution: {integrity: sha512-MUSpfpW0yZbTgjekDbH0shMYBUD+X/uJJJMm9LXN1d5yjl5lCY1vN/eWKD6D1tOtjA6206K0zcIPnUaFMurdNA==}
     dev: true
 
   /@types/node/18.15.8:

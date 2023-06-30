@@ -398,7 +398,7 @@ export const generateMoqseqClient = (mockSetup?: {
 
   const getUserConfig = (): Promise<AppUserConfigs> => {
     return Promise.resolve({
-      preferredDateFormat: "YYYY-MM-DD",
+      preferredDateFormat: "MMMM do, yyyy",
       preferredFormat: "markdown",
       preferredLanguage: "en",
       preferredStartOfWeek: "monday",

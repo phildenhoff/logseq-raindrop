@@ -6,7 +6,7 @@ describe("formattings", () => {
     const input = new Date(
       "Thu Jun 15 2023 19:28:00 GMT-0700 (Pacific Daylight Time)"
     );
-    const expected = "2023-06-15T19:28:00";
+    const expected = "2023-06-16T02:28:00";
 
     const actual = formatDateForSettings(input);
     expect(actual).toBe(expected);

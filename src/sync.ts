@@ -11,7 +11,6 @@ export const startSync = (logseqClient: LogseqServiceClient): (() => void) => {
   const lastSyncDate = settings.last_sync_timestamp();
 
   const syncIntervalId = setInterval(async () => {
-    console.log("Syncing raindrops...", new Date());
     importHighlightsSinceLastSync(lastSyncDate, logseqClient, pageName);
   }, intervalMinutes * 1000 * 60);
 

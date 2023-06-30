@@ -12,8 +12,6 @@
   import { logseqClientCtxKey } from "src/services/logseq/client.js";
   import { getRaindrop, searchTerm } from "@services/raindrop/index.js";
 
-  import PageImport from "./PageImport.svelte";
-
   const remoteData = writable<TRaindrop[]>([]);
   const requestsInFlight = writable(0);
   const mostRecentRequestTime = writable(new Date(0));
@@ -60,8 +58,6 @@
     performSearch("");
   });
 </script>
-
-<PageImport />
 
 <div>
   <h3>Import specific page</h3>

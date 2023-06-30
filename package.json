@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "format": "prettier --write src/",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "unittest": "vitest run --coverage",
+    "unittest": "TZ=UTC vitest run --coverage",
     "tsc": "tsc --noEmit",
     "test": "pnpm run check && pnpm run tsc && pnpm run format && pnpm run unittest"
   },

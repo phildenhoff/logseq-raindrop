@@ -443,10 +443,15 @@ export const generateMoqseqClient = (mockSetup?: {
   // Ensure that any default-added blocks are correctly attached to their page
   mockSetup?.defaultBlocks?.forEach((block) => {
     const page = pages.get(block.page.uuid);
-    if (!page) {
-      return;
+    if (page && block.parent.id === page.id) {
+      _addChildToPage(page, block.uuid);
     }
-    _addChildToPage(page, block.uuid);
+    const maybeParentBlock = mockSetup.defaultBlocks?.find(
+      (parent) => parent.id === block.parent.id
+    );
+    if (maybeParentBlock) {
+      _addChildToBlock(maybeParentBlock, block.uuid);
+    }
   });
 
   return {

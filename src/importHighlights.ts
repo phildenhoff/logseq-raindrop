@@ -5,15 +5,13 @@ import type {
   LSBlockEntity,
   LogseqServiceClient,
 } from "@services/interfaces.js";
-import {
-  formatDateForSettings,
-  formatDateUserPreference,
-} from "@services/logseq/formatting.js";
+import { formatDateForSettings } from "@services/logseq/formatting.js";
 import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collection.js";
 import type { Raindrop } from "@types";
 import { importFilterOptions } from "@util/settings.js";
 import type { Result } from "true-myth";
 import { err, ok } from "true-myth/result";
+import { renderBookmark, renderHighlight } from "./bookmarks/rendering.js";
 
 /**
  * Import highlights (and notes) for a single Raindrop as blocks underneath the
@@ -41,7 +39,7 @@ const importHighlightsForRaindrop = async (
 
   const highlightBatch = raindrop.annotations.map(
     (a): IBatchBlock => ({
-      content: [`> ${a.text}`, "", `${a.note}`].join("\n"),
+      content: renderHighlight(a),
     })
   );
   await logseqClient.createBlockBatch(highlightsBlock.uuid, highlightBatch, {
@@ -71,19 +69,7 @@ const importRaindrop = async (
   const userConfig = await logseqClient.getUserConfig();
   const articleBlock = await logseqClient.createBlock(
     lastInsertedBlock.uuid,
-    `[${raindrop.title}](${raindrop.url})
-        title:: ${raindrop.title}
-        url:: ${raindrop.url}
-        Tags:: ${raindrop.tags.join(", ")}
-        date-saved:: [[${formatDateUserPreference(
-          raindrop.created,
-          userConfig
-        )}]]
-        last-updated:: [[${formatDateUserPreference(
-          raindrop.lastUpdate,
-          userConfig
-        )}]]
-        `,
+    renderBookmark(raindrop, userConfig),
     // We want to insert the FIRST block from the generator as the first child of
     // the "Articles" block.
     // However, every subsequent block should be inserted as a sibling of that
@@ -103,6 +89,15 @@ const importRaindrop = async (
   }
   return ok(articleBlock);
 };
+
+/**
+ * Returns true if the bookmark must not be inserted into the page, false otherwise.
+ * @param bookmark The Raindrop bookmark to check
+ * @param importFilter The user's selected import filter
+ */
+const shouldSkipBookmark = (bookmark: Raindrop, importFilter: unknown) =>
+  importFilter === importFilterOptions.WITH_ANNOTATIONS &&
+  bookmark.annotations.length === 0;
 
 /**
  * Import all of the Raindrops provided by the generator as blocks underneath the
@@ -125,10 +120,7 @@ export const importRaindropsFromGenerator = async (
 
   for await (const raindropListWindow of generator) {
     raindropListWindow.forEach(async (r) => {
-      if (
-        importFilter === importFilterOptions.WITH_ANNOTATIONS &&
-        r.annotations.length === 0
-      ) {
+      if (shouldSkipBookmark(r, importFilter)) {
         return;
       }
 

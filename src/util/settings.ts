@@ -6,6 +6,16 @@ export const importFilterOptions = {
   WITH_ANNOTATIONS: "Import only Raindrops with highlights",
 };
 
+const defaultHighlightTemplate = `> {{{text}}}
+
+{{{note}}}`;
+const defaultBookmarkTemplate = `[{{{title}}}]({{{url}}})
+title:: {{{title}}}
+url:: {{{url}}}
+Tags:: {{{tags}}}
+date-saved:: [[{{{dateCreated}}}]]
+last-updated:: [[{{{dateUpdated}}}]]`;
+
 const settingsConfig: SettingSchemaDesc[] = [
   {
     default: false,
@@ -84,6 +94,24 @@ const settingsConfig: SettingSchemaDesc[] = [
       "The time of the last sync. Used to determine which bookmarks have been created since the last sync. You can clear this value to reimport all bookmarks.",
     key: "last_sync_timestamp",
     type: "string",
+  },
+  {
+    title: "Bookmark template",
+    type: "string",
+    inputAs: "textarea",
+    key: "bookmark_mustache_template",
+    description:
+      "Mustache template used when adding a bookmark to your page. Available variables: `{title}`, `{url}`, `{tags}`, `{dateCreated}`, `{dateUpdated}`.",
+    default: defaultBookmarkTemplate,
+  },
+  {
+    title: "Highlight template",
+    type: "string",
+    inputAs: "textarea",
+    key: "highlight_mustache_template",
+    description:
+      "Mustache template used when adding a highlight for a bookmark. Available variables: `{text}`, `{note}`.",
+    default: defaultHighlightTemplate,
   },
   {
     key: "category_multipage-imports",

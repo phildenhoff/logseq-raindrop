@@ -2,29 +2,10 @@ import Mustache from "mustache";
 
 import type { AppUserConfigs } from "@logseq/libs/dist/LSPlugin.user.js";
 import { formatDateUserPreference } from "@services/logseq/formatting.js";
+
 import type { Annotation, Raindrop } from "@types";
 
-type HighlightView = {
-  text: string;
-  note: string;
-};
-type BookmarkView = {
-  title: string;
-  url: string;
-  tags: string;
-  dateCreated: string;
-  dateUpdated: string;
-};
-
-const defaultHighlightTemplate = `> {{{text}}}
-
-{{{note}}}`;
-const defaultBookmarkTemplate = `[{{{title}}}]({{{url}}})
-title:: {{{title}}}
-url:: {{{url}}}
-Tags:: {{{tags}}}
-date-saved:: [[{{{dateCreated}}}]]
-last-updated:: [[{{{dateUpdated})}]]`;
+import type { BookmarkView, HighlightView } from "./views.js";
 
 export const createHighlightRenderView = (
   highlight: Annotation
@@ -48,19 +29,17 @@ export const createBookmarkRenderView = (
   };
 };
 
-export const renderHighlight = (highlight: Annotation) => {
-  return Mustache.render(
-    defaultHighlightTemplate,
-    createHighlightRenderView(highlight)
-  );
+export const renderHighlight = (highlight: Annotation, template: string) => {
+  return Mustache.render(template, createHighlightRenderView(highlight));
 };
 
 export const renderBookmark = (
   bookmark: Raindrop,
-  userConfig: AppUserConfigs
+  userConfig: AppUserConfigs,
+  template: string
 ) => {
   return Mustache.render(
-    defaultBookmarkTemplate,
+    template,
     createBookmarkRenderView(bookmark, userConfig)
   );
 };

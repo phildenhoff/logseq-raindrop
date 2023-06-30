@@ -26,6 +26,9 @@ const importHighlightsForRaindrop = async (
   logseqClient: LogseqServiceClient,
   raindropBlock: LSBlockEntity
 ) => {
+  const highlightTemplate = (await logseqClient.settings.get(
+    "highlight_mustache_template"
+  )) as string;
   const highlightsBlock = await logseqClient.createBlock(
     raindropBlock.uuid,
     `## Highlights`,
@@ -39,7 +42,7 @@ const importHighlightsForRaindrop = async (
 
   const highlightBatch = raindrop.annotations.map(
     (a): IBatchBlock => ({
-      content: renderHighlight(a),
+      content: renderHighlight(a, highlightTemplate),
     })
   );
   await logseqClient.createBlockBatch(highlightsBlock.uuid, highlightBatch, {
@@ -67,9 +70,12 @@ const importRaindrop = async (
   isFirstInsertion: boolean
 ): Promise<Result<LSBlockEntity, Error>> => {
   const userConfig = await logseqClient.getUserConfig();
+  const bookmarkTemplate = (await logseqClient.settings.get(
+    "bookmark_mustache_template"
+  )) as string;
   const articleBlock = await logseqClient.createBlock(
     lastInsertedBlock.uuid,
-    renderBookmark(raindrop, userConfig),
+    renderBookmark(raindrop, userConfig, bookmarkTemplate),
     // We want to insert the FIRST block from the generator as the first child of
     // the "Articles" block.
     // However, every subsequent block should be inserted as a sibling of that

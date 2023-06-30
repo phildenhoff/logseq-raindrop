@@ -15,6 +15,11 @@
     userPreferences,
     ($userPrefences) => new Date($userPrefences.last_sync_timestamp)
   );
+  const syncInterval = derived(
+    userPreferences,
+    ($userPreferences) => $userPreferences.sync_interval
+  );
+
   const onManuallySyncBookmarks = async (): Promise<void> => {
     const lastSyncDate = $lastSyncTimestamp;
     const pageName = await logseqClient.settings.get("page_name") as string;
@@ -41,6 +46,12 @@
 <div>
   <button on:click={onManuallySyncBookmarks}>Sync Bookmarks</button>
   <p>Last synced at: {formatDatetime($lastSyncTimestamp)}</p>
+
+  {#if $syncInterval > 0}
+    <p>Syncing updates every {$syncInterval} minute{$syncInterval > 1 ? 's' : ''}.</p>
+  {:else}
+    <p>Syncing updates is disabled</p>
+  {/if}
 
   <p>To change the last sync time, you can view Plugin Settings.</p>
   <button on:click={onChangeLastSyncTime}>Open Plugin Settings</button>

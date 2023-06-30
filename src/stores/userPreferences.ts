@@ -4,6 +4,7 @@ type UserPreferences = {
   broken_experimental_features: boolean;
   last_sync_timestamp: string;
   sync_to_single_page: boolean;
+  sync_interval: number;
 };
 
 function createUserPreferences() {

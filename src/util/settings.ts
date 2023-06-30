@@ -45,6 +45,14 @@ const settingsConfig: SettingSchemaDesc[] = [
     type: "string",
   },
   {
+    default: 30,
+    description:
+      "How many minutes between each sync. Disable syncing entirely with `0`. Default is every 30 minutes.",
+    key: "sync_interval",
+    title: "Sync interval (minutes)",
+    type: "number",
+  },
+  {
     default: "> {text}",
     description:
       "Markdown (or org mode) formatting to use for notes (highlights). Available variables: `{text}`, which is the contents of the highlight.",
@@ -136,6 +144,10 @@ export const settings = {
   },
   sync_to_single_page: (): boolean =>
     logseq.settings!["sync_to_single_page"] as boolean,
+  sync_interval: (): number => logseq.settings!["sync_interval"] as number,
+  page_name: (): string => logseq.settings!["page_name"] as string,
+  last_sync_timestamp: (): Date =>
+    new Date(logseq.settings!["last_sync_timestamp"] as string),
 };
 
 /**

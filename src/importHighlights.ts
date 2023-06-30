@@ -5,6 +5,7 @@ import type {
   LSBlockEntity,
   LogseqServiceClient,
 } from "@services/interfaces.js";
+import { formatDateForSettings } from "@services/logseq/formatting.js";
 import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collection.js";
 import type { Raindrop } from "@types";
 import { importFilterOptions } from "@util/settings.js";
@@ -171,5 +172,10 @@ export const importHighlightsSinceLastSync = async (
     generator,
     logseqClient,
     articleListParentBlock.value
+  );
+
+  logseqClient.settings.set(
+    "last_sync_timestamp",
+    formatDateForSettings(new Date())
   );
 };

@@ -19,6 +19,38 @@ const settingsConfig: SettingSchemaDesc[] = [
       " With it on, this page would be created as a new block under the page `Raindrop`.",
   },
   {
+    default: "",
+    description:
+      "Your API access token is used to save links for you. You can make a test token at https://app.raindrop.io/settings/integrations.",
+    key: "access_token",
+    title: "Raindrop access token",
+    type: "string",
+  },
+  {
+    default: "",
+    title: "Default page tags",
+    description:
+      "A list of #tags to include on every imported page. For example: '#[[Web page]] #raindrop [[imported]]'.",
+    key: "default_page_tags",
+    type: "string",
+  },
+  {
+    default: false,
+    title: "Enable broken, experimental features",
+    description:
+      "Enable pre-release features that are not yet ready for general use.",
+    key: "broken_experimental_features",
+    type: "boolean",
+  },
+  {
+    key: "category_single-page-imports",
+    type: "heading",
+    title: "Single Page Import Settings",
+    default: "",
+    description:
+      "Settings for when all bookmarks are imported to a single page.",
+  },
+  {
     default: importFilterOptions.ALL,
     type: "enum",
     enumChoices: Object.values(importFilterOptions),
@@ -37,20 +69,28 @@ const settingsConfig: SettingSchemaDesc[] = [
       "If 'Sync to a single page?' is enabled, all Raindrops will be imported to this page. It will be created if it does not exist.",
   },
   {
-    default: "",
-    description:
-      "Your API access token is used to save links for you. You can make a test token at https://app.raindrop.io/settings/integrations.",
-    key: "access_token",
-    title: "Raindrop access token",
-    type: "string",
-  },
-  {
     default: 30,
     description:
       "How many minutes between each sync. Disable syncing entirely with `0`. Default is every 30 minutes.",
     key: "sync_interval",
     title: "Sync interval (minutes)",
     type: "number",
+  },
+  {
+    default: "",
+    title: "Last sync time",
+    inputAs: "datetime-local",
+    description:
+      "The time of the last sync. Used to determine which bookmarks have been created since the last sync. You can clear this value to reimport all bookmarks.",
+    key: "last_sync_timestamp",
+    type: "string",
+  },
+  {
+    key: "category_multipage-imports",
+    type: "heading",
+    title: "Multi Page Import Settings",
+    default: "",
+    description: "Settings for when each bookmark is imported to its own page.",
   },
   {
     default: "> {text}",
@@ -89,22 +129,6 @@ const settingsConfig: SettingSchemaDesc[] = [
     type: "string",
   },
   {
-    default: "",
-    title: "Default page tags",
-    description:
-      "A list of #tags to include on every imported page. For example: '#[[Web page]] #raindrop [[imported]]'.",
-    key: "default_page_tags",
-    type: "string",
-  },
-  {
-    default: false,
-    title: "Enable broken, experimental features",
-    description:
-      "Enable pre-release features that are not yet ready for general use.",
-    key: "broken_experimental_features",
-    type: "boolean",
-  },
-  {
     type: "boolean",
     key: "enable_empty_page_state",
     title: "Enable empty page state",
@@ -113,15 +137,6 @@ const settingsConfig: SettingSchemaDesc[] = [
       "When a Raindrop page is imported, but has no annotations, a block will be added to the page letting you know that the page is empty (and that nothing went wrong)." +
       "\n\n" +
       "If you disable this, no blocks will be added but **you will have to delete existing blocks manually**.",
-  },
-  {
-    default: "",
-    title: "Last sync time",
-    inputAs: "datetime-local",
-    description:
-      "The time of the last sync. Used to determine which bookmarks have been created since the last sync. You can clear this value to reimport all bookmarks.",
-    key: "last_sync_timestamp",
-    type: "string",
   },
 ];
 

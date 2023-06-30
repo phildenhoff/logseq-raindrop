@@ -1,3 +1,7 @@
+import { format } from "date-fns";
+
+import type { AppUserConfigs } from "@logseq/libs/dist/LSPlugin.user.js";
+
 export const DATE_FORMAT_W_OUT_SECONDS = "yyyy-MM-dd'T'HH:mm";
 export const DATE_FORMAT = `${DATE_FORMAT_W_OUT_SECONDS}:ss`;
 
@@ -18,4 +22,12 @@ export const formatDateForSettings = (date: Date) => {
   dateWithoutTimezoneOffset.setHours(date.getHours() - timezoneOffset);
 
   return dateWithoutTimezoneOffset.toISOString().slice(0, 19);
+};
+
+export const formatDateUserPreference = (
+  date: Date,
+  userConfig: AppUserConfigs
+) => {
+  const preferredDateFormat = userConfig.preferredDateFormat;
+  return format(date, preferredDateFormat);
 };

@@ -31,7 +31,7 @@
   },
   "packageManager": "pnpm@7.30.3",
   "dependencies": {
-    "@logseq/libs": "^0.0.14",
+    "date-fns": "^2.30.0",
     "true-myth": "^6.2.0"
   },
   "logseq": {

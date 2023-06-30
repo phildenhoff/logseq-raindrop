@@ -8,7 +8,6 @@
   import { importHighlightsSinceLastSync } from "src/importHighlights.js";
   import { userPreferences } from "src/stores/userPreferences.js";
   import { formatDatetime } from "@util/time.js";
-  import { formatDateForSettings } from "@services/logseq/formatting.js";
 
   const logseqClient = getContext<LogseqServiceClient>(logseqClientCtxKey);
 
@@ -16,12 +15,14 @@
     userPreferences,
     ($userPrefences) => new Date($userPrefences.last_sync_timestamp)
   );
-  const onSyncUpdatedRaindrops = async (): Promise<void> => {
+  const onManuallySyncBookmarks = async (): Promise<void> => {
     const lastSyncDate = $lastSyncTimestamp;
+    const pageName = await logseqClient.settings.get("page_name") as string;
+
     importHighlightsSinceLastSync(
       lastSyncDate,
       logseqClient,
-      "Raindrop"
+      pageName
     ).then(() => {
       logseqClient.displayMessage(
         "Raindrop sync complete 🎉",
@@ -29,9 +30,8 @@
         {key: "raindrop-sync-complete"}
       );
     });
-    const pageName = await logseqClient.settings.get("page_name") as string;
+
     logseqClient.openPageByName(pageName);
-    userPreferences.updateSetting('last_sync_timestamp', formatDateForSettings(new Date()));
   }
   const onChangeLastSyncTime = (): void => {
     logseq.showSettingsUI();
@@ -39,7 +39,7 @@
 </script>
 
 <div>
-  <button on:click={onSyncUpdatedRaindrops}>Sync Bookmarks</button>
+  <button on:click={onManuallySyncBookmarks}>Sync Bookmarks</button>
   <p>Last synced at: {formatDatetime($lastSyncTimestamp)}</p>
 
   <p>To change the last sync time, you can view Plugin Settings.</p>

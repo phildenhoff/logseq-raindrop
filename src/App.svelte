@@ -1,17 +1,20 @@
 <script lang="ts">
+  import { setContext } from "svelte";
   import type { ILSPluginUser } from "@logseq/libs/dist/LSPlugin.js";
 
   import logo from "@assets/raindrop.png";
   import ImportRaindrops from "@organisms/ImportRaindrops.svelte";
   import { ifIsEnter, ifIsEscape } from "@util/keyboardEvents.js";
   import { settings } from "@util/settings.js";
-  import { setContext } from "svelte";
-  import { generateLogseqClient, logseqClientCtxKey } from "./services/logseq/client.js";
   import SinglePageSyncMenu from "@organisms/SinglePageSyncMenu.svelte";
+  import {
+    generateLogseqClient,
+    logseqClientCtxKey,
+  } from "@services/logseq/client.js";
+  import { startSync } from "./sync.js";
 
   const logseqClient = generateLogseqClient();
   setContext(logseqClientCtxKey, logseqClient);
-
   const l = window?.logseq ?? ({} as ILSPluginUser);
 
   const close = () => l?.hideMainUI();
@@ -37,10 +40,14 @@
   let promptUserToCompleteSetup = !setupComplete();
   let isUsingSyncToSinglePage = settings.sync_to_single_page();
   let themePromise = getTheme();
+  let stopSync = startSync(logseqClient);
 
   // We need to update state when these events occurr
   l?.onSettingsChanged(() => {
     promptUserToCompleteSetup = !setupComplete();
+
+    stopSync();
+    stopSync = startSync(logseqClient);
   });
 
   l?.App.onThemeModeChanged(({ mode }) => {

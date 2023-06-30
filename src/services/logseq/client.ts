@@ -78,5 +78,6 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
       set: async (key, value) => logseq.updateSettings({ [key]: value }),
       registerSchema: async (schema) => logseq.useSettingsSchema(schema),
     },
+    getUserConfig: logseq.App.getUserConfigs,
   };
 };

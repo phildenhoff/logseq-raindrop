@@ -5,7 +5,10 @@ import type {
   LSBlockEntity,
 } from "../../interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
-import type { BlockUUID } from "@logseq/libs/dist/LSPlugin.user.js";
+import type {
+  AppUserConfigs,
+  BlockUUID,
+} from "@logseq/libs/dist/LSPlugin.user.js";
 import type { BlockMap, PageEntityWithRootBlocks, PageMap } from "./types.js";
 import { getLeftAndParentBlocks, updateBlockLeft } from "./leftAndParent.js";
 
@@ -393,6 +396,21 @@ export const generateMoqseqClient = (mockSetup?: {
     return Promise.resolve();
   };
 
+  const getUserConfig = (): Promise<AppUserConfigs> => {
+    return Promise.resolve({
+      preferredDateFormat: "YYYY-MM-DD",
+      preferredFormat: "markdown",
+      preferredLanguage: "en",
+      preferredStartOfWeek: "monday",
+      preferredThemeMode: "light",
+      preferredWorkflow: "now",
+      currentGraph: "/path/to/graph",
+      showBracket: true,
+      enabledFlashcards: true,
+      enabledJournals: true,
+    });
+  };
+
   // Ensure that any default-added blocks are correctly attached to their page
   mockSetup?.defaultBlocks?.forEach((block) => {
     const page = pages.get(block.page.uuid);
@@ -427,6 +445,7 @@ export const generateMoqseqClient = (mockSetup?: {
       get: getSetting,
       set: setSetting,
     },
+    getUserConfig,
     PRIVATE_FOR_TESTING: {
       setDbQueryResponseGenerator,
     },

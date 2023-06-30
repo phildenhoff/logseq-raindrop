@@ -1,4 +1,5 @@
 import type {
+  AppUserConfigs,
   BlockEntity,
   BlockUUID,
   BlockUUIDTuple,
@@ -329,4 +330,15 @@ export interface LogseqServiceClient {
     get: (key: string) => Promise<unknown>;
     set: (key: string, value: unknown) => Promise<void>;
   };
+
+  /**
+   * Get user preferences for Logseq (not settings for this plugin), such as date
+   * formatting, preferred file type, etc.
+   *
+   * See https://logseq.github.io/plugins/interfaces/AppUserConfigs.html for more
+   * info.
+   *
+   * @returns A promise that resolves to a user config object.
+   */
+  getUserConfig: () => Promise<AppUserConfigs>;
 }

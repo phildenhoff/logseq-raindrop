@@ -5,7 +5,10 @@ import type {
   LSBlockEntity,
   LogseqServiceClient,
 } from "@services/interfaces.js";
-import { formatDateForSettings } from "@services/logseq/formatting.js";
+import {
+  formatDateForSettings,
+  formatDateUserPreference,
+} from "@services/logseq/formatting.js";
 import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collection.js";
 import type { Raindrop } from "@types";
 import { importFilterOptions } from "@util/settings.js";
@@ -65,12 +68,21 @@ const importRaindrop = async (
   lastInsertedBlock: LSBlockEntity,
   isFirstInsertion: boolean
 ): Promise<Result<LSBlockEntity, Error>> => {
+  const userConfig = await logseqClient.getUserConfig();
   const articleBlock = await logseqClient.createBlock(
     lastInsertedBlock.uuid,
     `[${raindrop.title}](${raindrop.url})
         title:: ${raindrop.title}
         url:: ${raindrop.url}
         Tags:: ${raindrop.tags.join(", ")}
+        date-saved:: [[${formatDateUserPreference(
+          raindrop.created,
+          userConfig
+        )}]]
+        last-updated:: [[${formatDateUserPreference(
+          raindrop.lastUpdate,
+          userConfig
+        )}]]
         `,
     // We want to insert the FIRST block from the generator as the first child of
     // the "Articles" block.

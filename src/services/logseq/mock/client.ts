@@ -106,11 +106,12 @@ export const generateMoqseqClient = (mockSetup?: {
   let pages: PageMap = new Map(
     mockSetup?.defaultPages?.map((item) => [item.uuid, item]) ?? []
   );
-  let idGenerator = Math.max(
-    ...(mockSetup?.defaultBlocks?.map((item) => item.id) || []),
-    ...(mockSetup?.defaultPages?.map((item) => item.id) || []),
-    0
-  );
+  let idGenerator =
+    Math.max(
+      ...(mockSetup?.defaultBlocks?.map((item) => item.id) || []),
+      ...(mockSetup?.defaultPages?.map((item) => item.id) || []),
+      -1
+    ) + 1;
   let queryResponseGenerator: Generator<(LSBlockEntity | LSPageEntity)[]> =
     throwErrorGenerator();
   let settings = new Map<string, string | number | boolean | unknown>(

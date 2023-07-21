@@ -54,7 +54,7 @@ export async function* createCollectionUpdatedSinceGenerator(
 
   while (true) {
     const response = await httpClient.get(
-      `/raindrops/${collectionId}?sort-lastUpdate&perpage=${
+      `/raindrops/${collectionId}?sort=-lastUpdate&perpage=${
         params?.perPage ?? 10
       }&page=${pageOffset}`
     );

@@ -81,6 +81,10 @@ describe("importRaindropsFromGenerator", () => {
           content: "Older Import 2",
         },
       ],
+      settings: {
+        highlight_mustache_template: "> {{{text}}}",
+        bookmark_mustache_template: "[{{{title}}}]({{{url}}})",
+      },
     });
 
     const newBlocks: Record<string, Raindrop> = {
@@ -93,8 +97,10 @@ describe("importRaindropsFromGenerator", () => {
     };
 
     const generator: AsyncGenerator<Raindrop[]> = (async function* () {
-      yield Promise.resolve([newBlocks.newImport]);
+      // The `createCollectionUpdatedSinceGenerator` must return the most recently
+      // updated items first, so we do the same.
       yield Promise.resolve([newBlocks.newestImport]);
+      yield Promise.resolve([newBlocks.newImport]);
     })();
 
     await importRaindropsFromGenerator(

@@ -23,6 +23,9 @@ export const searchTerm = async (query: string, collectionId: string = "0") => {
  * Creates a generator that returns a list of Raindrops that have been updated
  * after the given `since` date.
  *
+ * The list is returned in a sorted order of "most recently updated first" to
+ * "least recently updated last".
+ *
  * @param since A date, used to keep only the raindrops updated since this date.
  * @param collectionId The id of the collection to fetch.
  * @param params Additional query parameters

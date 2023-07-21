@@ -125,29 +125,37 @@ export const importRaindropsFromGenerator = async (
   const importFilter = await logseqClient.settings.get("import_filter");
 
   for await (const raindropListWindow of generator) {
-    raindropListWindow.forEach(async (r) => {
-      if (shouldSkipBookmark(r, importFilter)) {
-        return;
-      }
+    await Promise.all(
+      raindropListWindow.map(async (r) => {
+        if (shouldSkipBookmark(r, importFilter)) {
+          return Promise.resolve();
+        }
 
-      const importedBlockResult = await importRaindrop(
-        r,
-        logseqClient,
-        lastInsertedBlock,
-        isFirstInsertion
-      );
-      if (importedBlockResult.isErr) {
-        throw importedBlockResult.error;
-      }
+        const importedBlockResult = await importRaindrop(
+          r,
+          logseqClient,
+          lastInsertedBlock,
+          isFirstInsertion
+        );
+        if (importedBlockResult.isErr) {
+          return Promise.reject(importedBlockResult.error);
+        }
 
-      lastInsertedBlock = importedBlockResult.value;
-      isFirstInsertion = false;
+        lastInsertedBlock = importedBlockResult.value;
+        isFirstInsertion = false;
 
-      if (r.annotations.length !== 0) {
-        importHighlightsForRaindrop(r, logseqClient, importedBlockResult.value);
-      }
-    });
+        if (r.annotations.length !== 0) {
+          await importHighlightsForRaindrop(
+            r,
+            logseqClient,
+            importedBlockResult.value
+          );
+          return;
+        }
+      })
+    );
   }
+  return Promise.resolve();
 };
 
 export const importHighlightsSinceLastSync = async (

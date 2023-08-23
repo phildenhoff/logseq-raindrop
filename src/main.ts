@@ -7,7 +7,7 @@ import { registerCommands } from "@commands/commands.js";
 import { registerSettings, settings } from "@util/settings.js";
 import { setupRaindropHttpClient } from "@services/raindrop/index.js";
 
-const main = () => {
+const main = async () => {
   const addColorStyle = import.meta.env.PROD ? "" : "color: orange!important;";
 
   setupRaindropHttpClient({
@@ -16,7 +16,7 @@ const main = () => {
   });
 
   registerCommands();
-  registerSettings();
+  await registerSettings();
 
   new App({
     target: document.getElementById("app")!,

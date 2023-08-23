@@ -6,12 +6,12 @@ export type Template = {
 export const defaultHighlightTemplate: Template = {
   markdown: `> {{{text}}}
 
-  {{{note}}}`,
+{{{note}}}`,
   org: `#+BEGIN_QUOTE
-  {{text}}
-  #+END_QUOTE
+{{text}}
+#+END_QUOTE
 
-  {{note}}`,
+{{note}}`,
 };
 
 export const defaultBookmarkTemplate: Template = {
@@ -19,27 +19,23 @@ export const defaultBookmarkTemplate: Template = {
 title:: {{{title}}}
 url:: {{{url}}}
 Tags:: {{{tags}}}
-date-saved:: [[{{{dateCreated}}}]]
-`,
+date-saved:: [[{{{dateCreated}}}]]`,
   org: `[[{{{url}}}][{{{title}}}]]
 :PROPERTIES:
 :title: {{{title}}}
 :url: {{{url}}}
 :Tags: {{{tags}}}
 :date-saved: [[{{{dateCreated}}}]]
-:END:
-`,
+:END:`,
 };
 
 export const defaultSavedToRaindropTemplate: Template = {
   markdown: `Saved to Raindrop: 
 {{{#links}}}
 {{{.}}}
-{{{/links}}}
-`,
+{{{/links}}}`,
   org: `Saved to Raindrop:
 {{{#links}}}
 {{{.}}}
-{{{/links}}}
-`,
+{{{/links}}}`,
 };

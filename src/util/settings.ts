@@ -1,22 +1,18 @@
 import type { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin.js";
 import { userPreferences } from "src/stores/userPreferences.js";
+import {
+  defaultBookmarkTemplate,
+  defaultHighlightTemplate,
+} from "src/templates.js";
 
 export const importFilterOptions = {
   ALL: "Import all Raindrops",
   WITH_ANNOTATIONS: "Import only Raindrops with highlights",
 };
 
-const defaultHighlightTemplate = `> {{{text}}}
-
-{{{note}}}`;
-const defaultBookmarkTemplate = `[{{{title}}}]({{{url}}})
-title:: {{{title}}}
-url:: {{{url}}}
-Tags:: {{{tags}}}
-date-saved:: [[{{{dateCreated}}}]]
-last-updated:: [[{{{dateUpdated}}}]]`;
-
-const settingsConfig: SettingSchemaDesc[] = [
+const generateSettingsConfig = (userConfig: {
+  preferredFormat: "markdown" | "org";
+}): SettingSchemaDesc[] => [
   {
     default: false,
     type: "boolean",
@@ -102,7 +98,7 @@ const settingsConfig: SettingSchemaDesc[] = [
     key: "bookmark_mustache_template",
     description:
       "Mustache template used when adding a bookmark to your page. Available variables: `{title}`, `{url}`, `{tags}`, `{dateCreated}`, `{dateUpdated}`.",
-    default: defaultBookmarkTemplate,
+    default: defaultBookmarkTemplate[userConfig.preferredFormat],
   },
   {
     title: "Highlight template",
@@ -111,7 +107,7 @@ const settingsConfig: SettingSchemaDesc[] = [
     key: "highlight_mustache_template",
     description:
       "Mustache template used when adding a highlight for a bookmark. Available variables: `{text}`, `{note}`.",
-    default: defaultHighlightTemplate,
+    default: defaultHighlightTemplate[userConfig.preferredFormat],
   },
   {
     key: "category_multipage-imports",
@@ -198,8 +194,10 @@ export const settings = {
  * Logseq then generates a plugin settings page for us.
  *
  */
-export const registerSettings = (): void => {
+export const registerSettings = async (): Promise<void> => {
   logseq.onSettingsChanged(userPreferences.onUpdate);
 
-  logseq.useSettingsSchema(settingsConfig);
+  const { preferredFormat } = await logseq.App.getUserConfigs();
+
+  logseq.useSettingsSchema(generateSettingsConfig({ preferredFormat }));
 };

@@ -81,6 +81,11 @@ export const addUrlsToRaindrop = async (): Promise<void> => {
 
   const template = settings.formatting_template.add_link_mustache_template();
   const text = renderAddedToRaindrop(newRaindrops, template);
+  if (!text) {
+    logseq.UI.showMsg("Added URLs to Raindrop");
+    return;
+  }
+
   await logseq.Editor.insertBlock(uuid, text, {
     sibling: false,
   });

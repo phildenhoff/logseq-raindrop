@@ -3,6 +3,7 @@ import { userPreferences } from "src/stores/userPreferences.js";
 import {
   defaultBookmarkTemplate,
   defaultHighlightTemplate,
+  defaultAddedToRaindropTemplate,
 } from "src/templates.js";
 
 export const importFilterOptions = {
@@ -47,6 +48,15 @@ const generateSettingsConfig = (userConfig: {
       "Enable pre-release features that are not yet ready for general use.",
     key: "broken_experimental_features",
     type: "boolean",
+  },
+  {
+    title: "Add Link to Raindrop template",
+    type: "string",
+    inputAs: "textarea",
+    key: "add_link_mustache_template",
+    description:
+      "Mustache template used when adding a link to Raindrop. Available variables: `{links}` (an array of links added to Raindrop, each with an `{addedUrl}` and `{raindropPreviewUrl}`).",
+    default: defaultAddedToRaindropTemplate[userConfig.preferredFormat],
   },
   {
     key: "category_single-page-imports",
@@ -180,6 +190,8 @@ export const settings = {
     highlight: (): string => logseq.settings!["template_highlight"] as string,
     annotation: (): string => logseq.settings!["template_annotation"] as string,
     deleted: (): string => logseq.settings!["template_deleted"] as string,
+    add_link_mustache_template: (): string =>
+      logseq.settings!["add_link_mustache_template"] as string,
   },
   sync_to_single_page: (): boolean =>
     logseq.settings!["sync_to_single_page"] as boolean,

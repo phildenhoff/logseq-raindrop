@@ -1,6 +1,11 @@
+import Mustache from "mustache";
+import { isOk, type Ok } from "true-myth/result";
+
 import { createRaindrop } from "@services/raindrop/raindrop.js";
 import { extractUrlFromText } from "@util/url.js";
-import { isOk, type Ok } from "true-myth/result";
+import { settings } from "@util/settings.js";
+
+import type { AddedToRaindropView } from "./views.js";
 
 const strings = {
   error: {
@@ -12,22 +17,35 @@ const strings = {
 };
 
 type Raindrop = {
-  link: string;
+  url: string;
   raindropId: string;
+};
+
+const createLinkRenderView = (
+  raindropList: Raindrop[]
+): AddedToRaindropView => {
+  return {
+    links: raindropList.map(({ url, raindropId }) => ({
+      addedUrl: url,
+      raindropPreviewUrl: `https://app.raindrop.io/my/-1/item/${raindropId}/web`,
+    })),
+  };
 };
 
 const convertResponsesToRaindrops = async (
   responses: Response[]
 ): Promise<Raindrop[]> => {
   const raindrops = await Promise.all(responses.map((res) => res.json()));
-  return raindrops.map((res_1) => ({
-    link: res_1.item.link,
-    raindropId: res_1.item._id,
+  return raindrops.map((data) => ({
+    url: data.item.link,
+    raindropId: data.item._id,
   }));
 };
 
-const convertRaindropToMdLink = ({ link, raindropId }: Raindrop): string =>
-  `[${link}](${`https://app.raindrop.io/my/-1/item/${raindropId}/preview`})`;
+const renderAddedToRaindrop = (raindropList: Raindrop[], template: string) => {
+  const view = createLinkRenderView(raindropList);
+  return Mustache.render(template, view);
+};
 
 export const addUrlsToRaindrop = async (): Promise<void> => {
   // We can't use `content` from `getCurrentBlock()` because it's not updated
@@ -60,9 +78,10 @@ export const addUrlsToRaindrop = async (): Promise<void> => {
   const newRaindrops = await convertResponsesToRaindrops(
     responses.filter(isOk).map((res) => (res as Ok<Response, unknown>).value)
   );
-  const linksText = newRaindrops.map(convertRaindropToMdLink);
-  const savedLinksBlockText = "Saved to Raindrop: \n" + linksText.join("\n");
-  await logseq.Editor.insertBlock(uuid, savedLinksBlockText, {
+
+  const template = settings.formatting_template.add_link_mustache_template();
+  const text = renderAddedToRaindrop(newRaindrops, template);
+  await logseq.Editor.insertBlock(uuid, text, {
     sibling: false,
   });
 };

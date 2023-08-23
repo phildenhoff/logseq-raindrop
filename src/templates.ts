@@ -29,13 +29,13 @@ date-saved:: [[{{{dateCreated}}}]]`,
 :END:`,
 };
 
-export const defaultSavedToRaindropTemplate: Template = {
+export const defaultAddedToRaindropTemplate: Template = {
   markdown: `Saved to Raindrop: 
-{{{#links}}}
-{{{.}}}
-{{{/links}}}`,
+{{#links}}
+[\`{{{addedUrl}}}\` (Raindrop preview)]({{{raindropPreviewUrl}}})
+{{/links}}`,
   org: `Saved to Raindrop:
-{{{#links}}}
-{{{.}}}
-{{{/links}}}`,
+{{#links}}
+[[{{{raindropPreviewUrl}}}][~{{{addedUrl}}}~ (Raindrop preview)]]
+{{/links}}`,
 };

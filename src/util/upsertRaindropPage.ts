@@ -61,19 +61,6 @@ export const ioCreateOrLoadPage = async (
   }
 };
 
-export const ioAddOrRemoveEmptyState = async (
-  r: Raindrop,
-  pageBlocks: LSBlockEntity[],
-  currentPage: LSPageEntity,
-  logseqClient: LogseqServiceClient
-) => {
-  if (r.annotations.length === 0) {
-    await ioAddEmptyStateBlock(pageBlocks, currentPage.uuid, logseqClient);
-  } else {
-    await ioRemoveEmptyStateBlock(pageBlocks, logseqClient);
-  }
-};
-
 export const ioCreateAnnotationBlock = async (
   annotation: Annotation,
   currentPage: LSPageEntity,
@@ -132,12 +119,15 @@ export const upsertRaindropPage = async (
   await ioCreateOrLoadPage(fullRaindrop, logseqClient);
   const pageBlocks = await logseqClient.getBlockTreeForCurrentPage();
   const currentPage = await logseqClient.getFocusedPageOrBlock();
-  await ioAddOrRemoveEmptyState(
-    fullRaindrop,
-    pageBlocks,
-    currentPage as LSPageEntity,
-    logseqClient
-  );
+
+  if (!currentPage) throw new Error("Could not get current page");
+
+  if (fullRaindrop.annotations.length === 0) {
+    await ioAddEmptyStateBlock(pageBlocks, currentPage.uuid, logseqClient);
+  } else {
+    await ioRemoveEmptyStateBlock(pageBlocks, logseqClient);
+  }
+
   await ioUpsertAnnotationBlocks(
     fullRaindrop,
     currentPage as LSPageEntity,

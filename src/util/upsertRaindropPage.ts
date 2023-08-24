@@ -18,7 +18,7 @@ import {
   ioRemoveEmptyStateBlock,
 } from "src/services/logseq/emptyState.js";
 
-export const ioMaybeGetPageForRaindrop = async (
+const ioMaybeGetPageForRaindrop = async (
   r: Raindrop,
   logseqClient: LogseqServiceClient
 ): Promise<Maybe<LSPageEntity>> => {
@@ -38,7 +38,7 @@ export const ioMaybeGetPageForRaindrop = async (
   return Maybe.of(oldestPage);
 };
 
-export const ioCreateOrLoadPage = async (
+const ioCreateOrLoadPage = async (
   r: Raindrop,
   logseqClient: LogseqServiceClient
 ) => {
@@ -61,7 +61,7 @@ export const ioCreateOrLoadPage = async (
   }
 };
 
-export const ioCreateAnnotationBlock = async (
+const ioCreateAnnotationBlock = async (
   annotation: Annotation,
   currentPage: LSPageEntity,
   logseqClient: LogseqServiceClient
@@ -84,7 +84,7 @@ export const ioCreateAnnotationBlock = async (
   );
 };
 
-export const ioUpsertAnnotationBlocks = async (
+const ioUpsertAnnotationBlocks = async (
   r: Raindrop,
   currentPage: LSPageEntity,
   logseqClient: LogseqServiceClient
@@ -133,4 +133,15 @@ export const upsertRaindropPage = async (
     currentPage as LSPageEntity,
     logseqClient
   );
+};
+
+/**
+ * Exported for testing purposes only.
+ * If you are not writing the tests for this module, do not use this.
+ */
+export const __TESTING = {
+  ioMaybeGetPageForRaindrop,
+  ioCreateOrLoadPage,
+  ioCreateAnnotationBlock,
+  ioUpsertAnnotationBlocks,
 };

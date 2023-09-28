@@ -1,5 +1,5 @@
 import type { Annotation, Raindrop } from "@types";
-import type { RaindropResponse } from "@util/raindropTransformer.js";
+import type { RaindropResponse } from "@services/raindrop/normalize.js";
 import { randomUUID } from "crypto";
 
 const generateAnnotation = (opts?: Partial<Annotation>): Annotation => ({

@@ -2,7 +2,7 @@ import type { Raindrop } from "@types";
 import { httpClient } from "./http.js";
 import type { Result } from "true-myth";
 import { err, ok } from "true-myth/result";
-import { raindropTransformer } from "@util/raindropTransformer.js";
+import { raindropTransformer } from "@services/raindrop/normalize.js";
 
 export const getRaindrop = async (
   id: Raindrop["id"]

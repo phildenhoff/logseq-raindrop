@@ -4,7 +4,7 @@ import "svelte";
 import App from "./App.svelte";
 
 import { registerCommands } from "@commands/commands.js";
-import { registerSettings, settings } from "@util/settings.js";
+import { registerSettings, settings } from "@services/logseq/settings.js";
 import { setupRaindropHttpClient } from "@services/raindrop/index.js";
 
 const main = async () => {

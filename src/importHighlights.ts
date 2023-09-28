@@ -8,7 +8,7 @@ import type {
 import { formatDateForSettings } from "@services/logseq/formatting.js";
 import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collection.js";
 import type { Raindrop } from "@types";
-import { importFilterOptions } from "@util/settings.js";
+import { importFilterOptions } from "@services/logseq/settings.js";
 import type { Result } from "true-myth";
 import { err, ok } from "true-myth/result";
 import { renderBookmark, renderHighlight } from "./bookmarks/rendering.js";

@@ -5,7 +5,7 @@
   import logo from "@assets/raindrop.png";
   import ImportRaindrops from "@organisms/ImportRaindrops.svelte";
   import { ifIsEnter, ifIsEscape } from "@util/keyboardEvents.js";
-  import { settings } from "@util/settings.js";
+  import { settings } from "@services/logseq/settings.js";
   import SinglePageSyncMenu from "@organisms/SinglePageSyncMenu.svelte";
   import {
     generateLogseqClient,

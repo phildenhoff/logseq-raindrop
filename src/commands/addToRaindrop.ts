@@ -3,7 +3,7 @@ import { isOk, type Ok } from "true-myth/result";
 
 import { createRaindrop } from "@services/raindrop/raindrop.js";
 import { extractUrlFromText } from "@util/url.js";
-import { settings } from "@util/settings.js";
+import { settings } from "@services/logseq/settings.js";
 
 import type { AddedToRaindropView } from "./views.js";
 

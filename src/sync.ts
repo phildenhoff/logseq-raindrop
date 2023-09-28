@@ -1,5 +1,5 @@
 import type { LogseqServiceClient } from "@services/interfaces.js";
-import { settings } from "@util/settings.js";
+import { settings } from "@services/logseq/settings.js";
 import { importHighlightsSinceLastSync } from "./importHighlights.js";
 
 export const startSync = (logseqClient: LogseqServiceClient): (() => void) => {

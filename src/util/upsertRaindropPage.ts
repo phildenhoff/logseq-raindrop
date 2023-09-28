@@ -73,15 +73,13 @@ const ioCreateAnnotationBlock = async (
     (await logseqClient.settings.get("template_annotation")) as string
   ).replace("{text}", annotation.note);
 
-  return logseqClient.createBlock(
-    currentPage.uuid,
-    `${highlightFormatted}\n\n${noteFormatted}`,
-    {
-      properties: { "annotation-id": annotation.id },
-      sibling: false,
-      before: false,
-    }
-  );
+  const template = `${highlightFormatted}\n\n${noteFormatted}`;
+
+  return logseqClient.createBlock(currentPage.uuid, template, {
+    properties: { "annotation-id": annotation.id },
+    sibling: false,
+    before: false,
+  });
 };
 
 const ioUpsertAnnotationBlocks = async (

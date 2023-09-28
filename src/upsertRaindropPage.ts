@@ -11,7 +11,7 @@ import { findPagesByRaindropID } from "src/queries/getBlockBy.js";
 import { formatRaindropToProperties } from "@util/pageFormatter.js";
 import { applyAsyncFunc } from "@util/async.js";
 
-import { generatePageName } from "./generatePageName.js";
+import { generatePageName } from "./util/generatePageName.js";
 import {
   ioAddEmptyStateBlock,
   ioRemoveEmptyStateBlock,

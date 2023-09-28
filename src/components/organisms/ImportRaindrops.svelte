@@ -5,7 +5,7 @@
   import type {Raindrop as TRaindrop} from "@types";
   import Raindrop from "@atoms/Raindrop.svelte";
   import LoadingSpinner from "@atoms/LoadingSpinner.svelte";
-  import { upsertRaindropPage } from "@util/upsertRaindropPage.js";
+  import { upsertRaindropPage } from "src/upsertRaindropPage.js";
   import { normalizeApiRaindrop } from "@services/raindrop/normalize.js";
   import { match } from "true-myth/result";
   import type { LogseqServiceClient } from "src/services/interfaces.js";

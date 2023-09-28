@@ -8,7 +8,6 @@ import type {
   LogseqServiceClient,
 } from "src/services/interfaces.js";
 import { findPagesByRaindropID } from "src/queries/getBlockBy.js";
-import { alertDuplicatePageIdUsed } from "@util/notify.js";
 import { formatRaindropToProperties } from "@util/pageFormatter.js";
 import { applyAsyncFunc } from "@util/async.js";
 
@@ -16,7 +15,15 @@ import { generatePageName } from "./generatePageName.js";
 import {
   ioAddEmptyStateBlock,
   ioRemoveEmptyStateBlock,
-} from "src/services/logseq/emptyState.js";
+} from "@services/logseq/emptyState.js";
+
+const alertDuplicatePageIdUsed = (r: Raindrop, client: LogseqServiceClient) => {
+  client.displayMessage(
+    `You have duplicate pages for this article: \n${r.title}.\n\nWe'll use the oldest one, but you should merge these pages.`,
+    "warning",
+    { key: r.id, timeout: 5000 }
+  );
+};
 
 const ioMaybeGetPageForRaindrop = async (
   r: Raindrop,

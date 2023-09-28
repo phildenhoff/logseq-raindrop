@@ -1,14 +1,15 @@
 import type { Raindrop } from "@types";
-import { httpClient } from "./http.js";
 import type { Result } from "true-myth";
 import { err, ok } from "true-myth/result";
-import { raindropTransformer } from "@services/raindrop/normalize.js";
 
-export const getRaindrop = async (
+import { httpClient } from "./http.js";
+import { raindropTransformer } from "./normalize.js";
+
+const getRaindropFromApi = async (
   id: Raindrop["id"]
-): Promise<Result<Raindrop, string>> => {
+): Promise<Result<unknown, string>> => {
   if (!httpClient) {
-    throw new Error("Raindrop client not initialized");
+    return err("Raindrop client not initialized");
   }
   try {
     const res = await httpClient.get(`/raindrop/${id}`);
@@ -21,16 +22,22 @@ export const getRaindrop = async (
       return err("Invalid response");
     }
 
-    const transformed = raindropTransformer(
-      // @ts-expect-error TODO: Parse resJson.item to ensure it's valid
-      resJson.item
-    );
-    return ok(transformed);
+    return ok(resJson.item);
   } catch (e) {
-    console.error(e);
-
     return err("Getting Raindrop failed");
   }
+};
+
+export const getRaindrop = async (
+  id: Raindrop["id"]
+): Promise<Result<Raindrop, string>> => {
+  const apiResponse = await getRaindropFromApi(id);
+
+  if (apiResponse.isErr) {
+    return err("Getting Raindrop failed");
+  }
+  const normalizedResponse = raindropTransformer(apiResponse.value);
+  return ok(normalizedResponse);
 };
 
 export const createRaindrop = async ({ link }: { link: string }) => {

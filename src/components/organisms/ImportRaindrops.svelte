@@ -6,7 +6,7 @@
   import Raindrop from "@atoms/Raindrop.svelte";
   import LoadingSpinner from "@atoms/LoadingSpinner.svelte";
   import { upsertRaindropPage } from "@util/upsertRaindropPage.js";
-  import { raindropTransformer } from "@services/raindrop/normalize.js";
+  import { normalizeApiRaindrop } from "@services/raindrop/normalize.js";
   import { match } from "true-myth/result";
   import type { LogseqServiceClient } from "src/services/interfaces.js";
   import { logseqClientCtxKey } from "src/services/logseq/client.js";
@@ -32,7 +32,7 @@
     requestsInFlight.update((n) => n - 1);
     mostRecentRequestTime.update((currentRequestTime) => {
       if (requestTime < currentRequestTime) return currentRequestTime;
-      remoteData.update((_) => items.map(raindropTransformer));
+      remoteData.update((_) => items.map(normalizeApiRaindrop));
       return requestTime;
     });
   };

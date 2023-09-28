@@ -69,8 +69,7 @@ export type RaindropResponse = {
   collectionId: number;
 };
 
-// below are normalized values
-export const raindropTransformer = (r: RaindropResponse): Raindrop => {
+export const normalizeApiRaindrop = (r: RaindropResponse): Raindrop => {
   const annotations = r.highlights.map(
     (item): Annotation => ({
       note: item.note,

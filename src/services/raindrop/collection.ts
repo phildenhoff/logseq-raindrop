@@ -1,6 +1,6 @@
 import { httpClient } from "./http.js";
 import {
-  raindropTransformer,
+  normalizeApiRaindrop,
   type RaindropResponse,
 } from "@services/raindrop/normalize.js";
 
@@ -64,7 +64,7 @@ export async function* createCollectionUpdatedSinceGenerator(
     );
 
     if (raindropsUpdatedSince.length === 0) break;
-    yield raindropsUpdatedSince.map(raindropTransformer);
+    yield raindropsUpdatedSince.map(normalizeApiRaindrop);
 
     pageOffset += 1;
   }

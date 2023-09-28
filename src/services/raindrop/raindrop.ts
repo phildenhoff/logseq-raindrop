@@ -3,7 +3,7 @@ import type { Result } from "true-myth";
 import { err, ok } from "true-myth/result";
 
 import { httpClient } from "./http.js";
-import { raindropTransformer } from "./normalize.js";
+import { normalizeApiRaindrop } from "./normalize.js";
 
 const getRaindropFromApi = async (
   id: Raindrop["id"]
@@ -36,7 +36,7 @@ export const getRaindrop = async (
   if (apiResponse.isErr) {
     return err("Getting Raindrop failed");
   }
-  const normalizedResponse = raindropTransformer(apiResponse.value);
+  const normalizedResponse = normalizeApiRaindrop(apiResponse.value);
   return ok(normalizedResponse);
 };
 

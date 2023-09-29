@@ -64,6 +64,20 @@ type LSPlugin = {
 export type LSBlockEntity = LSPlugin["BlockEntity"];
 export type LSPageEntity = LSPlugin["PageEntity"];
 
+type EventHandler<CallbackArgs extends Record<string, unknown>> = (
+  args: CallbackArgs
+) => void;
+
+export interface LSEventMap {
+  onThemeModeChanged: EventHandler<{ mode: "dark" | "light" }>;
+  onRouteChanged: EventHandler<{
+    path: string;
+    template: string;
+  }>;
+}
+
+export type LSEvent = keyof LSEventMap;
+
 /**
  * Wraps the Logseq client in an interface that we can mock out for testing.
  */
@@ -341,4 +355,9 @@ export interface LogseqServiceClient {
    * @returns A promise that resolves to a user config object.
    */
   getUserConfig: () => Promise<AppUserConfigs>;
+
+  registerEventListener: <E extends keyof LSEventMap>(
+    event: E,
+    callback: LSEventMap[E]
+  ) => void;
 }

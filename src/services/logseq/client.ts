@@ -1,5 +1,8 @@
 import type { ILSPluginUser } from "@logseq/libs/dist/LSPlugin.user.js";
-import type { LogseqServiceClient as LogseqServiceWrapper } from "../interfaces.js";
+import type {
+  LSEventMap,
+  LogseqServiceClient as LogseqServiceWrapper,
+} from "../interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
 
 export const logseqClientCtxKey = Symbol();
@@ -79,5 +82,20 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
       registerSchema: async (schema) => logseq.useSettingsSchema(schema),
     },
     getUserConfig: logseq.App.getUserConfigs,
+    registerEventListener: async (event, callback) => {
+      // We have to cast the callback to the correct type as TypeScript
+      // can't narrow it. I also tried function overloading but that also didn't work.
+      let typedCallback;
+      switch (event) {
+        case "onThemeModeChanged":
+          typedCallback = callback as LSEventMap["onThemeModeChanged"];
+          logseq.App.onThemeModeChanged(typedCallback);
+        case "onRouteChanged":
+          typedCallback = callback as LSEventMap["onRouteChanged"];
+          logseq.App.onRouteChanged(typedCallback);
+        default:
+          break;
+      }
+    },
   };
 };

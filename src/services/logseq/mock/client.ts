@@ -3,6 +3,8 @@ import type {
   LogseqServiceClient,
   LSPageEntity,
   LSBlockEntity,
+  LSEvent,
+  LSEventMap,
 } from "../../interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
 import type {
@@ -25,8 +27,15 @@ type TestableLogseqServiceClient = {
      * Write the set of pages to stdout.
      */
     displayPages: () => void;
+
+    triggerEvent: <E extends LSEvent>(
+      event: E,
+      ...args: Parameters<LSEventMap[E]>
+    ) => void;
   };
 };
+
+type EventListenerMap = Record<LSEvent, ((...args: any[]) => void)[]>;
 
 const kebabToCamelCase = (str: string) =>
   str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
@@ -117,6 +126,7 @@ export const generateMoqseqClient = (mockSetup?: {
   let settings = new Map<string, string | number | boolean | unknown>(
     Object.entries(mockSetup?.settings ?? {})
   );
+  const listeners: EventListenerMap = {} as EventListenerMap;
 
   // Internal functions
   const _addChildToBlock = async (
@@ -224,6 +234,15 @@ export const generateMoqseqClient = (mockSetup?: {
   const displayPages: TestableLogseqServiceClient["PRIVATE_FOR_TESTING"]["displayPages"] =
     () => {
       console.table(Array.from(pages.values()));
+    };
+  const triggerEvent: TestableLogseqServiceClient["PRIVATE_FOR_TESTING"]["triggerEvent"] =
+    (event, ...args) => {
+      const eventListeners = listeners[event];
+      if (!eventListeners) {
+        return;
+      }
+
+      eventListeners.forEach((listener) => listener(...args));
     };
   const queryDb: LogseqServiceClient["queryDb"] = async (query) => {
     return queryResponseGenerator.next(query).value;
@@ -441,6 +460,14 @@ export const generateMoqseqClient = (mockSetup?: {
     });
   };
 
+  const registerEventListener: LogseqServiceClient["registerEventListener"] =
+    async (event, callback) => {
+      if (!listeners[event]) {
+        listeners[event] = [];
+      }
+      listeners[event].push(callback);
+    };
+
   // Ensure that any default-added blocks are correctly attached to their page
   mockSetup?.defaultBlocks?.forEach((block) => {
     const page = pages.get(block.page.uuid);
@@ -481,10 +508,12 @@ export const generateMoqseqClient = (mockSetup?: {
       set: setSetting,
     },
     getUserConfig,
+    registerEventListener,
     PRIVATE_FOR_TESTING: {
       setDbQueryResponseGenerator,
       displayBlocks,
       displayPages,
+      triggerEvent,
     },
   };
 };

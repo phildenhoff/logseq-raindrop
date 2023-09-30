@@ -1,5 +1,5 @@
 import type { IEntityID } from "@logseq/libs/dist/LSPlugin.js";
-import { assert, describe, expect, it } from "vitest";
+import { assert, describe, expect, it, vitest } from "vitest";
 import { generateMoqseqClient, recursiveChildrenOfBlock } from "./client.js";
 import type { LSBlockEntity } from "../../interfaces.js";
 import { randomUUID } from "crypto";
@@ -614,6 +614,35 @@ describe("moqseq", () => {
       const mock = generateMoqseqClient({});
 
       expect(async () => await mock.queryDb("foo")).rejects.toThrowError();
+    });
+  });
+
+  describe("registerEventListener", () => {
+    it("registers an event listener that can be called", async () => {
+      const mock = generateMoqseqClient({});
+      const callback = vitest.fn();
+
+      mock.registerEventListener("onThemeModeChanged", callback);
+      mock.PRIVATE_FOR_TESTING.triggerEvent("onThemeModeChanged", {
+        mode: "dark",
+      });
+
+      expect(callback).toHaveBeenCalled();
+    });
+
+    it("supports registering multiple callbacks for the same event", async () => {
+      const mock = generateMoqseqClient({});
+      const callback1 = vitest.fn();
+      const callback2 = vitest.fn();
+
+      mock.registerEventListener("onThemeModeChanged", callback1);
+      mock.registerEventListener("onThemeModeChanged", callback2);
+      mock.PRIVATE_FOR_TESTING.triggerEvent("onThemeModeChanged", {
+        mode: "dark",
+      });
+
+      expect(callback1).toHaveBeenCalled();
+      expect(callback2).toHaveBeenCalled();
     });
   });
 });

@@ -11,6 +11,8 @@
     generateLogseqClient,
     logseqClientCtxKey,
   } from "@services/logseq/client.js";
+  import ThemeProvider from "@atoms/ThemeProvider.svelte";
+
   import { startSync } from "./sync.js";
 
   const logseqClient = generateLogseqClient();
@@ -27,9 +29,6 @@
       settings.access_token() !== undefined && settings.access_token() !== ""
     );
   };
-  const getTheme = async () => {
-    return (await l.App.getUserConfigs()).preferredThemeMode;
-  };
 
   const openAccessTokenHelp = () => {
     window.open(
@@ -39,7 +38,6 @@
 
   let promptUserToCompleteSetup = !setupComplete();
   let isUsingSyncToSinglePage = settings.sync_to_single_page();
-  let themePromise = getTheme();
   let stopSync = startSync(logseqClient);
 
   // We need to update state when these events occurr
@@ -49,16 +47,14 @@
     stopSync();
     stopSync = startSync(logseqClient);
   });
-
-  l?.App.onThemeModeChanged(({ mode }) => {
-    themePromise = Promise.resolve(mode);
-  });
 </script>
 
-<div class="clickOutCaptureContainer" on:click={close} on:keydown={ifIsEscape(close)}>
-  {#await themePromise}
-    <p>Loading your theme...</p>
-  {:then theme}
+<div
+  class="clickOutCaptureContainer"
+  on:click={close}
+  on:keydown={ifIsEscape(close)}
+>
+  <ThemeProvider let:theme>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <main
       class={theme}
@@ -73,22 +69,22 @@
           Set your access token in the plugin settings to get started.
         </p>
         <p>
-          <span class="externalLink"
-           on:click={openAccessTokenHelp}
-           on:keydown={ifIsEnter(openAccessTokenHelp)}>
+          <span
+            class="externalLink"
+            on:click={openAccessTokenHelp}
+            on:keydown={ifIsEnter(openAccessTokenHelp)}
+          >
             How do I get an access token?
           </span>
         </p>
         <span on:click={showSettings} class="button">Open settings</span>
+      {:else if isUsingSyncToSinglePage}
+        <SinglePageSyncMenu />
       {:else}
-        {#if isUsingSyncToSinglePage}
-          <SinglePageSyncMenu />
-        {:else}
-          <ImportRaindrops />
-          {/if}
+        <ImportRaindrops />
       {/if}
     </main>
-  {/await}
+  </ThemeProvider>
 </div>
 
 <style>

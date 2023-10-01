@@ -90,9 +90,11 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
         case "onThemeModeChanged":
           typedCallback = callback as LSEventMap["onThemeModeChanged"];
           logseq.App.onThemeModeChanged(typedCallback);
+          break;
         case "onRouteChanged":
           typedCallback = callback as LSEventMap["onRouteChanged"];
           logseq.App.onRouteChanged(typedCallback);
+          break;
         default:
           break;
       }

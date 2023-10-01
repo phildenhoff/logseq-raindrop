@@ -68,12 +68,18 @@ type EventHandler<CallbackArgs extends Record<string, unknown>> = (
   args: CallbackArgs
 ) => void;
 
+type SettingsChangedEventHandler<T extends unknown> = EventHandler<{
+  before: T;
+  after: T;
+}>;
+
 export interface LSEventMap {
   onThemeModeChanged: EventHandler<{ mode: "dark" | "light" }>;
   onRouteChanged: EventHandler<{
     path: string;
     template: string;
   }>;
+  onSettingsChanged: SettingsChangedEventHandler<unknown>;
 }
 
 export type LSEvent = keyof LSEventMap;

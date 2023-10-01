@@ -7,6 +7,12 @@ import { applyAsyncFunc } from "@util/async.js";
 
 export const logseqClientCtxKey = Symbol();
 
+const relabelSettingsChangedParams =
+  (fn: LSEventMap["onSettingsChanged"]) =>
+  <T>(a: T, b: T): void => {
+    fn({ before: b, after: a });
+  };
+
 export const generateLogseqClient = (): LogseqServiceWrapper => {
   const logseq = window.logseq as ILSPluginUser;
 
@@ -94,6 +100,10 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
         case "onRouteChanged":
           typedCallback = callback as LSEventMap["onRouteChanged"];
           logseq.App.onRouteChanged(typedCallback);
+          break;
+        case "onSettingsChanged":
+          typedCallback = callback as LSEventMap["onSettingsChanged"];
+          logseq.onSettingsChanged(relabelSettingsChangedParams(typedCallback));
           break;
         default:
           break;

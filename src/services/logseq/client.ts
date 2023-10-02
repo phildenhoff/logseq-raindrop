@@ -4,6 +4,7 @@ import type {
   LogseqServiceClient as LogseqServiceWrapper,
 } from "../interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
+import { generateSettingsGetterAndSetter } from "./settings.js";
 
 export const logseqClientCtxKey = Symbol();
 
@@ -15,6 +16,10 @@ const relabelSettingsChangedParams =
 
 export const generateLogseqClient = (): LogseqServiceWrapper => {
   const logseq = window.logseq as ILSPluginUser;
+
+  const getSetting = (key: string) => logseq.settings![key];
+  const updateSetting = (key: string, value: any) =>
+    logseq.updateSettings({ [key]: value });
 
   return {
     displayMessage: async (message, status, options) =>
@@ -83,9 +88,10 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
       return logseq.Editor.getPage(name);
     },
     settings: {
-      get: async (key) => logseq.settings![key],
-      set: async (key, value) => logseq.updateSettings({ [key]: value }),
+      get: getSetting,
+      set: updateSetting,
       registerSchema: async (schema) => logseq.useSettingsSchema(schema),
+      ...generateSettingsGetterAndSetter(getSetting, updateSetting),
     },
     ui: {
       plugin: {

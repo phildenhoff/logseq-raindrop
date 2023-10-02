@@ -5,15 +5,14 @@
   import ImportRaindrops from "@organisms/ImportRaindrops.svelte";
   import { ifIsEnter, ifIsEscape } from "@util/keyboardEvents.js";
   import SinglePageSyncMenu from "@organisms/SinglePageSyncMenu.svelte";
-  import {
-    generateLogseqClient,
-    logseqClientCtxKey,
-  } from "@services/logseq/client.js";
+  import type { LogseqServiceClient } from "@services/interfaces.js";
+  import { logseqClientCtxKey } from "@services/logseq/client.js";
   import ThemeProvider from "@atoms/ThemeProvider.svelte";
 
   import { startSync } from "./sync.js";
 
-  const logseqClient = generateLogseqClient();
+  export let logseqClient: LogseqServiceClient;
+
   setContext(logseqClientCtxKey, logseqClient);
 
   const close = logseqClient.ui.plugin.hide;

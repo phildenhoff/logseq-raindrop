@@ -4,14 +4,16 @@ import "svelte";
 import App from "./App.svelte";
 
 import { registerCommands } from "@commands/commands.js";
-import { registerSettings, settings } from "@services/logseq/settings.js";
+import { registerSettings } from "@services/logseq/settings.js";
 import { setupRaindropHttpClient } from "@services/raindrop/index.js";
+import { generateLogseqClient } from "@services/logseq/client.js";
 
 const main = async () => {
   const addColorStyle = import.meta.env.PROD ? "" : "color: orange!important;";
 
+  const logseqClient = generateLogseqClient();
   setupRaindropHttpClient({
-    accessToken: settings.access_token(),
+    accessToken: logseqClient.settings.accessToken,
     apiUrl: "https://api.raindrop.io/rest/v1",
   });
 
@@ -20,6 +22,9 @@ const main = async () => {
 
   new App({
     target: document.getElementById("app")!,
+    props: {
+      logseqClient,
+    },
   });
 
   const createModel = () => ({

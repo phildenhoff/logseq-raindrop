@@ -351,6 +351,17 @@ export interface LogseqServiceClient {
     set: (key: string, value: unknown) => Promise<void>;
   };
 
+  ui: {
+    plugin: {
+      hide: () => void;
+      show: () => void;
+    };
+    pluginSettings: {
+      hide: () => void;
+      show: () => void;
+    };
+  };
+
   /**
    * Get user preferences for Logseq (not settings for this plugin), such as date
    * formatting, preferred file type, etc.

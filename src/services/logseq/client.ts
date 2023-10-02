@@ -87,6 +87,16 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
       set: async (key, value) => logseq.updateSettings({ [key]: value }),
       registerSchema: async (schema) => logseq.useSettingsSchema(schema),
     },
+    ui: {
+      plugin: {
+        hide: async () => logseq.hideMainUI(),
+        show: async () => logseq.showMainUI(),
+      },
+      pluginSettings: {
+        hide: async () => logseq.hideSettingsUI(),
+        show: async () => logseq.showSettingsUI(),
+      },
+    },
     getUserConfig: logseq.App.getUserConfigs,
     registerEventListener: async (event, callback) => {
       // We have to cast the callback to the correct type as TypeScript

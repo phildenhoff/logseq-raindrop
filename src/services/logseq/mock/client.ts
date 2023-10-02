@@ -460,6 +460,17 @@ export const generateMoqseqClient = (mockSetup?: {
     });
   };
 
+  const ui = {
+    plugin: {
+      hide: async () => Promise.resolve(),
+      show: async () => Promise.resolve(),
+    },
+    pluginSettings: {
+      hide: async () => Promise.resolve(),
+      show: async () => Promise.resolve(),
+    },
+  };
+
   const registerEventListener: LogseqServiceClient["registerEventListener"] =
     async (event, callback) => {
       if (!listeners[event]) {
@@ -508,6 +519,7 @@ export const generateMoqseqClient = (mockSetup?: {
       set: setSetting,
     },
     getUserConfig,
+    ui,
     registerEventListener,
     PRIVATE_FOR_TESTING: {
       setDbQueryResponseGenerator,

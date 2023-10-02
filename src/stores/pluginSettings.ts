@@ -7,7 +7,7 @@ type UserPreferences = {
   sync_interval: number;
 };
 
-function createUserPreferences() {
+function createPluginSettingsStore() {
   const { subscribe, set, update } = writable<UserPreferences>(
     {} as UserPreferences
   );
@@ -30,4 +30,4 @@ function createUserPreferences() {
   };
 }
 
-export const userPreferences = createUserPreferences();
+export const pluginSettings = createPluginSettingsStore();

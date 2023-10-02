@@ -1,5 +1,5 @@
 import type { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin.js";
-import { userPreferences } from "src/stores/userPreferences.js";
+import { pluginSettings } from "src/stores/pluginSettings.js";
 import {
   defaultBookmarkTemplate,
   defaultHighlightTemplate,
@@ -207,7 +207,7 @@ export const settings = {
  *
  */
 export const registerSettings = async (): Promise<void> => {
-  logseq.onSettingsChanged(userPreferences.onUpdate);
+  logseq.onSettingsChanged(pluginSettings.onUpdate);
 
   const { preferredFormat } = await logseq.App.getUserConfigs();
 

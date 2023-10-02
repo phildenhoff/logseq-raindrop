@@ -6,38 +6,34 @@
   import { logseqClientCtxKey } from "@services/logseq/client.js";
 
   import { importHighlightsSinceLastSync } from "src/importHighlights.js";
-  import { userPreferences } from "src/stores/userPreferences.js";
+  import { pluginSettings } from "src/stores/pluginSettings.js";
   import { formatDatetime } from "@util/time.js";
 
   const logseqClient = getContext<LogseqServiceClient>(logseqClientCtxKey);
 
   const lastSyncTimestamp = derived(
-    userPreferences,
-    ($userPrefences) => new Date($userPrefences.last_sync_timestamp)
+    pluginSettings,
+    ($settings) => new Date($settings.last_sync_timestamp)
   );
   const syncInterval = derived(
-    userPreferences,
-    ($userPreferences) => $userPreferences.sync_interval
+    pluginSettings,
+    ($settings) => $settings.sync_interval
   );
 
   const onManuallySyncBookmarks = async (): Promise<void> => {
     const lastSyncDate = $lastSyncTimestamp;
-    const pageName = await logseqClient.settings.get("page_name") as string;
+    const pageName = (await logseqClient.settings.get("page_name")) as string;
 
-    importHighlightsSinceLastSync(
-      lastSyncDate,
-      logseqClient,
-      pageName
-    ).then(() => {
-      logseqClient.displayMessage(
-        "Raindrop sync complete 🎉",
-        "success",
-        {key: "raindrop-sync-complete"}
-      );
-    });
+    importHighlightsSinceLastSync(lastSyncDate, logseqClient, pageName).then(
+      () => {
+        logseqClient.displayMessage("Raindrop sync complete 🎉", "success", {
+          key: "raindrop-sync-complete",
+        });
+      }
+    );
 
     logseqClient.openPageByName(pageName);
-  }
+  };
   const onChangeLastSyncTime = (): void => {
     logseq.showSettingsUI();
   };
@@ -48,7 +44,11 @@
   <p>Last synced at: {formatDatetime($lastSyncTimestamp)}</p>
 
   {#if $syncInterval > 0}
-    <p>Syncing updates every {$syncInterval} minute{$syncInterval > 1 ? 's' : ''}.</p>
+    <p>
+      Syncing updates every {$syncInterval} minute{$syncInterval > 1
+        ? "s"
+        : ""}.
+    </p>
   {:else}
     <p>Syncing updates is disabled</p>
   {/if}

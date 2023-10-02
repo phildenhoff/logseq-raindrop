@@ -45,7 +45,7 @@ export const uniqueBy = <T extends Object>(
  * `keyLabel`, the first object is kept.
  *
  * Unlike `uniqueBy`, this function does not throw an error if any object in
- * `arr` does not have the proerpty `keyLabel`.
+ * `arr` does not have the property `keyLabel`.
  *
  * @param keyLabel The key to check for uniqueness.
  * @param arr The array of non-unique items.

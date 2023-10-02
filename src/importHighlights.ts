@@ -8,7 +8,10 @@ import type {
 import { formatDateForSettings } from "@services/logseq/formatting.js";
 import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collection.js";
 import type { Raindrop } from "@types";
-import { importFilterOptions } from "@services/logseq/settings.js";
+import {
+  SETTING_ENUM,
+  importFilterOptions,
+} from "@services/logseq/settings.js";
 import type { Result } from "true-myth";
 import { err, ok } from "true-myth/result";
 import { renderBookmark, renderHighlight } from "./bookmarks/rendering.js";
@@ -27,7 +30,7 @@ const importHighlightsForRaindrop = async (
   raindropBlock: LSBlockEntity
 ) => {
   const highlightTemplate = (await logseqClient.settings.get(
-    "highlight_mustache_template"
+    SETTING_ENUM.highlightMustacheTemplate
   )) as string;
   const highlightsBlock = await logseqClient.createBlock(
     raindropBlock.uuid,
@@ -71,7 +74,7 @@ const importRaindrop = async (
 ): Promise<Result<LSBlockEntity, Error>> => {
   const userConfig = await logseqClient.getUserConfig();
   const bookmarkTemplate = (await logseqClient.settings.get(
-    "bookmark_mustache_template"
+    SETTING_ENUM.bookmarkMustacheTemplate
   )) as string;
   const articleBlock = await logseqClient.createBlock(
     lastInsertedBlock.uuid,
@@ -122,7 +125,7 @@ export const importRaindropsFromGenerator = async (
 ) => {
   let lastInsertedBlock: LSBlockEntity = parentBlock;
   let isFirstInsertion = true;
-  const importFilter = await logseqClient.settings.get("import_filter");
+  const { importFilter } = logseqClient.settings;
 
   for await (const raindropListWindow of generator) {
     await Promise.all(

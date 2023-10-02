@@ -51,17 +51,14 @@ const ioCreateOrLoadPage = async (
 ) => {
   const maybeExistingPage = await ioMaybeGetPageForRaindrop(r, logseqClient);
   const formattedRaindropProperties = formatRaindropToProperties(r, {
-    tags: (await logseqClient.settings.get("default_page_tags")) as string,
+    tags: logseqClient.settings.defaultPageTags,
   });
 
   if (maybeExistingPage.isJust) {
     await logseqClient.openPageByName(maybeExistingPage.value.name);
   } else {
     await logseqClient.createPage(
-      generatePageName(
-        r,
-        (await logseqClient.settings.get("namespace_label")) as string
-      ),
+      generatePageName(r, logseqClient.settings.namespaceLabel),
       formattedRaindropProperties,
       { createFirstBlock: true, redirect: true }
     );
@@ -73,12 +70,14 @@ const ioCreateAnnotationBlock = async (
   currentPage: LSPageEntity,
   logseqClient: LogseqServiceClient
 ): Promise<LSBlockEntity | null> => {
-  const highlightFormatted = (
-    (await logseqClient.settings.get("template_highlight")) as string
-  ).replace("{text}", annotation.text);
-  const noteFormatted = (
-    (await logseqClient.settings.get("template_annotation")) as string
-  ).replace("{text}", annotation.note);
+  const highlightFormatted = logseqClient.settings.templateHighlight.replace(
+    "{text}",
+    annotation.text
+  );
+  const noteFormatted = logseqClient.settings.templateAnnotation.replace(
+    "{text}",
+    annotation.note
+  );
 
   const template = `${highlightFormatted}\n\n${noteFormatted}`;
 

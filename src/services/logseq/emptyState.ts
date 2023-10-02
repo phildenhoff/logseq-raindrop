@@ -22,7 +22,7 @@ export const ioAddEmptyStateBlock = async (
   pageUuid: string,
   logseqClient: LogseqServiceClient
 ) => {
-  if (!(await logseqClient.settings.get("enable_empty_page_state"))) return;
+  if (!logseqClient.settings.emptyPageState) return;
 
   const blocksWithProperties = filterBlocksWithPropertyField(pageBlocks);
   const pageHasBlockWithNoAnnotationProp = await someBlockHasProperty(

@@ -22,7 +22,7 @@
 
   const onManuallySyncBookmarks = async (): Promise<void> => {
     const lastSyncDate = $lastSyncTimestamp;
-    const pageName = (await logseqClient.settings.get("page_name")) as string;
+    const { pageName } = logseqClient.settings;
 
     importHighlightsSinceLastSync(lastSyncDate, logseqClient, pageName).then(
       () => {

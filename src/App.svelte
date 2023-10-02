@@ -4,7 +4,6 @@
   import logo from "@assets/raindrop.png";
   import ImportRaindrops from "@organisms/ImportRaindrops.svelte";
   import { ifIsEnter, ifIsEscape } from "@util/keyboardEvents.js";
-  import { settings } from "@services/logseq/settings.js";
   import SinglePageSyncMenu from "@organisms/SinglePageSyncMenu.svelte";
   import {
     generateLogseqClient,
@@ -23,9 +22,8 @@
     close();
   };
   const setupComplete = () => {
-    return (
-      settings.access_token() !== undefined && settings.access_token() !== ""
-    );
+    const { accessToken } = logseqClient.settings;
+    return accessToken !== undefined && accessToken !== "";
   };
 
   const openAccessTokenHelp = () => {
@@ -35,7 +33,7 @@
   };
 
   let promptUserToCompleteSetup = !setupComplete();
-  let isUsingSyncToSinglePage = settings.sync_to_single_page();
+  let isUsingSyncToSinglePage = logseqClient.settings.syncToSinglePage;
   let stopSync = startSync(logseqClient);
 
   logseqClient.registerEventListener(

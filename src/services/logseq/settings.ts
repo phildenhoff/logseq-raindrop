@@ -230,7 +230,8 @@ const generateSettingsConfig = (userConfig: {
 ];
 
 /**
- * Properties within the object return current setting values.
+ * @deprecated Use the getters & setters from the {@link PluginSettings} interface
+ * instead, wherever possible.
  */
 export const settings = {
   access_token: (): string =>

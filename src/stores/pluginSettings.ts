@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 
+// Snake case is used here to match the Logseq API
 type UserPreferences = {
   broken_experimental_features: boolean;
   last_sync_timestamp: string;
@@ -21,9 +22,9 @@ function createPluginSettingsStore() {
       settingId: Key,
       value: UserPreferences[Key]
     ) => {
-      // Update the in-memory store
+      // Update the store
       update((currentValue) => ({ ...currentValue, [settingId]: value }));
-      // Update settings on disk
+      // Update settings in Logseq & on disk
       logseq.updateSettings({ [settingId]: value });
     },
     reset: () => set({} as UserPreferences),

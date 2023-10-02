@@ -18,14 +18,12 @@ export const SETTING_IDS = {
   namespaceLabel: "namespace_label",
   defaultPageTags: "default_page_tags",
   importFilter: "import_filter",
-  formattingTemplate: {
-    highlight: "template_highlight",
-    annotation: "template_annotation",
-    deleted: "template_deleted",
-    addLinkMustacheTemplate: "add_link_mustache_template",
-    highlightMustacheTemplate: "highlight_mustache_template",
-    bookmarkMustacheTemplate: "bookmark_mustache_template",
-  },
+  templateHighlight: "template_highlight",
+  templateAnnotation: "template_annotation",
+  templateDeleted: "template_deleted",
+  addLinkMustacheTemplate: "add_link_mustache_template",
+  highlightMustacheTemplate: "highlight_mustache_template",
+  bookmarkMustacheTemplate: "bookmark_mustache_template",
   syncToSinglePage: "sync_to_single_page",
   syncInterval: "sync_interval",
   pageName: "page_name",
@@ -75,7 +73,7 @@ const generateSettingsConfig = (userConfig: {
     title: "Add Link to Raindrop template",
     type: "string",
     inputAs: "textarea",
-    key: SETTING_IDS.formattingTemplate.addLinkMustacheTemplate,
+    key: SETTING_IDS.addLinkMustacheTemplate,
     description:
       "Mustache template used when adding a link to Raindrop. Available variables: `{links}` (an array of links added to Raindrop, each with an `{addedUrl}` and `{raindropPreviewUrl}`).",
     default: defaultAddedToRaindropTemplate[userConfig.preferredFormat],
@@ -127,7 +125,7 @@ const generateSettingsConfig = (userConfig: {
     title: "Bookmark template",
     type: "string",
     inputAs: "textarea",
-    key: SETTING_IDS.formattingTemplate.bookmarkMustacheTemplate,
+    key: SETTING_IDS.bookmarkMustacheTemplate,
     description:
       "Mustache template used when adding a bookmark to your page. Available variables: `{title}`, `{url}`, `{tags}`, `{dateCreated}`, `{dateUpdated}`.",
     default: defaultBookmarkTemplate[userConfig.preferredFormat],
@@ -136,7 +134,7 @@ const generateSettingsConfig = (userConfig: {
     title: "Highlight template",
     type: "string",
     inputAs: "textarea",
-    key: SETTING_IDS.formattingTemplate.highlightMustacheTemplate,
+    key: SETTING_IDS.highlightMustacheTemplate,
     description:
       "Mustache template used when adding a highlight for a bookmark. Available variables: `{text}`, `{note}`.",
     default: defaultHighlightTemplate[userConfig.preferredFormat],
@@ -152,7 +150,7 @@ const generateSettingsConfig = (userConfig: {
     default: "> {text}",
     description:
       "Markdown (or org mode) formatting to use for notes (highlights). Available variables: `{text}`, which is the contents of the highlight.",
-    key: SETTING_IDS.formattingTemplate.highlight,
+    key: SETTING_IDS.templateHighlight,
     title: "Highlight template",
     type: "string",
   },
@@ -160,7 +158,7 @@ const generateSettingsConfig = (userConfig: {
     default: "{text}",
     description:
       "Markdown (or org mode) formatting to use for annotations (comments). Available variables: `{text}`, which is the contents of the highlight.",
-    key: SETTING_IDS.formattingTemplate.annotation,
+    key: SETTING_IDS.templateAnnotation,
     title: "Annotation template",
     type: "string",
   },
@@ -168,7 +166,7 @@ const generateSettingsConfig = (userConfig: {
     default: "🗑 {content}",
     description:
       "Markdown (or org mode) formatting to use for deleted content. Available variables: `{content}`, which is the formatted contents of the deleted block.",
-    key: SETTING_IDS.formattingTemplate.deleted,
+    key: SETTING_IDS.templateDeleted,
     title: "Deleted content template",
     type: "string",
   },
@@ -214,15 +212,13 @@ export const settings = {
     ] as keyof typeof importFilterOptions,
   formatting_template: {
     highlight: (): string =>
-      logseq.settings![SETTING_IDS.formattingTemplate.highlight] as string,
+      logseq.settings![SETTING_IDS.templateHighlight] as string,
     annotation: (): string =>
-      logseq.settings![SETTING_IDS.formattingTemplate.annotation] as string,
+      logseq.settings![SETTING_IDS.templateAnnotation] as string,
     deleted: (): string =>
-      logseq.settings![SETTING_IDS.formattingTemplate.deleted] as string,
+      logseq.settings![SETTING_IDS.templateDeleted] as string,
     add_link_mustache_template: (): string =>
-      logseq.settings![
-        SETTING_IDS.formattingTemplate.addLinkMustacheTemplate
-      ] as string,
+      logseq.settings![SETTING_IDS.addLinkMustacheTemplate] as string,
   },
   sync_to_single_page: (): boolean =>
     logseq.settings![SETTING_IDS.syncToSinglePage] as boolean,

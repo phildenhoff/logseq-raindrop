@@ -9,6 +9,7 @@ import type {
   PageEntity,
   SettingSchemaDesc,
 } from "@logseq/libs/dist/LSPlugin.js";
+import type { SETTING_IDS } from "./logseq/settings.js";
 
 // Duplicated from @logseq/libs/dist/LSPlugin.d.ts because the Logseq type
 // includes a `[key: string]: any]` prop which corrupts the rest of the type
@@ -347,8 +348,13 @@ export interface LogseqServiceClient {
 
   settings: {
     registerSchema: (schema: SettingSchemaDesc[]) => void;
-    get: (key: string) => Promise<unknown>;
-    set: (key: string, value: unknown) => Promise<void>;
+    get: (
+      key: (typeof SETTING_IDS)[keyof typeof SETTING_IDS]
+    ) => Promise<unknown>;
+    set: (
+      key: (typeof SETTING_IDS)[keyof typeof SETTING_IDS],
+      value: unknown
+    ) => Promise<void>;
   };
 
   ui: {

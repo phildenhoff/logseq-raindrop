@@ -1,6 +1,5 @@
 <script lang="ts">
   import { setContext } from "svelte";
-  import type { ILSPluginUser } from "@logseq/libs/dist/LSPlugin.js";
 
   import logo from "@assets/raindrop.png";
   import ImportRaindrops from "@organisms/ImportRaindrops.svelte";
@@ -17,11 +16,10 @@
 
   const logseqClient = generateLogseqClient();
   setContext(logseqClientCtxKey, logseqClient);
-  const l = window?.logseq ?? ({} as ILSPluginUser);
 
-  const close = () => l?.hideMainUI();
+  const close = logseqClient.ui.plugin.hide;
   const showSettings = () => {
-    l?.showSettingsUI();
+    logseqClient.ui.pluginSettings.show();
     close();
   };
   const setupComplete = () => {

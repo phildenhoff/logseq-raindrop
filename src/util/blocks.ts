@@ -5,10 +5,6 @@ import { applyAsyncFunc } from "@util/async.js";
 type BlockWithProperties = LSBlockEntity &
   Required<Pick<LSBlockEntity, "properties">>;
 
-// @ts-ignore We require logseq to be undefined here to prevent
-// using it in the wrong context.
-const logseq = null;
-
 const stringMatchesPropertyName = (text: string, propertyName: string) =>
   propertyName.toLowerCase() === text.toLowerCase();
 

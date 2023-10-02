@@ -1,4 +1,5 @@
 import type { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin.js";
+import { STATUS_CODES } from "http";
 import { pluginSettings } from "src/stores/pluginSettings.js";
 import {
   defaultBookmarkTemplate,
@@ -11,13 +12,34 @@ export const importFilterOptions = {
   WITH_ANNOTATIONS: "Import only Raindrops with highlights",
 };
 
+export const SETTING_IDS = {
+  enableBrokenExperimentalFeatures: "broken_experimental_features",
+  accessToken: "access_token",
+  namespaceLabel: "namespace_label",
+  defaultPageTags: "default_page_tags",
+  importFilter: "import_filter",
+  formattingTemplate: {
+    highlight: "template_highlight",
+    annotation: "template_annotation",
+    deleted: "template_deleted",
+    addLinkMustacheTemplate: "add_link_mustache_template",
+    highlightMustacheTemplate: "highlight_mustache_template",
+    bookmarkMustacheTemplate: "bookmark_mustache_template",
+  },
+  syncToSinglePage: "sync_to_single_page",
+  syncInterval: "sync_interval",
+  pageName: "page_name",
+  lastSyncTimestamp: "last_sync_timestamp",
+  emptyPageState: "enable_empty_page_state",
+} as const;
+
 const generateSettingsConfig = (userConfig: {
   preferredFormat: "markdown" | "org";
 }): SettingSchemaDesc[] => [
   {
     default: false,
     type: "boolean",
-    key: "sync_to_single_page",
+    key: SETTING_IDS.syncToSinglePage,
     title: "Sync to a single page?",
     description:
       "If enabled, all Raindrops will be imported to a single page, instead of each in their own page under the hierarchy page name." +
@@ -29,7 +51,7 @@ const generateSettingsConfig = (userConfig: {
     default: "",
     description:
       "Your API access token is used to save links for you. You can make a test token at https://app.raindrop.io/settings/integrations.",
-    key: "access_token",
+    key: SETTING_IDS.accessToken,
     title: "Raindrop access token",
     type: "string",
   },
@@ -38,7 +60,7 @@ const generateSettingsConfig = (userConfig: {
     title: "Default page tags",
     description:
       "A list of #tags to include on every imported page. For example: '#[[Web page]] #raindrop [[imported]]'.",
-    key: "default_page_tags",
+    key: SETTING_IDS.defaultPageTags,
     type: "string",
   },
   {
@@ -46,14 +68,14 @@ const generateSettingsConfig = (userConfig: {
     title: "Enable broken, experimental features",
     description:
       "Enable pre-release features that are not yet ready for general use.",
-    key: "broken_experimental_features",
+    key: SETTING_IDS.enableBrokenExperimentalFeatures,
     type: "boolean",
   },
   {
     title: "Add Link to Raindrop template",
     type: "string",
     inputAs: "textarea",
-    key: "add_link_mustache_template",
+    key: SETTING_IDS.formattingTemplate.addLinkMustacheTemplate,
     description:
       "Mustache template used when adding a link to Raindrop. Available variables: `{links}` (an array of links added to Raindrop, each with an `{addedUrl}` and `{raindropPreviewUrl}`).",
     default: defaultAddedToRaindropTemplate[userConfig.preferredFormat],
@@ -71,7 +93,7 @@ const generateSettingsConfig = (userConfig: {
     type: "enum",
     enumChoices: Object.values(importFilterOptions),
     enumPicker: "select",
-    key: "import_filter",
+    key: SETTING_IDS.importFilter,
     title: "Which Raindrops should be imported?",
     description:
       "When you import Raindrops to a single page, choose which Raindrops you import. The default is to import all of them, but you can choose to only import Raindrops with highlights.",
@@ -79,7 +101,7 @@ const generateSettingsConfig = (userConfig: {
   {
     default: "Raindrop",
     type: "string",
-    key: "page_name",
+    key: SETTING_IDS.pageName,
     title: "Page Name for Single Page imports",
     description:
       "If 'Sync to a single page?' is enabled, all Raindrops will be imported to this page. It will be created if it does not exist.",
@@ -88,7 +110,7 @@ const generateSettingsConfig = (userConfig: {
     default: 30,
     description:
       "How many minutes between each sync. Disable syncing entirely with `0`. Default is every 30 minutes.",
-    key: "sync_interval",
+    key: SETTING_IDS.syncInterval,
     title: "Sync interval (minutes)",
     type: "number",
   },
@@ -98,14 +120,14 @@ const generateSettingsConfig = (userConfig: {
     inputAs: "datetime-local",
     description:
       "The time of the last sync. Used to determine which bookmarks have been created since the last sync. You can clear this value to reimport all bookmarks.",
-    key: "last_sync_timestamp",
+    key: SETTING_IDS.lastSyncTimestamp,
     type: "string",
   },
   {
     title: "Bookmark template",
     type: "string",
     inputAs: "textarea",
-    key: "bookmark_mustache_template",
+    key: SETTING_IDS.formattingTemplate.bookmarkMustacheTemplate,
     description:
       "Mustache template used when adding a bookmark to your page. Available variables: `{title}`, `{url}`, `{tags}`, `{dateCreated}`, `{dateUpdated}`.",
     default: defaultBookmarkTemplate[userConfig.preferredFormat],
@@ -114,7 +136,7 @@ const generateSettingsConfig = (userConfig: {
     title: "Highlight template",
     type: "string",
     inputAs: "textarea",
-    key: "highlight_mustache_template",
+    key: SETTING_IDS.formattingTemplate.highlightMustacheTemplate,
     description:
       "Mustache template used when adding a highlight for a bookmark. Available variables: `{text}`, `{note}`.",
     default: defaultHighlightTemplate[userConfig.preferredFormat],
@@ -130,7 +152,7 @@ const generateSettingsConfig = (userConfig: {
     default: "> {text}",
     description:
       "Markdown (or org mode) formatting to use for notes (highlights). Available variables: `{text}`, which is the contents of the highlight.",
-    key: "template_highlight",
+    key: SETTING_IDS.formattingTemplate.highlight,
     title: "Highlight template",
     type: "string",
   },
@@ -138,7 +160,7 @@ const generateSettingsConfig = (userConfig: {
     default: "{text}",
     description:
       "Markdown (or org mode) formatting to use for annotations (comments). Available variables: `{text}`, which is the contents of the highlight.",
-    key: "template_annotation",
+    key: SETTING_IDS.formattingTemplate.annotation,
     title: "Annotation template",
     type: "string",
   },
@@ -146,7 +168,7 @@ const generateSettingsConfig = (userConfig: {
     default: "🗑 {content}",
     description:
       "Markdown (or org mode) formatting to use for deleted content. Available variables: `{content}`, which is the formatted contents of the deleted block.",
-    key: "template_deleted",
+    key: SETTING_IDS.formattingTemplate.deleted,
     title: "Deleted content template",
     type: "string",
   },
@@ -159,12 +181,12 @@ const generateSettingsConfig = (userConfig: {
       " If you **do not** want namespaced pages, you can leave this empty." +
       "\n\n" +
       "Note: this setting is **unused** if 'Sync to a single page?' is enabled.",
-    key: "namespace_label",
+    key: SETTING_IDS.namespaceLabel,
     type: "string",
   },
   {
     type: "boolean",
-    key: "enable_empty_page_state",
+    key: SETTING_IDS.emptyPageState,
     title: "Enable empty page state",
     default: true,
     description:
@@ -179,26 +201,36 @@ const generateSettingsConfig = (userConfig: {
  */
 export const settings = {
   enable_broken_experimental_features: () =>
-    logseq.settings!["broken_experimental_features"] as boolean,
-  access_token: (): string => logseq.settings!["access_token"] as string,
-  namespace_label: (): string => logseq.settings!["namespace_label"] as string,
+    logseq.settings![SETTING_IDS.enableBrokenExperimentalFeatures] as boolean,
+  access_token: (): string =>
+    logseq.settings![SETTING_IDS.accessToken] as string,
+  namespace_label: (): string =>
+    logseq.settings![SETTING_IDS.namespaceLabel] as string,
   default_page_tags: (): string =>
-    logseq.settings!["default_page_tags"] as string,
+    logseq.settings![SETTING_IDS.defaultPageTags] as string,
   import_filter: () =>
-    logseq.settings!["import_filter"] as keyof typeof importFilterOptions,
+    logseq.settings![
+      SETTING_IDS.importFilter
+    ] as keyof typeof importFilterOptions,
   formatting_template: {
-    highlight: (): string => logseq.settings!["template_highlight"] as string,
-    annotation: (): string => logseq.settings!["template_annotation"] as string,
-    deleted: (): string => logseq.settings!["template_deleted"] as string,
+    highlight: (): string =>
+      logseq.settings![SETTING_IDS.formattingTemplate.highlight] as string,
+    annotation: (): string =>
+      logseq.settings![SETTING_IDS.formattingTemplate.annotation] as string,
+    deleted: (): string =>
+      logseq.settings![SETTING_IDS.formattingTemplate.deleted] as string,
     add_link_mustache_template: (): string =>
-      logseq.settings!["add_link_mustache_template"] as string,
+      logseq.settings![
+        SETTING_IDS.formattingTemplate.addLinkMustacheTemplate
+      ] as string,
   },
   sync_to_single_page: (): boolean =>
-    logseq.settings!["sync_to_single_page"] as boolean,
-  sync_interval: (): number => logseq.settings!["sync_interval"] as number,
-  page_name: (): string => logseq.settings!["page_name"] as string,
+    logseq.settings![SETTING_IDS.syncToSinglePage] as boolean,
+  sync_interval: (): number =>
+    logseq.settings![SETTING_IDS.syncInterval] as number,
+  page_name: (): string => logseq.settings![SETTING_IDS.pageName] as string,
   last_sync_timestamp: (): Date =>
-    new Date(logseq.settings!["last_sync_timestamp"] as string),
+    new Date(logseq.settings![SETTING_IDS.lastSyncTimestamp] as string),
 };
 
 /**

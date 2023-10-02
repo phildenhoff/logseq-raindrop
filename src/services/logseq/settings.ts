@@ -234,8 +234,6 @@ const generateSettingsConfig = (userConfig: {
  * instead, wherever possible.
  */
 export const settings = {
-  access_token: (): string =>
-    logseq.settings![SETTING_ENUM.accessToken] as string,
   formatting_template: {
     highlight: (): string =>
       logseq.settings![SETTING_ENUM.templateHighlight] as string,

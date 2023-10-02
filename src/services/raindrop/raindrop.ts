@@ -36,6 +36,7 @@ export const getRaindrop = async (
   if (apiResponse.isErr) {
     return err("Getting Raindrop failed");
   }
+  // @ts-ignore TODO: Ensure that the API response can be normalized
   const normalizedResponse = normalizeApiRaindrop(apiResponse.value);
   return ok(normalizedResponse);
 };

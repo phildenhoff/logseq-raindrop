@@ -40,13 +40,15 @@
   let isUsingSyncToSinglePage = settings.sync_to_single_page();
   let stopSync = startSync(logseqClient);
 
-  // We need to update state when these events occurr
-  l?.onSettingsChanged(() => {
-    promptUserToCompleteSetup = !setupComplete();
+  logseqClient.registerEventListener(
+    "onSettingsChanged",
+    ({ before: _before, after: _after }) => {
+      promptUserToCompleteSetup = !setupComplete();
 
-    stopSync();
-    stopSync = startSync(logseqClient);
-  });
+      stopSync();
+      stopSync = startSync(logseqClient);
+    }
+  );
 </script>
 
 <div

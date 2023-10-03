@@ -3,7 +3,6 @@ import { isOk, type Ok } from "true-myth/result";
 
 import { createRaindrop } from "@services/raindrop/raindrop.js";
 import { extractUrlFromText } from "@util/url.js";
-import { settings } from "@services/logseq/settings.js";
 
 import type { AddedToRaindropView } from "./views.js";
 import type { LogseqServiceClient } from "@services/interfaces.js";
@@ -85,7 +84,7 @@ export const genAddUrlsToRaindropCmd =
       responses.filter(isOk).map((res) => (res as Ok<Response, unknown>).value)
     );
 
-    const template = settings.formatting_template.add_link_mustache_template();
+    const { addLinkMustacheTemplate: template } = logseqClient.settings;
     const text = renderAddedToRaindrop(newRaindrops, template);
     if (!text) {
       logseq.UI.showMsg("Added URLs to Raindrop");

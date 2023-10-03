@@ -21,7 +21,7 @@ const alertDuplicatePageIdUsed = (r: Raindrop, client: LogseqServiceClient) => {
   client.displayMessage(
     `You have duplicate pages for this article: \n${r.title}.\n\nWe'll use the oldest one, but you should merge these pages.`,
     "warning",
-    { key: r.id, timeout: 5000 }
+    { key: r.id, timeoutMs: 5000 }
   );
 };
 

@@ -347,7 +347,7 @@ export interface LogseqServiceClient {
     status?: "success" | "warning" | "error",
     options?: {
       key?: string;
-      timeout?: number;
+      timeoutMs?: number;
     }
   ) => Promise<void>;
 

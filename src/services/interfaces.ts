@@ -140,6 +140,11 @@ export interface LogseqServiceClient {
   getEditingBlock: () => Promise<LSBlockEntity | null>;
 
   /**
+   * Returns the content of the block being edited.
+   */
+  getEditingBlockContent: () => Promise<string>;
+
+  /**
    * Update the text content and properties of a block.
    *
    * @param blockUuid The ID of the block to update.

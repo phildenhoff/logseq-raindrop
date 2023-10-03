@@ -354,6 +354,14 @@ export const generateMoqseqClient = (mockSetup?: {
   const getEditingBlock: LogseqServiceClient["getEditingBlock"] = async () => {
     return blockUnderEdit;
   };
+  const getEditingBlockContent: LogseqServiceClient["getEditingBlockContent"] =
+    async () => {
+      const block = await getEditingBlock();
+      if (!block) {
+        return "";
+      }
+      return block.content;
+    };
 
   // Page
   const getBlockTreeForPage: LogseqServiceClient["getBlockTreeForPage"] =
@@ -513,6 +521,7 @@ export const generateMoqseqClient = (mockSetup?: {
     getBlockTreeForCurrentPage,
     getBlockTreeForPage,
     getEditingBlock,
+    getEditingBlockContent,
     getPageById,
     getPageByUuid,
     getPageByName,

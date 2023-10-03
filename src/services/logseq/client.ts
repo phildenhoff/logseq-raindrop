@@ -71,6 +71,10 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
       if (!block) return null;
       return block;
     },
+    getEditingBlockContent: async () => {
+      const content = await logseq.Editor.getEditingBlockContent();
+      return content;
+    },
 
     // Page
     getBlockTreeForCurrentPage: async () =>

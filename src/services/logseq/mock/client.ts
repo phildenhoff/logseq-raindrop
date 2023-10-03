@@ -13,7 +13,7 @@ import type {
 } from "@logseq/libs/dist/LSPlugin.user.js";
 import type { BlockMap, PageEntityWithRootBlocks, PageMap } from "./types.js";
 import { getLeftAndParentBlocks, updateBlockLeft } from "./leftAndParent.js";
-import { generateSettingsGetterAndSetter } from "../settings.js";
+import { generateClientSettings } from "../settings.js";
 
 type TestableLogseqServiceClient = {
   PRIVATE_FOR_TESTING: {
@@ -533,12 +533,7 @@ export const generateMoqseqClient = (mockSetup?: {
     updateBlock,
     upsertPropertiesForBlock,
     queryDb,
-    settings: {
-      registerSchema,
-      get: getSetting,
-      set: setSetting,
-      ...generateSettingsGetterAndSetter(getSetting, setSetting),
-    },
+    settings: generateClientSettings(getSetting, setSetting, registerSchema),
     getUserConfig,
     ui,
     registerEventListener,

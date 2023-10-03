@@ -4,7 +4,7 @@ import type {
   LogseqServiceClient as LogseqServiceWrapper,
 } from "../interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
-import { generateSettingsGetterAndSetter } from "./settings.js";
+import { generateClientSettings } from "./settings.js";
 
 export const logseqClientCtxKey = Symbol();
 
@@ -96,12 +96,9 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
       if (typeof name !== "string") return null;
       return logseq.Editor.getPage(name);
     },
-    settings: {
-      get: getSetting,
-      set: updateSetting,
-      registerSchema: async (schema) => logseq.useSettingsSchema(schema),
-      ...generateSettingsGetterAndSetter(getSetting, updateSetting),
-    },
+    settings: generateClientSettings(getSetting, updateSetting, (schema) => {
+      logseq.useSettingsSchema(schema);
+    }),
     ui: {
       plugin: {
         hide: async () => logseq.hideMainUI(),

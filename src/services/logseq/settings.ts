@@ -246,12 +246,26 @@ export const settings = {
   },
 };
 
-export const generateSettingsGetterAndSetter = (
+export const generateClientSettings = (
   getSetting: (settingId: SETTING_ID) => unknown,
-  updateSetting: (settingId: SETTING_ID, value: any) => void
-): PluginSettings => {
+  updateSetting: (settingId: SETTING_ID, value: any) => void,
+  registerSchema: (schema: SettingSchemaDesc[]) => void
+): PluginSettings & {
+  get: (settingId: SETTING_ID) => unknown;
+  set: (settingId: SETTING_ID, value: any) => void;
+  registerSchema: (schema: SettingSchemaDesc[]) => void;
+} => {
   return {
+    // We have to define the getters & setters with out original
+    // get/ set / registerSchema functions because, if we use the ...spread
+    // operator to combine the two objects, the getters & setters are shallow copied
+    // and only called once.
+    get: getSetting,
+    set: updateSetting,
+    registerSchema,
+
     get accessToken() {
+      console.log("Getting access token");
       return getSetting(SETTING_ENUM.accessToken) as string;
     },
     set accessToken(value: string) {

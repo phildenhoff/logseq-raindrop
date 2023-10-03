@@ -66,6 +66,11 @@ export const generateLogseqClient = (): LogseqServiceWrapper => {
         properties: currentProps,
       });
     },
+    getEditingBlock: async () => {
+      const block = await logseq.Editor.getCurrentBlock();
+      if (!block) return null;
+      return block;
+    },
 
     // Page
     getBlockTreeForCurrentPage: async () =>

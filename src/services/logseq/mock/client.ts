@@ -33,6 +33,8 @@ type TestableLogseqServiceClient = {
       event: E,
       ...args: Parameters<LSEventMap[E]>
     ) => void;
+
+    setBlockUnderEdit: (block: LSBlockEntity) => void;
   };
 };
 
@@ -110,6 +112,7 @@ export const generateMoqseqClient = (mockSetup?: {
   settings?: Record<string, string | number | boolean | unknown>;
 }): LogseqServiceClient & TestableLogseqServiceClient => {
   let focusedPageOrBlock: LSBlockEntity | LSPageEntity | null = null;
+  let blockUnderEdit: LSBlockEntity | null = null;
   let blocks: BlockMap = new Map(
     mockSetup?.defaultBlocks?.map((item) => [item.uuid, item]) ?? []
   );
@@ -245,6 +248,10 @@ export const generateMoqseqClient = (mockSetup?: {
 
       eventListeners.forEach((listener) => listener(...args));
     };
+  const setBlockUnderEdit: TestableLogseqServiceClient["PRIVATE_FOR_TESTING"]["setBlockUnderEdit"] =
+    (block) => {
+      blockUnderEdit = block;
+    };
   const queryDb: LogseqServiceClient["queryDb"] = async (query) => {
     return queryResponseGenerator.next(query).value;
   };
@@ -343,6 +350,10 @@ export const generateMoqseqClient = (mockSetup?: {
         },
       });
     };
+
+  const getEditingBlock: LogseqServiceClient["getEditingBlock"] = async () => {
+    return blockUnderEdit;
+  };
 
   // Page
   const getBlockTreeForPage: LogseqServiceClient["getBlockTreeForPage"] =
@@ -501,6 +512,7 @@ export const generateMoqseqClient = (mockSetup?: {
     getPropertiesForBlock,
     getBlockTreeForCurrentPage,
     getBlockTreeForPage,
+    getEditingBlock,
     getPageById,
     getPageByUuid,
     getPageByName,
@@ -526,6 +538,7 @@ export const generateMoqseqClient = (mockSetup?: {
       displayBlocks,
       displayPages,
       triggerEvent,
+      setBlockUnderEdit,
     },
   };
 };

@@ -6,6 +6,7 @@ import { extractUrlFromText } from "@util/url.js";
 import { settings } from "@services/logseq/settings.js";
 
 import type { AddedToRaindropView } from "./views.js";
+import type { LogseqServiceClient } from "@services/interfaces.js";
 
 const strings = {
   error: {
@@ -47,46 +48,47 @@ const renderAddedToRaindrop = (raindropList: Raindrop[], template: string) => {
   return Mustache.render(template, view);
 };
 
-export const addUrlsToRaindrop = async (): Promise<void> => {
-  // We can't use `content` from `getCurrentBlock()` because it's not updated
-  // as the user types
-  const current_block = await logseq.Editor.getCurrentBlock();
-  if (!current_block) return;
+export const genAddUrlsToRaindropCmd =
+  (logseqClient: LogseqServiceClient) => async (): Promise<void> => {
+    // We can't use `content` from `getCurrentBlock()` because it's not updated
+    // as the user types
+    const current_block = await logseq.Editor.getCurrentBlock();
+    if (!current_block) return;
 
-  const { uuid } = current_block;
-  const content = await logseq.Editor.getEditingBlockContent();
+    const { uuid } = current_block;
+    const content = await logseq.Editor.getEditingBlockContent();
 
-  const access_token = await logseq.settings?.access_token;
-  const urls = extractUrlFromText(content);
-  if (!urls) {
-    logseq.UI.showMsg(strings.error.no_urls, "warning", { timeout: 4000 });
-    return;
-  }
+    const access_token = await logseq.settings?.access_token;
+    const urls = extractUrlFromText(content);
+    if (!urls) {
+      logseq.UI.showMsg(strings.error.no_urls, "warning", { timeout: 4000 });
+      return;
+    }
 
-  if (!access_token) {
-    logseq.UI.showMsg(strings.error.no_access_token, "warning", {
-      timeout: 4000,
+    if (!access_token) {
+      logseq.UI.showMsg(strings.error.no_access_token, "warning", {
+        timeout: 4000,
+      });
+      logseq.showSettingsUI();
+      return;
+    }
+
+    const responses = await Promise.all(
+      urls.map((url) => createRaindrop({ link: url }))
+    );
+
+    const newRaindrops = await convertResponsesToRaindrops(
+      responses.filter(isOk).map((res) => (res as Ok<Response, unknown>).value)
+    );
+
+    const template = settings.formatting_template.add_link_mustache_template();
+    const text = renderAddedToRaindrop(newRaindrops, template);
+    if (!text) {
+      logseq.UI.showMsg("Added URLs to Raindrop");
+      return;
+    }
+
+    await logseq.Editor.insertBlock(uuid, text, {
+      sibling: false,
     });
-    logseq.showSettingsUI();
-    return;
-  }
-
-  const responses = await Promise.all(
-    urls.map((url) => createRaindrop({ link: url }))
-  );
-
-  const newRaindrops = await convertResponsesToRaindrops(
-    responses.filter(isOk).map((res) => (res as Ok<Response, unknown>).value)
-  );
-
-  const template = settings.formatting_template.add_link_mustache_template();
-  const text = renderAddedToRaindrop(newRaindrops, template);
-  if (!text) {
-    logseq.UI.showMsg("Added URLs to Raindrop");
-    return;
-  }
-
-  await logseq.Editor.insertBlock(uuid, text, {
-    sibling: false,
-  });
-};
+  };

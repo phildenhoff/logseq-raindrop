@@ -17,7 +17,7 @@ const main = async () => {
     apiUrl: "https://api.raindrop.io/rest/v1",
   });
 
-  registerCommands();
+  registerCommands(logseqClient);
   await registerSettings();
 
   new App({

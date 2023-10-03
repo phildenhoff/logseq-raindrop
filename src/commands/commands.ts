@@ -1,15 +1,16 @@
 import type { Command } from "@commands/Command.js";
-import { addUrlsToRaindrop } from "@commands/addToRaindrop.js";
+import { genAddUrlsToRaindropCmd } from "@commands/addToRaindrop.js";
+import type { LogseqServiceClient } from "@services/interfaces.js";
 
-const slashCommands: Command[] = [
+const genSlashCommands = (logseqClient: LogseqServiceClient): Command[] => [
   {
     title: "Add urls to Raindrop",
-    task: addUrlsToRaindrop,
+    task: genAddUrlsToRaindropCmd(logseqClient),
   },
 ];
 
-export const registerCommands = () => {
-  slashCommands.forEach(({ title, task }) => {
+export const registerCommands = (logseqClient: LogseqServiceClient) => {
+  genSlashCommands(logseqClient).forEach(({ title, task }) => {
     logseq.Editor.registerSlashCommand(title, task);
   });
 };

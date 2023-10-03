@@ -8,11 +8,11 @@ import { settings } from "@services/logseq/settings.js";
 import type { AddedToRaindropView } from "./views.js";
 import type { LogseqServiceClient } from "@services/interfaces.js";
 
-const strings = {
-  error: {
-    no_access_token:
+const STRINGS = {
+  ERROR: {
+    NO_ACCESS_TOKEN:
       "You have to set your Raindrop API access token in the plugin settings.",
-    no_urls:
+    NO_URLS:
       "No URLs found in the current selection. Make sure they start with https://",
   },
 };
@@ -52,21 +52,21 @@ export const genAddUrlsToRaindropCmd =
   (logseqClient: LogseqServiceClient) => async (): Promise<void> => {
     // We can't use `content` from `getCurrentBlock()` because it's not updated
     // as the user types
-    const current_block = await logseq.Editor.getCurrentBlock();
-    if (!current_block) return;
+    const currentBlock = await logseq.Editor.getCurrentBlock();
+    if (!currentBlock) return;
 
-    const { uuid } = current_block;
+    const { uuid } = currentBlock;
     const content = await logseq.Editor.getEditingBlockContent();
 
-    const access_token = await logseq.settings?.access_token;
+    const accessToken = await logseq.settings?.access_token;
     const urls = extractUrlFromText(content);
     if (!urls) {
-      logseq.UI.showMsg(strings.error.no_urls, "warning", { timeout: 4000 });
+      logseq.UI.showMsg(STRINGS.ERROR.NO_URLS, "warning", { timeout: 4000 });
       return;
     }
 
-    if (!access_token) {
-      logseq.UI.showMsg(strings.error.no_access_token, "warning", {
+    if (!accessToken) {
+      logseq.UI.showMsg(STRINGS.ERROR.NO_ACCESS_TOKEN, "warning", {
         timeout: 4000,
       });
       logseq.showSettingsUI();

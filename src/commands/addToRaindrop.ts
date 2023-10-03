@@ -48,28 +48,32 @@ const renderAddedToRaindrop = (raindropList: Raindrop[], template: string) => {
   return Mustache.render(template, view);
 };
 
+const warnOnNoAccessToken = (logseqClient: LogseqServiceClient) => {
+  logseqClient.displayMessage(STRINGS.ERROR.NO_ACCESS_TOKEN, "warning", {
+    timeoutMs: 4000,
+  });
+  logseqClient.ui.pluginSettings.show();
+};
+
 export const genAddUrlsToRaindropCmd =
   (logseqClient: LogseqServiceClient) => async (): Promise<void> => {
-    // We can't use `content` from `getCurrentBlock()` because it's not updated
-    // as the user types
-    const currentBlock = await logseq.Editor.getCurrentBlock();
-    if (!currentBlock) return;
-
-    const { uuid } = currentBlock;
-    const content = await logseq.Editor.getEditingBlockContent();
-
-    const accessToken = await logseq.settings?.access_token;
-    const urls = extractUrlFromText(content);
-    if (!urls) {
-      logseq.UI.showMsg(STRINGS.ERROR.NO_URLS, "warning", { timeout: 4000 });
+    const { accessToken } = logseqClient.settings;
+    if (!accessToken) {
+      warnOnNoAccessToken(logseqClient);
       return;
     }
 
-    if (!accessToken) {
-      logseq.UI.showMsg(STRINGS.ERROR.NO_ACCESS_TOKEN, "warning", {
-        timeout: 4000,
-      });
-      logseq.showSettingsUI();
+    // We can't use `content` from `getCurrentBlock()` because it's not updated
+    // as the user types
+    const currentBlock = await logseqClient.getEditingBlock();
+    if (!currentBlock) return;
+
+    const { uuid } = currentBlock;
+    const content = await logseqClient.getEditingBlockContent();
+
+    const urls = extractUrlFromText(content);
+    if (!urls) {
+      logseq.UI.showMsg(STRINGS.ERROR.NO_URLS, "warning", { timeout: 4000 });
       return;
     }
 

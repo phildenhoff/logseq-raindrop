@@ -12,6 +12,7 @@ export type Tag = string;
 
 export type Raindrop = {
   title: string;
+  note: string;
   description: string;
   annotations: Annotation[];
   tags: Tag[];

@@ -57,6 +57,7 @@ export const generateRaindropResponse = (
 export const generateRaindrop = (opts?: Partial<Raindrop>): Raindrop => {
   return {
     title: opts?.title ?? randomUUID(),
+    note: opts?.note ?? randomUUID(),
     description: opts?.description ?? randomUUID(),
     annotations:
       opts?.annotations ?? runRandomNumberOfTimes(generateAnnotation),

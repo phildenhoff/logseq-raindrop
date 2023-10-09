@@ -57,6 +57,7 @@ describe("ioMaybeGetPageForRaindrop", () => {
       {
         id: "123",
         title: "",
+        note: "",
         description: "",
         annotations: [],
         tags: [],
@@ -83,6 +84,7 @@ describe("ioMaybeGetPageForRaindrop", () => {
       {
         id: "123",
         title: "",
+        note: "",
         description: "",
         annotations: [],
         tags: [],
@@ -119,6 +121,7 @@ describe("ioCreateOrLoadPage", () => {
       {
         id: raindropId,
         title: raindropTitle,
+        note: "",
         description: "",
         annotations: [],
         tags: [],
@@ -203,6 +206,7 @@ describe("ioCreateOrLoadPage", () => {
       {
         id: raindropId,
         title: raindropTitle,
+        note: "",
         description: "",
         annotations: [],
         tags: [],
@@ -314,6 +318,7 @@ describe("ioUpsertAnnotationBlocks", () => {
     const raindrop: Raindrop = {
       id: "123",
       title: "RD1",
+      note: "note on rd1",
       description: "",
       annotations: [
         {
@@ -359,6 +364,7 @@ describe("ioUpsertAnnotationBlocks", () => {
     const raindropBefore: Raindrop = {
       id: "123",
       title: "RD1",
+      note: "note on rd1",
       description: "",
       annotations: [
         {
@@ -378,6 +384,7 @@ describe("ioUpsertAnnotationBlocks", () => {
     const raindropAfter: Raindrop = {
       id: "123",
       title: "RD1",
+      note: "note on rd1",
       description: "",
       annotations: [
         {

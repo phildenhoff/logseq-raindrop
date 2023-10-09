@@ -162,7 +162,7 @@ const generateSettingsConfig = (userConfig: {
     inputAs: "textarea",
     key: SETTING_ENUM.bookmarkMustacheTemplate,
     description:
-      "Mustache template used when adding a bookmark to your page. Available variables: `{title}`, `{url}`, `{tags}`, `{dateCreated}`, `{dateUpdated}`.",
+      "Mustache template used when adding a bookmark to your page. Available variables: `{title}`, `{url}`,`{note}`, `{tags}`, `{dateCreated}`, `{dateUpdated}`.",
     default: defaultBookmarkTemplate[userConfig.preferredFormat],
   },
   {

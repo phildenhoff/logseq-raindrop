@@ -22,6 +22,7 @@ export const formatRaindropToProperties = (
     "raindrop-id": r.id,
     "raindrop-title": r.title,
     "raindrop-url": r.url.toString(),
+    "raindrop-note": r.note,
     tags: generateTags(r.tags, defaults?.tags ?? ""),
   };
 };

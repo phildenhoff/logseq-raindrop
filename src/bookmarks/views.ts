@@ -4,6 +4,7 @@ export type HighlightView = {
 };
 export type BookmarkView = {
   title: string;
+  note: string;
   url: string;
   tags: string;
   dateCreated: string;

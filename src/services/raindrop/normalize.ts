@@ -83,6 +83,7 @@ export const normalizeApiRaindrop = (r: RaindropResponse): Raindrop => {
   return {
     id: r._id.toString(),
     title: r.title,
+    note: r.note,
     description: r.excerpt,
     coverImage: r.cover,
     url: new URL(r.link),

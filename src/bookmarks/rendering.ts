@@ -22,6 +22,7 @@ export const createBookmarkRenderView = (
 ): BookmarkView => {
   return {
     title: bookmark.title,
+    note: bookmark.note,
     url: bookmark.url.toString(),
     tags: bookmark.tags.join(", "),
     dateCreated: formatDateUserPreference(bookmark.created, userConfig),

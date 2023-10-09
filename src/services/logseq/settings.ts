@@ -265,7 +265,6 @@ export const generateClientSettings = (
     registerSchema,
 
     get accessToken() {
-      console.log("Getting access token");
       return getSetting(SETTING_ENUM.accessToken) as string;
     },
     set accessToken(value: string) {

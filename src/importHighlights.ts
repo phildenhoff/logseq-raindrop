@@ -2,7 +2,7 @@ import type { IBatchBlock } from "@logseq/libs/dist/LSPlugin.user.js";
 import { getOrCreateBlockInPage } from "@queries/getOrCreateBlockInPage.js";
 import { getOrCreatePageByName } from "@queries/getOrCreatePage.js";
 import type { LSBlockEntity, LogseqServiceClient } from "@services/logseq";
-import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collection.js";
+import { createCollectionUpdatedSinceGenerator } from "@services/raindrop";
 import type { Raindrop } from "@types";
 import {
   SETTING_ENUM,

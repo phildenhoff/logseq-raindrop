@@ -5,7 +5,7 @@ import type {
   LSBlockEntity,
   LSPageEntity,
   LogseqServiceClient,
-} from "src/services/interfaces.js";
+} from "@services/logseq";
 
 const findPagesByProperty =
   (

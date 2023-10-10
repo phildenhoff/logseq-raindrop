@@ -9,7 +9,7 @@ import type {
   PageEntity,
   SettingSchemaDesc,
 } from "@logseq/libs/dist/LSPlugin.js";
-import type { PluginSettings, SETTING_ID } from "./logseq/settings.js";
+import type { PluginSettings, SETTING_ID } from "./settings.js";
 
 // Duplicated from @logseq/libs/dist/LSPlugin.d.ts because the Logseq type
 // includes a `[key: string]: any]` prop which corrupts the rest of the type

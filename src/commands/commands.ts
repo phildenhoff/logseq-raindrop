@@ -1,6 +1,6 @@
 import type { Command } from "@commands/Command.js";
 import { genAddUrlsToRaindropCmd } from "@commands/addToRaindrop.js";
-import type { LogseqServiceClient } from "@services/interfaces.js";
+import type { LogseqServiceClient } from "@services/logseq";
 
 const genSlashCommands = (logseqClient: LogseqServiceClient): Command[] => [
   {

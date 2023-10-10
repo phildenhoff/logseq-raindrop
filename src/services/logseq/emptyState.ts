@@ -1,4 +1,4 @@
-import type { LSBlockEntity, LogseqServiceClient } from "../interfaces.js";
+import type { LSBlockEntity, LogseqServiceClient } from "./interfaces.js";
 
 import {
   filterBlocksWithProperty,

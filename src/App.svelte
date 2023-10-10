@@ -5,7 +5,7 @@
   import ImportRaindrops from "@organisms/ImportRaindrops.svelte";
   import { ifIsEnter, ifIsEscape } from "@util/keyboardEvents.js";
   import SinglePageSyncMenu from "@organisms/SinglePageSyncMenu.svelte";
-  import type { LogseqServiceClient } from "@services/interfaces.js";
+  import type { LogseqServiceClient } from "@services/logseq";
   import { logseqClientCtxKey } from "@services/logseq/client.js";
   import ThemeProvider from "@atoms/ThemeProvider.svelte";
 

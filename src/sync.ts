@@ -1,4 +1,4 @@
-import type { LogseqServiceClient } from "@services/interfaces.js";
+import type { LogseqServiceClient } from "@services/logseq";
 
 import { importHighlightsSinceLastSync } from "./importHighlights.js";
 

@@ -6,11 +6,14 @@
   import Raindrop from "@atoms/Raindrop.svelte";
   import LoadingSpinner from "@atoms/LoadingSpinner.svelte";
   import { upsertRaindropPage } from "src/upsertRaindropPage.js";
-  import { normalizeApiRaindrop } from "@services/raindrop/normalize.js";
   import { match } from "true-myth/result";
   import type { LogseqServiceClient } from "@services/logseq";
   import { logseqClientCtxKey } from "src/services/logseq/client.js";
-  import { getRaindrop, searchTerm } from "@services/raindrop/index.js";
+  import {
+    getRaindrop,
+    normalizeApiRaindrop,
+    searchTerm,
+  } from "@services/raindrop";
 
   const remoteData = writable<TRaindrop[]>([]);
   const requestsInFlight = writable(0);

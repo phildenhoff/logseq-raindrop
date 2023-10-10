@@ -2,7 +2,7 @@ import { httpClient } from "./http.js";
 import {
   normalizeApiRaindrop,
   type RaindropResponse,
-} from "@services/raindrop/normalize.js";
+} from "@services/raindrop";
 
 type CollectionResponse = {
   result: boolean;

@@ -8,7 +8,7 @@ vi.mock("./http.js", () => {
   const get = vi.fn();
   const post = vi.fn();
 
-  return { httpClient: { get, post } };
+  return { httpClient: { get, post }, setupHttpClient: () => {} };
 });
 
 /**

@@ -19,7 +19,7 @@ export default defineConfig({
       "@organisms": resolve("src/components/organisms"),
       "@queries": resolve("src/queries"),
       "@services/logseq": resolve("src/services/logseq"),
-      "@services": resolve("src/services"),
+      "@services/raindrop": resolve("src/services/raindrop"),
       "@util": resolve("src/util"),
     },
   },

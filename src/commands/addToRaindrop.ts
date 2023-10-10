@@ -1,7 +1,7 @@
 import Mustache from "mustache";
 import { isOk, type Ok } from "true-myth/result";
 
-import { createRaindrop } from "@services/raindrop/raindrop.js";
+import { createRaindrop } from "@services/raindrop";
 import { extractUrlFromText } from "@util/url.js";
 
 import type { AddedToRaindropView } from "./views.js";

@@ -3,7 +3,7 @@
   import { derived, writable } from "svelte/store";
 
   import type { LogseqServiceClient } from "@services/logseq";
-  import { logseqClientCtxKey } from "@services/logseq/client.js";
+  import { logseqClientCtxKey } from "@services/logseq";
 
   import { importHighlightsSinceLastSync } from "src/importHighlights.js";
   import { pluginSettings } from "src/stores/pluginSettings.js";

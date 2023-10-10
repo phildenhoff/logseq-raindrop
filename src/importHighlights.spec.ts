@@ -1,8 +1,10 @@
-import { generateMoqseqClient } from "@services/logseq/mock/client.js";
+import { TESTING_FUNCS } from "@services/logseq";
 import type { Raindrop } from "@types";
 import { assert, describe, expect, it } from "vitest";
 import { generateRaindrop } from "./testing/raindropFactory.js";
 import { importRaindropsFromGenerator } from "./importHighlights.js";
+
+const { generateMoqseqClient } = TESTING_FUNCS;
 
 describe("importRaindropsFromGenerator", () => {
   it("must insert new blocks above old blocks", async () => {

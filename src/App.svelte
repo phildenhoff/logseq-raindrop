@@ -6,7 +6,7 @@
   import { ifIsEnter, ifIsEscape } from "@util/keyboardEvents.js";
   import SinglePageSyncMenu from "@organisms/SinglePageSyncMenu.svelte";
   import type { LogseqServiceClient } from "@services/logseq";
-  import { logseqClientCtxKey } from "@services/logseq/client.js";
+  import { logseqClientCtxKey } from "@services/logseq";
   import ThemeProvider from "@atoms/ThemeProvider.svelte";
 
   import { startSync } from "./sync.js";

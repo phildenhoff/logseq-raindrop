@@ -4,9 +4,17 @@ export type {
   LogseqServiceClient,
 } from "./interfaces.js";
 
-export { formatDateForSettings } from "./formatting.js";
+export {
+  formatDateForSettings,
+  formatDateUserPreference,
+} from "./formatting.js";
 export { ioAddEmptyStateBlock, ioRemoveEmptyStateBlock } from "./emptyState.js";
-export { generateLogseqClient } from "./client.js";
+export { generateLogseqClient, logseqClientCtxKey } from "./client.js";
+export {
+  SETTING_ENUM,
+  importFilterOptions,
+  registerSettings,
+} from "./settings.js";
 
 // Used for testing
 import type { PageEntityWithRootBlocks } from "./mock/types.js";

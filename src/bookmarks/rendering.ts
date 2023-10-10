@@ -1,7 +1,7 @@
 import Mustache from "mustache";
 
 import type { AppUserConfigs } from "@logseq/libs/dist/LSPlugin.user.js";
-import { formatDateUserPreference } from "@services/logseq/formatting.js";
+import { formatDateUserPreference } from "@services/logseq";
 
 import type { Annotation, Raindrop } from "@types";
 

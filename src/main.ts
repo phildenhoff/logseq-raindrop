@@ -4,9 +4,8 @@ import "svelte";
 import App from "./App.svelte";
 
 import { registerCommands } from "@commands/commands.js";
-import { registerSettings } from "@services/logseq/settings.js";
+import { generateLogseqClient, registerSettings } from "@services/logseq";
 import { setupRaindropHttpClient } from "@services/raindrop/index.js";
-import { generateLogseqClient } from "@services/logseq/client.js";
 
 const main = async () => {
   const addColorStyle = import.meta.env.PROD ? "" : "color: orange!important;";

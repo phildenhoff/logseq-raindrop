@@ -1,9 +1,11 @@
 import type { ILSPluginUser } from "@logseq/libs/dist/LSPlugin.user.js";
+
+import { applyAsyncFunc } from "@util/async.js";
+
 import type {
   LSEventMap,
   LogseqServiceClient as LogseqServiceWrapper,
 } from "../interfaces.js";
-import { applyAsyncFunc } from "@util/async.js";
 import { generateClientSettings } from "./settings.js";
 
 export const logseqClientCtxKey = Symbol();

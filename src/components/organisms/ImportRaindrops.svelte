@@ -2,13 +2,13 @@
   import { getContext, onMount } from "svelte";
   import { writable, derived } from "svelte/store";
 
-  import type {Raindrop as TRaindrop} from "@types";
+  import type { Raindrop as TRaindrop } from "@types";
   import Raindrop from "@atoms/Raindrop.svelte";
   import LoadingSpinner from "@atoms/LoadingSpinner.svelte";
   import { upsertRaindropPage } from "src/upsertRaindropPage.js";
   import { normalizeApiRaindrop } from "@services/raindrop/normalize.js";
   import { match } from "true-myth/result";
-  import type { LogseqServiceClient } from "src/services/interfaces.js";
+  import type { LogseqServiceClient } from "@services/logseq";
   import { logseqClientCtxKey } from "src/services/logseq/client.js";
   import { getRaindrop, searchTerm } from "@services/raindrop/index.js";
 
@@ -26,7 +26,7 @@
     const requestTime = new Date();
     requestsInFlight.update((n) => n + 1);
 
-    const res = await searchTerm(term, '0');
+    const res = await searchTerm(term, "0");
     const { items } = await res.json();
     // do some work
     requestsInFlight.update((n) => n - 1);
@@ -41,18 +41,21 @@
     performSearch((event.target as HTMLInputElement).value);
   };
 
-  const onUpsertRaindropPage = async (id: TRaindrop['id']) => {
+  const onUpsertRaindropPage = async (id: TRaindrop["id"]) => {
     const maybeFullRaindrop = await getRaindrop(id);
-    match({
-      Ok: (fullRaindrop) => upsertRaindropPage(fullRaindrop, logseqClient),
-      Err: () => {
-      logseqClient.displayMessage(
-        "Something went wrong while trying to contact Raindrop",
-        "error"
-      );
-      }
-    }, maybeFullRaindrop)
-  }
+    match(
+      {
+        Ok: (fullRaindrop) => upsertRaindropPage(fullRaindrop, logseqClient),
+        Err: () => {
+          logseqClient.displayMessage(
+            "Something went wrong while trying to contact Raindrop",
+            "error"
+          );
+        },
+      },
+      maybeFullRaindrop
+    );
+  };
 
   onMount(() => {
     performSearch("");

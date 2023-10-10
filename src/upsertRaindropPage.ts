@@ -6,16 +6,16 @@ import type {
   LSBlockEntity,
   LSPageEntity,
   LogseqServiceClient,
-} from "src/services/interfaces.js";
+} from "@services/logseq";
+import {
+  ioAddEmptyStateBlock,
+  ioRemoveEmptyStateBlock,
+} from "@services/logseq";
 import { findPagesByRaindropID } from "src/queries/getBlockBy.js";
 import { formatRaindropToProperties } from "@util/pageFormatter.js";
 import { applyAsyncFunc } from "@util/async.js";
 
 import { generatePageName } from "./util/generatePageName.js";
-import {
-  ioAddEmptyStateBlock,
-  ioRemoveEmptyStateBlock,
-} from "@services/logseq/emptyState.js";
 
 const alertDuplicatePageIdUsed = (r: Raindrop, client: LogseqServiceClient) => {
   client.displayMessage(

@@ -5,7 +5,7 @@ import { createRaindrop } from "@services/raindrop/raindrop.js";
 import { extractUrlFromText } from "@util/url.js";
 
 import type { AddedToRaindropView } from "./views.js";
-import type { LogseqServiceClient } from "@services/interfaces.js";
+import type { LogseqServiceClient } from "@services/logseq";
 
 const STRINGS = {
   ERROR: {

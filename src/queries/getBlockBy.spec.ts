@@ -1,7 +1,7 @@
 import { generateMoqseqClient } from "src/services/logseq/mock/client.js";
 import { describe, expect, it } from "vitest";
 import { findPagesByRaindropID } from "./getBlockBy.js";
-import type { LSBlockEntity, LSPageEntity } from "src/services/interfaces.js";
+import type { LSBlockEntity, LSPageEntity } from "@services/logseq";
 
 // Created by running the query "(property raindrop-id 457389317)" on
 // my Logseq database, and then removing the following non-supported fields:

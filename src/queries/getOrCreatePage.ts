@@ -1,10 +1,7 @@
 import type { Result } from "true-myth";
 import { err, ok } from "true-myth/result";
 
-import type {
-  LSPageEntity,
-  LogseqServiceClient,
-} from "@services/interfaces.js";
+import type { LSPageEntity, LogseqServiceClient } from "@services/logseq";
 
 export const getOrCreatePageByName = async (
   logseqClient: LogseqServiceClient,

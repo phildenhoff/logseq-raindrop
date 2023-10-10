@@ -23,7 +23,8 @@
       "@commands/*": ["src/commands/*"],
       "@organisms/*": ["src/components/organisms/*"],
       "@queries/*": ["src/queries/*"],
-      "@services/*": ["src/services/*"],
+      "@services/logseq": ["src/services/logseq/index.ts"],
+      "@services/raindrop/*": ["src/services/raindrop/*"],
       "@util/*": ["src/util/*"]
     },
     // The Svelte config uses some deprecated features.

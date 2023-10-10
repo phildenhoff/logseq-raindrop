@@ -5,7 +5,7 @@ import type {
   LSBlockEntity,
   LSEvent,
   LSEventMap,
-} from "../../interfaces.js";
+} from "../interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
 import type {
   AppUserConfigs,

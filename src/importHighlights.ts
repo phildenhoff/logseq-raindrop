@@ -4,8 +4,8 @@ import { getOrCreatePageByName } from "@queries/getOrCreatePage.js";
 import type {
   LSBlockEntity,
   LogseqServiceClient,
-} from "@services/interfaces.js";
-import { formatDateForSettings } from "@services/logseq/formatting.js";
+  formatDateForSettings,
+} from "@services/logseq";
 import { createCollectionUpdatedSinceGenerator } from "@services/raindrop/collection.js";
 import type { Raindrop } from "@types";
 import {

@@ -5,7 +5,7 @@ import { applyAsyncFunc } from "@util/async.js";
 import type {
   LSEventMap,
   LogseqServiceClient as LogseqServiceWrapper,
-} from "../interfaces.js";
+} from "./interfaces.js";
 import { generateClientSettings } from "./settings.js";
 
 export const logseqClientCtxKey = Symbol();

@@ -1,7 +1,4 @@
-import type {
-  LSBlockEntity,
-  LogseqServiceClient,
-} from "@services/interfaces.js";
+import type { LSBlockEntity, LogseqServiceClient } from "@services/logseq";
 import type { Result } from "true-myth";
 import { ok, err } from "true-myth/result";
 

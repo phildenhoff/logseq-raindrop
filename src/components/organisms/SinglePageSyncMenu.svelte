@@ -2,7 +2,7 @@
   import { getContext } from "svelte";
   import { derived, writable } from "svelte/store";
 
-  import type { LogseqServiceClient } from "@services/interfaces.js";
+  import type { LogseqServiceClient } from "@services/logseq";
   import { logseqClientCtxKey } from "@services/logseq/client.js";
 
   import { importHighlightsSinceLastSync } from "src/importHighlights.js";

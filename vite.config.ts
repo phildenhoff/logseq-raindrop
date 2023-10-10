@@ -18,6 +18,7 @@ export default defineConfig({
       "@commands": resolve("src/commands"),
       "@organisms": resolve("src/components/organisms"),
       "@queries": resolve("src/queries"),
+      "@services/logseq": resolve("src/services/logseq"),
       "@services": resolve("src/services"),
       "@util": resolve("src/util"),
     },

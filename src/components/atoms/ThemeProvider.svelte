@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getContext } from "svelte";
   import { logseqClientCtxKey } from "@services/logseq/client.js";
-  import type { LogseqServiceClient } from "@services/interfaces.js";
+  import type { LogseqServiceClient } from "@services/logseq";
 
   const logseqClient = getContext<LogseqServiceClient>(logseqClientCtxKey);
 

@@ -1,4 +1,4 @@
-import type { LSBlockEntity } from "src/services/interfaces.js";
+import type { LSBlockEntity } from "@services/logseq";
 
 import { applyAsyncFunc } from "@util/async.js";
 

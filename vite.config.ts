@@ -20,6 +20,7 @@ export default defineConfig({
       "@queries": resolve("src/queries"),
       "@services/logseq": resolve("src/services/logseq"),
       "@services/raindrop": resolve("src/services/raindrop"),
+      "@testing/logseq": resolve("src/services/logseq/_testing"),
       "@util": resolve("src/util"),
     },
   },

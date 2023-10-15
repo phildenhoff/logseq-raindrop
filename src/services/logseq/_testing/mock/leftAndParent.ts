@@ -10,7 +10,7 @@ import type {
 } from "@logseq/libs/dist/LSPlugin.js";
 
 import type { BlockMap, PageMap } from "./types.js";
-import type { LSBlockEntity } from "../interfaces.js";
+import type { LSBlockEntity } from "../../interfaces.js";
 
 const getLeftmostChild = (
   children: (BlockEntity | BlockUUIDTuple)[],

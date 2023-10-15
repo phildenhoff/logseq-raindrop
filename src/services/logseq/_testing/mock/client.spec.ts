@@ -1,8 +1,9 @@
 import type { IEntityID } from "@logseq/libs/dist/LSPlugin.js";
 import { assert, describe, expect, it, vitest } from "vitest";
-import { generateMoqseqClient, recursiveChildrenOfBlock } from "./client.js";
-import type { LSBlockEntity } from "../interfaces.js";
+import type { LSBlockEntity } from "@services/logseq";
 import { randomUUID } from "crypto";
+
+import { generateMoqseqClient, recursiveChildrenOfBlock } from "./client.js";
 
 describe("recursiveChildrenOfBlock", () => {
   it("must return the children of a block one deep", async () => {

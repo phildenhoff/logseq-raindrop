@@ -1,4 +1,4 @@
-import { TESTING_FUNCS } from "@services/logseq";
+import { TESTING_FUNCS } from "@testing/logseq";
 import type { Raindrop } from "@types";
 import { assert, describe, expect, it } from "vitest";
 import { generateRaindrop } from "./testing/raindropFactory.js";

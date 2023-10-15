@@ -25,6 +25,7 @@
       "@queries/*": ["src/queries/*"],
       "@services/logseq": ["src/services/logseq/index.ts"],
       "@services/raindrop": ["src/services/raindrop/index.ts"],
+      "@testing/logseq": ["src/services/logseq/_testing/index.ts"],
       "@util/*": ["src/util/*"]
     },
     // The Svelte config uses some deprecated features.

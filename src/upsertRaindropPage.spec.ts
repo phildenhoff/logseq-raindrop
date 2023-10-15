@@ -3,8 +3,8 @@ import { describe, it, expect, assert } from "vitest";
 import type { LSBlockEntity, LSPageEntity } from "@services/logseq";
 import type { Annotation, Raindrop } from "@types";
 
-import { TESTING_FUNCS } from "@services/logseq";
-import type { TESTING_TYPES } from "@services/logseq";
+import { TESTING_FUNCS } from "@testing/logseq";
+import type { TESTING_TYPES } from "@testing/logseq";
 
 type PageEntityWithRootBlocks = TESTING_TYPES["PageEntityWithRootBlocks"];
 const { generateMoqseqClient } = TESTING_FUNCS;

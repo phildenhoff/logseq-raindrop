@@ -1,8 +1,9 @@
 import { describe, it, expect, assert } from "vitest";
 
-import { generateMoqseqClient } from "./mock/client.js";
-
 import { ioAddEmptyStateBlock, ioRemoveEmptyStateBlock } from "./emptyState.js";
+import { TESTING_FUNCS } from "@testing/logseq";
+
+const { generateMoqseqClient } = TESTING_FUNCS;
 
 describe("ioAddEmptyStateBlock", () => {
   it("should add a new block to let the user know that there are no annotations", async () => {

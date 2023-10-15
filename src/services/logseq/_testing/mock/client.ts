@@ -1,11 +1,10 @@
-import { randomUUID } from "crypto";
 import type {
   LogseqServiceClient,
   LSPageEntity,
   LSBlockEntity,
   LSEvent,
   LSEventMap,
-} from "../interfaces.js";
+} from "../../interfaces.js";
 import { applyAsyncFunc } from "@util/async.js";
 import type {
   AppUserConfigs,
@@ -13,7 +12,8 @@ import type {
 } from "@logseq/libs/dist/LSPlugin.user.js";
 import type { BlockMap, PageEntityWithRootBlocks, PageMap } from "./types.js";
 import { getLeftAndParentBlocks, updateBlockLeft } from "./leftAndParent.js";
-import { generateClientSettings } from "../settings.js";
+import { generateClientSettings } from "../../settings.js";
+import { randomUUID } from "crypto";
 
 type TestableLogseqServiceClient = {
   PRIVATE_FOR_TESTING: {

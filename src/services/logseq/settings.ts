@@ -162,7 +162,7 @@ const generateSettingsConfig = (userConfig: {
     inputAs: "textarea",
     key: SETTING_ENUM.bookmarkMustacheTemplate,
     description:
-      "Mustache template used when adding a bookmark to your page. Available variables: `{title}`, `{url}`,`{note}`, `{tags}`, `{dateCreated}`, `{dateUpdated}`.",
+      "Mustache template used when adding a bookmark to your page. For more info, see https://github.com/phildenhoff/logseq-raindrop/wiki/Bookmark-template-options",
     default: defaultBookmarkTemplate[userConfig.preferredFormat],
   },
   {

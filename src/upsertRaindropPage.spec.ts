@@ -10,6 +10,7 @@ type PageEntityWithRootBlocks = TESTING_TYPES["PageEntityWithRootBlocks"];
 const { generateMoqseqClient } = TESTING_FUNCS;
 
 import { __TESTING } from "./upsertRaindropPage.js";
+import { generateRaindrop } from "./testing/raindropFactory.js";
 
 const {
   ioMaybeGetPageForRaindrop,
@@ -58,7 +59,7 @@ describe("ioMaybeGetPageForRaindrop", () => {
       yield [newPage, oldPage];
     });
     const maybePage = await ioMaybeGetPageForRaindrop(
-      {
+      generateRaindrop({
         id: "123",
         title: "",
         note: "",
@@ -69,7 +70,7 @@ describe("ioMaybeGetPageForRaindrop", () => {
         created: new Date(),
         lastUpdate: new Date(),
         url: new URL("https://example.com"),
-      },
+      }),
       logseqClient
     );
 
@@ -85,7 +86,7 @@ describe("ioMaybeGetPageForRaindrop", () => {
       emptyQueryGenerator
     );
     const maybePage = await ioMaybeGetPageForRaindrop(
-      {
+      generateRaindrop({
         id: "123",
         title: "",
         note: "",
@@ -96,7 +97,7 @@ describe("ioMaybeGetPageForRaindrop", () => {
         created: new Date(),
         lastUpdate: new Date(),
         url: new URL("https://example.com"),
-      },
+      }),
       logseqClient
     );
 
@@ -122,7 +123,7 @@ describe("ioCreateOrLoadPage", () => {
     );
 
     await ioCreateOrLoadPage(
-      {
+      generateRaindrop({
         id: raindropId,
         title: raindropTitle,
         note: "",
@@ -133,7 +134,7 @@ describe("ioCreateOrLoadPage", () => {
         created: new Date(),
         lastUpdate: new Date(),
         url: new URL("https://example.com"),
-      },
+      }),
       logseqClient
     );
 
@@ -207,7 +208,7 @@ describe("ioCreateOrLoadPage", () => {
     });
 
     await ioCreateOrLoadPage(
-      {
+      generateRaindrop({
         id: raindropId,
         title: raindropTitle,
         note: "",
@@ -218,7 +219,7 @@ describe("ioCreateOrLoadPage", () => {
         created: new Date(),
         lastUpdate: new Date(),
         url: new URL("https://example.com"),
-      },
+      }),
       logseqClient
     );
 
@@ -319,7 +320,7 @@ describe("ioCreateAnnotationBlock", () => {
 
 describe("ioUpsertAnnotationBlocks", () => {
   it("creates a new annotation block", async () => {
-    const raindrop: Raindrop = {
+    const raindrop: Raindrop = generateRaindrop({
       id: "123",
       title: "RD1",
       note: "note on rd1",
@@ -338,7 +339,7 @@ describe("ioUpsertAnnotationBlocks", () => {
       url: new URL("https://example.com"),
       created: new Date(),
       lastUpdate: new Date(),
-    };
+    });
 
     const logseqClient = generateMoqseqClient({
       settings: {
@@ -365,7 +366,7 @@ describe("ioUpsertAnnotationBlocks", () => {
   });
 
   it.skip("updates existing annotation blocks", async () => {
-    const raindropBefore: Raindrop = {
+    const raindropBefore: Raindrop = generateRaindrop({
       id: "123",
       title: "RD1",
       note: "note on rd1",
@@ -384,8 +385,8 @@ describe("ioUpsertAnnotationBlocks", () => {
       url: new URL("https://example.com"),
       created: new Date(),
       lastUpdate: new Date(),
-    };
-    const raindropAfter: Raindrop = {
+    });
+    const raindropAfter: Raindrop = generateRaindrop({
       id: "123",
       title: "RD1",
       note: "note on rd1",
@@ -404,7 +405,7 @@ describe("ioUpsertAnnotationBlocks", () => {
       url: new URL("https://example.com"),
       created: new Date(),
       lastUpdate: new Date(),
-    };
+    });
 
     const logseqClient = generateMoqseqClient({
       settings: {

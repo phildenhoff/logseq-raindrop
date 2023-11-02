@@ -25,6 +25,9 @@ export const createBookmarkRenderView = (
     note: bookmark.note,
     url: bookmark.url.toString(),
     tags: bookmark.tags.join(", "),
+    editBookmarkUrl: bookmark.editBookmarkUrl.toString(),
+    previewBookmarkUrl: bookmark.previewBookmarkUrl.toString(),
+    permanentCacheUrl: bookmark.permanentCacheUrl.toString(),
     dateCreated: formatDateUserPreference(bookmark.created, userConfig),
     dateUpdated: formatDateUserPreference(bookmark.lastUpdate, userConfig),
   };

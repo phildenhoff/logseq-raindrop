@@ -9,4 +9,7 @@ export type BookmarkView = {
   tags: string;
   dateCreated: string;
   dateUpdated: string;
+  editBookmarkUrl: string;
+  previewBookmarkUrl: string;
+  permanentCacheUrl: string;
 };

@@ -91,5 +91,14 @@ export const normalizeApiRaindrop = (r: RaindropResponse): Raindrop => {
     lastUpdate: new Date(r.lastUpdate),
     tags: r.tags,
     annotations,
+    editBookmarkUrl: new URL(
+      `https://app.raindrop.io/my/-1/item/${r._id.toString()}/edit`
+    ),
+    previewBookmarkUrl: new URL(
+      `https://app.raindrop.io/my/-1/item/${r._id.toString()}/web`
+    ),
+    permanentCacheUrl: new URL(
+      `https://api.raindrop.io/v1/raindrop/${r._id.toString()}/cache`
+    ),
   };
 };

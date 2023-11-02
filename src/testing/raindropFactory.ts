@@ -67,5 +67,12 @@ export const generateRaindrop = (opts?: Partial<Raindrop>): Raindrop => {
     lastUpdate: opts?.lastUpdate ?? new Date(),
     url: opts?.url ?? new URL("https://example.com"),
     id: opts?.id ?? randomUUID(),
+    editBookmarkUrl:
+      opts?.editBookmarkUrl ?? new URL("https://edit.example.com/item_id"),
+    previewBookmarkUrl:
+      opts?.previewBookmarkUrl ??
+      new URL("https://preview.example.com/item_id"),
+    permanentCacheUrl:
+      opts?.permanentCacheUrl ?? new URL("https://cache.example.com/item_id"),
   };
 };

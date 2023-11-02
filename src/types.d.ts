@@ -22,4 +22,7 @@ export type Raindrop = {
   url: URL;
   collectionName?: string;
   id: ID;
+  editBookmarkUrl: URL;
+  previewBookmarkUrl: URL;
+  permanentCacheUrl: URL;
 };

@@ -1,5 +1,13 @@
 # Raindrop plugin for Logseq
 
+> ## Not actively developed
+> 
+> _Jun 24, 2024_. I'm (@phildenhoff) no longer working on logseq-raindrop.
+> I no longer use the plugin regularly and instead keep my notes & Raindrop separate.
+>
+> If you would like to continue development, please fork the repo!
+> I will support devs who wish to upstream their work, to share with other users using the plugin via the marketplace.
+
 A plugin for [Logseq](https://github.com/logseq/logseq) that allows you to import annotations & bookmarks from [Raindrop](https://raindrop.io/), and save URLs back to Raindrop.
 
 > **Note**
